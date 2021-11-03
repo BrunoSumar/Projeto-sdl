@@ -2,15 +2,29 @@
 and may not be redistributed without written permission.*/
 
 //Using SDL, SDL OpenGL, standard IO, and, strings
+#include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
-#include <GL/glu.h>
 #include <stdio.h>
 #include <string>
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
+
+const char *vertexShaderSource = "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "}\0";
+
+const char *fragmentShaderSource = "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "}\0";
 
 //Starts up SDL, creates window, and initializes OpenGL
 bool init();
@@ -53,8 +67,8 @@ bool init()
 	else
 	{
 		//Use OpenGL 2.1
-		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
-		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
 
 		//Create window
 		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
@@ -98,40 +112,53 @@ bool initGL()
 	bool success = true;
 	GLenum error = GL_NO_ERROR;
 
-	//Initialize Projection Matrix
-	glMatrixMode( GL_PROJECTION );
-	glLoadIdentity();
+        auto show = glewInit();
+        if(show != GLEW_OK){
+            printf("Error initializing OpenGL! Couldn't init GLEW. %s\n", SDL_GetError());
+        }
 
-	//Check for error
-	error = glGetError();
-	if( error != GL_NO_ERROR )
-	{
-		printf( "Error initializing OpenGL! %s\n", gluErrorString( error ) );
-		success = false;
-	}
+        glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	//Initialize Modelview Matrix
-	glMatrixMode( GL_MODELVIEW );
-	glLoadIdentity();
+        float verts[] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f
+        };
 
-	//Check for error
-	error = glGetError();
-	if( error != GL_NO_ERROR )
-	{
-		printf( "Error initializing OpenGL! %s\n", gluErrorString( error ) );
-		success = false;
-	}
+        unsigned int VBO;
+        glGenBuffers(1, &VBO);
 
-	//Initialize clear color
-	glClearColor( 0.f, 0.f, 0.f, 1.f );
+        unsigned int VAO;
+        glGenVertexArrays(1, &VAO);
+        glBindVertexArray(VAO);
 
-	//Check for error
-	error = glGetError();
-	if( error != GL_NO_ERROR )
-	{
-		printf( "Error initializing OpenGL! %s\n", gluErrorString( error ) );
-		success = false;
-	}
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+        glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+
+        unsigned int vertexShader;
+        vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+        glCompileShader(vertexShader);
+
+        unsigned int fragmentShader;
+        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+        glCompileShader(fragmentShader);
+
+        unsigned int shaderProgram;
+        shaderProgram = glCreateProgram();
+        glAttachShader(shaderProgram, vertexShader);
+        glAttachShader(shaderProgram, fragmentShader);
+        glLinkProgram(shaderProgram);
+
+        glUseProgram(shaderProgram);
+
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
 
 	return success;
 }
@@ -152,18 +179,12 @@ void update()
 
 void render()
 {
-	//Clear color buffer
-	glClear( GL_COLOR_BUFFER_BIT );
-
 	//Render quad
 	if( gRenderQuad )
 	{
-		glBegin( GL_QUADS );
-			glVertex2f( -0.5f, -0.5f );
-			glVertex2f( 0.5f, -0.5f );
-			glVertex2f( 0.5f, 0.5f );
-			glVertex2f( -0.5f, 0.5f );
-		glEnd();
+
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+
 	}
 }
 
