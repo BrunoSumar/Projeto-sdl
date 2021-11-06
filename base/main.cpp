@@ -1,12 +1,16 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
 #include <GL/glu.h>
 // #include <stdio.h>
 #include <string>
 #include <iostream>
 
+#include <SDL2/SDL.h>
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
+
+#else
+#include <SDL2/SDL_opengl.h>
+
 #endif
 
 using namespace std;
@@ -60,7 +64,7 @@ bool init()
 				}
 
 				//Initialize OpenGL
-        glClearColor( 0.f, 0.f, 0.f, 1.f );
+        glClearColor( 1.f, 0.f, 0.5f, 1.f );
 			}
 		}
 	}
