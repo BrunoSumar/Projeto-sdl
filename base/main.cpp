@@ -5,6 +5,8 @@
 
 #include <SDL2/SDL.h>
 
+#include "scene.h"
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 
@@ -106,6 +108,7 @@ void close()
 }
 
 int main(int argc, char *argv[]) {
+  teste();
 
 	if( !init() )
 	{
