@@ -26,6 +26,6 @@ struct Scene{
   Scene(){
 
   }
-}
+};
 
 #endif // SCENE_H_

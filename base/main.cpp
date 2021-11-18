@@ -1,4 +1,4 @@
-#include <GL/glu.h>
+#include <GL/glew.h>
 // #include <stdio.h>
 #include <string>
 #include <iostream>
@@ -66,7 +66,7 @@ bool init()
 				}
 
 				//Initialize OpenGL
-        glClearColor( 1.f, 0.f, 0.5f, 1.f );
+        glClearColor( 1.f, 0.5f, 0.5f, 1.f );
 			}
 		}
 	}
@@ -108,7 +108,7 @@ void close()
 }
 
 int main(int argc, char *argv[]) {
-  teste();
+    //teste();
 
 	if( !init() )
 	{
