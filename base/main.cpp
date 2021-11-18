@@ -24,6 +24,13 @@ SDL_Window* gWindow = NULL;
 SDL_GLContext gContext;
 SDL_Event e;
 
+glm::vec3 eye;
+glm::vec3 center;
+glm::vec3 up;
+
+glm::mat4 view;
+glm::mat4 Projection;
+
 bool init()
 {
 	//Initialization flag
@@ -38,8 +45,8 @@ bool init()
 	else
 	{
 		//Use OpenGL 2.1
-		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
-		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
+		// SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
+		// SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
 
 		//Create window
 		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
@@ -66,7 +73,7 @@ bool init()
 				}
 
 				//Initialize OpenGL
-        glClearColor( 1.f, 0.5f, 0.5f, 1.f );
+        glClearColor( 0.f, 0.f, 0.f, 1.f );
 			}
 		}
 	}
@@ -87,8 +94,7 @@ void main_loop(){
     else if( e.type == SDL_TEXTINPUT )
     {
       int x = 0, y = 0;
-      // SDL_GetMouseState( &x, &y );
-      // handleKeys( e.text.text[ 0 ], x, y );
+      glClearColor( 1.f, 0.f, 0.5f, 1.f );
     }
   }
 
@@ -108,7 +114,6 @@ void close()
 }
 
 int main(int argc, char *argv[]) {
-    //teste();
 
 	if( !init() )
 	{
