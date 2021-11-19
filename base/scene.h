@@ -27,9 +27,9 @@ public:
     Mesh mesh;
     glm::mat4 model;
 
-    Element(string path_obj)
-        : mesh{ Mesh(path_obj) }
-        , model{ glm::mat4() } // Matriz identidade
+    Element(string path_obj):
+        mesh{ Mesh(path_obj) },
+        model{ glm::mat4() } // Matriz identidade
         {}
 
     void Draw(){
@@ -39,20 +39,21 @@ public:
 
 class Scene{
 public:
-    Scene(glm::vec3 e, glm::vec3 c, glm::vec3 u, float aRatio)
-        : eye{e}
-        , center{c}
-        , up{u}
-        , Projection{ glm::perspective(glm::radians(45.0f), aRatio, .1f, 100.0f) }
+    Scene(glm::vec3 e, glm::vec3 c, glm::vec3 u, float aRatio):
+        eye{e},
+        center{c},
+        up{u},
+        Projection{ glm::perspective(glm::radians(45.0f), aRatio, .1f, 100.0f) },
+        elementos{{}}
         {
-            std::cout << "Chegou aqui\n";
-            Shader sh("shaders/vertexShader", "shaders/fragmentShader");
+            Shader sh("./shaders/vertexShader", "./shaders/fragmentShader");
             shader = &sh;
-            std::cout << "E aqui\n";
             updateView();
             shader->use();
             shader->setMat("projection", Projection);
+            Element("./untitled.obj");
             elementos.push_back(Element("./untitled.obj"));
+            // std::cout << "E aqui\n";
         }
 
     void Draw(){

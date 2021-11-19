@@ -59,10 +59,14 @@ private:
 
         // Load file
         const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        if( !scene )
+            throw std::runtime_error("Erro ao carregar malha");
 
         // Retrieve aiMesh
-        aiMesh *mesh = scene->mMeshes[scene->mRootNode->mMeshes[0]];
+        // aiMesh *mesh = scene->mMeshes[scene->mRootNode->mMeshes[0]];
+        aiMesh *mesh = scene->mMeshes[0];
 
+            std::cout << "E aqui\n";
         // Set the vertex properties
         for(unsigned int i = 0; i < mesh->mNumVertices; i++){
             Vertex vertex;

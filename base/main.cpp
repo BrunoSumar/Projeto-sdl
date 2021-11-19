@@ -39,52 +39,49 @@ void setupScene(){
 
 bool init()
 {
-	//Initialization flag
-	bool success = true;
 
-	//Initialize SDL
-	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-	{
-		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
-		success = false;
-	}
-	else
-	{
-		//Use OpenGL 2.1
-		// SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
-		// SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
+  //Initialize SDL
+  if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+  {
+    printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+    return false;
+  }
 
-		//Create window
-		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
-		if( gWindow == NULL )
-		{
-			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
-			success = false;
-		}
-		else
-		{
-			//Create context
-			gContext = SDL_GL_CreateContext( gWindow );
-			if( gContext == NULL )
-			{
-				printf( "OpenGL context could not be created! SDL Error: %s\n", SDL_GetError() );
-				success = false;
-			}
-			else
-			{
-				//Use Vsync
-				if( SDL_GL_SetSwapInterval( 1 ) < 0 )
-				{
-					printf( "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError() );
-				}
+  //Use OpenGL 2.1
+  SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
+  SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
 
-				//Initialize OpenGL
-        glClearColor( 0.f, 0.f, 0.f, 1.f );
-			}
-		}
-	}
+  //Create window
+  gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+  if( gWindow == NULL )
+  {
+    printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
+    return false;
+  }
 
-	return success;
+  //Create context
+  gContext = SDL_GL_CreateContext( gWindow );
+  if( gContext == NULL )
+  {
+    printf( "OpenGL context could not be created! SDL Error: %s\n", SDL_GetError() );
+    return false;
+  }
+
+  //Use Vsync
+  if( SDL_GL_SetSwapInterval( 1 ) < 0 )
+  {
+    printf( "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError() );
+  }
+
+  //Inicializando GLEW
+  glewExperimental = GL_FALSE;
+  if( glewInit() != GLEW_OK )
+    throw std::runtime_error("glewInit failed");
+
+  //Initialize OpenGL
+  glClearColor( 0.f, 0.f, 0.f, 1.f );
+
+  return true;
 }
 
 static bool quit = false;
