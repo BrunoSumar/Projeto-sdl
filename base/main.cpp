@@ -3,6 +3,8 @@
 #include <string>
 #include <iostream>
 
+#include <glm/glm.hpp>
+
 #include <SDL2/SDL.h>
 
 #include "scene.h"
@@ -24,12 +26,16 @@ SDL_Window* gWindow = NULL;
 SDL_GLContext gContext;
 SDL_Event e;
 
-glm::vec3 eye;
-glm::vec3 center;
-glm::vec3 up;
+Scene *scene;
 
-glm::mat4 view;
-glm::mat4 Projection;
+void setupScene(){
+    Scene sc(glm::vec3(.0f, .0f, -1.0f),
+                  glm::vec3(.0f, .0f, .0f),
+                  glm::vec3(.0f, 1.0f, .0f),
+                  (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT);
+
+    scene = &sc;
+}
 
 bool init()
 {
@@ -98,7 +104,9 @@ void main_loop(){
     }
   }
 
+  glClearColor( 1.f, 0.f, 0.5f, 1.f );
   glClear( GL_COLOR_BUFFER_BIT );
+  //scene->Draw();
   //Update screen
   SDL_GL_SwapWindow( gWindow );
 };
@@ -131,6 +139,8 @@ int main(int argc, char *argv[]) {
       emscripten_set_main_loop(main_loop, 0, 1);
 
     #else
+
+      setupScene();
 
       while(!quit) {
         main_loop();

@@ -36,6 +36,11 @@ public:
         setupMesh();
     }
 
+    Mesh(string path_obj){
+        loadObj(path_obj, &vertices, &indices);
+        setupMesh();
+    }
+
     void Draw()
     {
         // Usando a textura
