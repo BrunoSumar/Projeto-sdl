@@ -81,13 +81,15 @@ private:
 
                 // Set the vertex properties
                 for(unsigned int i = 0; i < mesh->mNumVertices; i++){
-                    Vertex vertex;
+                    //Vertex vertex;
+                    vertices.push_back();
 
-                    vertex.Position.x = mesh->mVertices[i].x;
-                    vertex.Position.y = mesh->mVertices[i].y;
-                    vertex.Position.z = mesh->mVertices[i].z;
+                    glm::vec3 vect;
+                    vect.x = mesh->mVertices[i].x;
+                    vect.y = mesh->mVertices[i].y;
+                    vect.z = mesh->mVertices[i].z;
+                    vertex.Position = vect;
 
-                    // DEBUGAR AQUI
                     if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
                     {
                         glm::vec2 vec;

@@ -29,10 +29,11 @@ public:
 
     Elemento(const string path_obj):
         mesh{path_obj},
-        model{ glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, -3.f)) } // Matriz identidade
+        model{ glm::mat4(1.f) } // Matriz identidade
         {}
 
     void Draw(Shader *shader){
+        shader->use();
         shader->setMat("model", model);
         mesh.Draw();
     }
@@ -44,8 +45,9 @@ public:
         eye{e},
         center{c},
         up{u},
-        Projection{ glm::perspective(glm::radians(45.0f), aRatio, .1f, 100.0f) }
+        Projection{ glm::mat4(1.f) }
         {
+            Projection = glm::perspective(glm::radians(45.0f), aRatio, .1f, 100.0f);
             Shader sh("./shaders/vertexShader", "./shaders/fragmentShader");
             shader = &sh;
             updateView();
@@ -57,7 +59,7 @@ public:
 
     void Draw(){
         for(std::vector<Elemento>::iterator i = elementos.begin(); i < elementos.end(); i++){
-            i->Draw(shader);
+            (*i).Draw(shader);
         }
     }
 
@@ -74,7 +76,10 @@ private:
     Shader *shader;
 
     void updateView(){
-        view = glm::lookAt(eye, center, up);
+        view = glm::mat4(1.f);
+        //view = glm::lookAt(eye, center, up);
+        view = glm::translate(view, glm::vec3(0.f, 0.f, -3.f));
+        shader->use();
         shader->setMat("view", view);
     }
 };
