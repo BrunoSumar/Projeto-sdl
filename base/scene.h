@@ -60,8 +60,8 @@ public:
         updateView();
         shader.use();
         shader.setMat("projection", Projection);
-        elementos.push_back({"./untitled.obj"});
-        // elementos.push_back({"./untitled.obj", glm::scale(glm::mat4(1.f) , glm::vec3(.3, .3, .3))});
+        // elementos.push_back({"./untitled.obj"});
+        elementos.push_back({"./untitled.obj", glm::scale(glm::mat4(1.f) , glm::vec3(.3, .3, .3))});
     }
 
     void Draw(){

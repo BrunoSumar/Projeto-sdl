@@ -79,7 +79,7 @@ bool init()
     throw std::runtime_error("glewInit failed");
 
   //Initialize OpenGL
-  glClearColor( 0.f, 0.f, 0.f, 1.f );
+  glClearColor( 1.f, 0.5f, 0.5f, 1.f );
   glClear( GL_COLOR_BUFFER_BIT );
 
   return true;
