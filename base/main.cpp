@@ -26,15 +26,15 @@ SDL_Window* gWindow = NULL;
 SDL_GLContext gContext;
 SDL_Event e;
 
-Scene *scene;
+Scene scene;
 
 void setupScene(){
-    Scene sc(glm::vec3(.0f, .0f, 3.0f),
-                  glm::vec3(.0f, .0f, .0f),
-                  glm::vec3(.0f, 1.0f, .0f),
-                  (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT);
-
-    scene = &sc;
+  scene = {
+    glm::vec3(.0f, .0f, 3.0f),
+    glm::vec3(.0f, .0f, .0f),
+    glm::vec3(.0f, 1.0f, .0f),
+    (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT
+  };
 }
 
 bool init()
@@ -105,7 +105,7 @@ void main_loop(){
 
   // glClearColor( 1.f, 1.f, 1.f, 1.f );
   glClear( GL_COLOR_BUFFER_BIT );
-  scene->Draw();
+  scene.Draw();
   //Update screen
   SDL_GL_SwapWindow( gWindow );
 };

@@ -37,7 +37,7 @@ public:
         model{ model }
         {}
 
-    void Draw(Shader shader){
+    void Draw(Shader &shader){
         shader.use();
         shader.setMat("model", model);
         mesh.Draw();
@@ -46,23 +46,27 @@ public:
 
 class Scene{
 public:
+
+    Scene() {}
+
     Scene(glm::vec3 e, glm::vec3 c, glm::vec3 u, float aRatio):
         eye{e},
         center{c},
         up{u},
         Projection{ glm::mat4(1.f) },
         shader{"./shaders/vertexShader", "./shaders/fragmentShader"}
-        {
-            Projection = glm::perspective(glm::radians(45.0f), aRatio, .1f, 100.0f);
-            updateView();
-            shader.use();
-            shader.setMat("projection", Projection);
-            elementos.push_back({"./untitled.obj"});
-        }
+    {
+        Projection = glm::perspective(glm::radians(45.0f), aRatio, .1f, 100.0f);
+        updateView();
+        shader.use();
+        shader.setMat("projection", Projection);
+        elementos.push_back({"./untitled.obj"});
+        // elementos.push_back({"./untitled.obj", glm::scale(glm::mat4(1.f) , glm::vec3(.3, .3, .3))});
+    }
 
     void Draw(){
         for(std::vector<Elemento>::iterator i = elementos.begin(); i < elementos.end(); i++){
-            (*i).Draw(shader);
+            i->Draw(shader);
         }
     }
 
