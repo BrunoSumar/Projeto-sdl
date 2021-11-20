@@ -103,7 +103,7 @@ void main_loop(){
 
   glClearColor( 1.f, 0.f, 0.5f, 1.f );
   glClear( GL_COLOR_BUFFER_BIT );
-  //scene->Draw();
+  scene->Draw();
   //Update screen
   SDL_GL_SwapWindow( gWindow );
 };

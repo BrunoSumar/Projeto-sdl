@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
+#include <stdexcept>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -63,10 +64,8 @@ private:
             throw std::runtime_error("Erro ao carregar malha");
 
         // Retrieve aiMesh
-        // aiMesh *mesh = scene->mMeshes[scene->mRootNode->mMeshes[0]];
-        aiMesh *mesh = scene->mMeshes[0];
+        aiMesh *mesh = scene->mMeshes[scene->mRootNode->mMeshes[0]];
 
-            std::cout << "E aqui\n";
         // Set the vertex properties
         for(unsigned int i = 0; i < mesh->mNumVertices; i++){
             Vertex vertex;
