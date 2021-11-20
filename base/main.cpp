@@ -89,20 +89,21 @@ static bool quit = false;
 void main_loop(){
   while( SDL_PollEvent( &e ) != 0 )
   {
+    const Uint8 *state = SDL_GetKeyboardState(NULL);
     //User requests quit
-    if( e.type == SDL_QUIT )
+    if( e.type == SDL_QUIT || state[SDL_SCANCODE_ESCAPE] )
     {
       quit = true;
     }
     //Handle keypress with current mouse position
-    else if( e.type == SDL_TEXTINPUT )
+    else if( e.type == SDL_KEYDOWN )
     {
-      int x = 0, y = 0;
-      // glClearColor( 1.f, 0.f, 0.5f, 1.f );
+      // quit = true;
+      glClearColor( 0.f, 0.5f, 0.5f, 1.f );
     }
   }
 
-  glClearColor( 1.f, 1.f, 1.f, 1.f );
+  // glClearColor( 1.f, 1.f, 1.f, 1.f );
   glClear( GL_COLOR_BUFFER_BIT );
   scene->Draw();
   //Update screen
