@@ -82,25 +82,16 @@ private:
                 // Set the vertex properties
                 for(unsigned int i = 0; i < mesh->mNumVertices; i++){
                     //Vertex vertex;
-                    vertices.push_back();
-
-                    glm::vec3 vect;
-                    vect.x = mesh->mVertices[i].x;
-                    vect.y = mesh->mVertices[i].y;
-                    vect.z = mesh->mVertices[i].z;
-                    vertex.Position = vect;
+                    vertices.push_back({
+                        { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z  },
+                        { 0., 0.}
+                    });
 
                     if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
                     {
-                        glm::vec2 vec;
-                        vec.x = mesh->mTextureCoords[0][i].x;
-                        vec.y = mesh->mTextureCoords[0][i].y;
-                        vertex.TexCoords = vec;
+                        vertices[i].TexCoords.x = mesh->mTextureCoords[0][i].x;
+                        vertices[i].TexCoords.y = mesh->mTextureCoords[0][i].y;
                     }
-                    else
-                        vertex.TexCoords = glm::vec2(0.0f, 0.0f);
-
-                    vertices.push_back(vertex);
                 }
 
                 for(unsigned int i = 0; i < mesh->mNumFaces; i++)
