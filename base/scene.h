@@ -22,13 +22,13 @@
 /* glm::mat4 Model = glm::scale(glm::identity(), glm::vec3(0.5f)); */ //tralate, scale, rotate, identity
 /* return glm::perspective(glm::radians(45.0f), Width / Height, 0.1f, 100.f); */
 
-class Element{
+class Elemento{
 public:
     Mesh mesh;
     glm::mat4 model;
 
-    Element(string path_obj):
-        mesh{ Mesh(path_obj) },
+    Elemento(const string path_obj):
+        mesh{path_obj},
         model{ glm::mat4() } // Matriz identidade
         {}
 
@@ -43,21 +43,19 @@ public:
         eye{e},
         center{c},
         up{u},
-        Projection{ glm::perspective(glm::radians(45.0f), aRatio, .1f, 100.0f) },
-        elementos{{}}
+        Projection{ glm::perspective(glm::radians(45.0f), aRatio, .1f, 100.0f) }
         {
             Shader sh("./shaders/vertexShader", "./shaders/fragmentShader");
             shader = &sh;
             updateView();
             shader->use();
             shader->setMat("projection", Projection);
-            Element("./untitled.obj");
-            elementos.push_back(Element("./untitled.obj"));
-            // std::cout << "E aqui\n";
+            Elemento elem("./untitled.obj");
+            elementos.push_back(elem);
         }
 
     void Draw(){
-        for(std::vector<Element>::iterator i = elementos.begin(); i != elementos.end(); i++){
+        for(std::vector<Elemento>::iterator i = elementos.begin(); i != elementos.end(); i++){
             i->Draw();
         }
     }
@@ -71,7 +69,7 @@ private:
 
     glm::mat4 Projection;
 
-    vector<Element> elementos;
+    vector<Elemento> elementos;
     Shader *shader;
 
     void updateView(){
