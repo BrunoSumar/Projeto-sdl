@@ -44,6 +44,7 @@ public:
         hasTex{ false }
         {
             loadObj(path_obj);
+            setupMesh();
         }
 
     void Draw()
@@ -72,6 +73,7 @@ private:
             }
 
             aiNode *node = scene->mRootNode;
+            node = node->mChildren[0];
             aiMesh *mesh = NULL;
             // Retrieve aiMesh
             if (node->mNumMeshes > 0){

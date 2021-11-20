@@ -29,10 +29,11 @@ public:
 
     Elemento(const string path_obj):
         mesh{path_obj},
-        model{ glm::mat4() } // Matriz identidade
+        model{ glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, -3.f)) } // Matriz identidade
         {}
 
-    void Draw(){
+    void Draw(Shader *shader){
+        shader->setMat("model", model);
         mesh.Draw();
     }
 };
@@ -55,8 +56,8 @@ public:
         }
 
     void Draw(){
-        for(std::vector<Elemento>::iterator i = elementos.begin(); i != elementos.end(); i++){
-            i->Draw();
+        for(std::vector<Elemento>::iterator i = elementos.begin(); i < elementos.end(); i++){
+            i->Draw(shader);
         }
     }
 

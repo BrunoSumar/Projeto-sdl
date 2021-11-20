@@ -29,7 +29,7 @@ SDL_Event e;
 Scene *scene;
 
 void setupScene(){
-    Scene sc(glm::vec3(.0f, .0f, -1.0f),
+    Scene sc(glm::vec3(.0f, .0f, 3.0f),
                   glm::vec3(.0f, .0f, .0f),
                   glm::vec3(.0f, 1.0f, .0f),
                   (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT);
@@ -97,11 +97,11 @@ void main_loop(){
     else if( e.type == SDL_TEXTINPUT )
     {
       int x = 0, y = 0;
-      glClearColor( 1.f, 0.f, 0.5f, 1.f );
+      // glClearColor( 1.f, 0.f, 0.5f, 1.f );
     }
   }
 
-  glClearColor( 1.f, 0.f, 0.5f, 1.f );
+  glClearColor( 1.f, 1.f, 1.f, 1.f );
   glClear( GL_COLOR_BUFFER_BIT );
   scene->Draw();
   //Update screen
