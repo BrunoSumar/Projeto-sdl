@@ -23,72 +23,88 @@
 /* return glm::perspective(glm::radians(45.0f), Width / Height, 0.1f, 100.f); */
 
 class Elemento{
-public:
-    Mesh mesh;
-    glm::mat4 model;
+    public:
+        Mesh mesh;
+        glm::mat4 model;
 
-    Elemento(const string path_obj):
-        mesh{path_obj},
-        model{ glm::mat4(1.f) } // Matriz identidade
+        Elemento(const string path_obj):
+            mesh{path_obj},
+            model{ glm::mat4(1.f) } // Matriz identidade
         {}
 
-    Elemento(const string path_obj, glm::mat4 model):
-        mesh{ path_obj },
-        model{ model }
+        Elemento(const string path_obj, glm::mat4 model):
+            mesh{ path_obj },
+            model{ model }
         {}
 
-    void Draw(Shader &shader){
-        shader.use();
-        shader.setMat("model", model);
-        mesh.Draw();
-    }
+        void Draw(Shader &shader){
+            shader.use();
+            shader.setMat("model", model);
+            mesh.Draw();
+        }
 };
 
-class Scene{
-public:
-
-    Scene() {}
-
-    Scene(glm::vec3 e, glm::vec3 c, glm::vec3 u, float aRatio):
-        eye{e},
-        center{c},
-        up{u},
-        Projection{ glm::mat4(1.f) },
-        shader{"./shaders/vertexShader", "./shaders/fragmentShader"}
-    {
-        Projection = glm::perspective(glm::radians(45.0f), aRatio, .1f, 100.0f);
-        updateView();
-        shader.use();
-        shader.setMat("projection", Projection);
-        // elementos.push_back({"./untitled.obj"});
-        elementos.push_back({"./untitled.obj", glm::scale(glm::mat4(1.f) , glm::vec3(.3, .3, .3))});
-    }
-
-    void Draw(){
-        for(std::vector<Elemento>::iterator i = elementos.begin(); i < elementos.end(); i++){
-            i->Draw(shader);
-        }
-    }
-
-private:
-    /* Camera */
+struct Camera {
     glm::vec3 eye;
     glm::vec3 center;
     glm::vec3 up;
     glm::mat4 view;
 
-    glm::mat4 Projection;
+    Camera() {}
 
-    vector<Elemento> elementos;
-    Shader shader;
+    Camera(glm::vec3 e, glm::vec3 c, glm::vec3 u):
+        eye{e},
+        center{c},
+        up{u}
+    {
+        updateView();
+    }
 
     void updateView(){
-        view = glm::mat4(1.f);
-        //view = glm::lookAt(eye, center, up);
-        view = glm::translate(view, glm::vec3(0.f, 0.f, -3.f));
-        shader.use();
-        shader.setMat("view", view);
+        view = glm::lookAt(eye, center, up);
     }
+};
+
+class Scene{
+    public:
+
+        Scene() {}
+
+        Scene( float r ):
+            shader{"./shaders/vertexShader", "./shaders/fragmentShader"}
+        {
+            aRatio = r;
+            Projection = glm::perspective(glm::radians(45.0f), aRatio, .1f, 100.0f);
+            updateView();
+            shader.use();
+            shader.setMat("projection", Projection);
+        }
+
+        void Draw(){
+            for(std::vector<Elemento>::iterator i = elementos.begin(); i < elementos.end(); i++){
+                i->Draw(shader);
+            }
+        }
+
+        void addElement( Elemento e ) { elementos.push_back(e); }
+        void removeElement( int i ) { elementos.erase(elementos.begin() + i); }
+
+        void setCamera( Camera c ) { cam = c; }
+
+    private:
+        Shader shader;
+        Camera cam;
+
+        float aRatio;
+        glm::mat4 Projection;
+
+        vector<Elemento> elementos;
+
+        void updateView(){
+            cam.updateView();
+            shader.use();
+            shader.setMat("view", cam.view);
+        }
 };
 
 #endif // SCENE_H_
