@@ -1,6 +1,0 @@
-| TODO                        | Fazendo | Feito |
-|-----------------------------+---------+-------|
-| Carregar malha              |         |       |
-| Implementar cenário         |         |       |
-| Implementar classe elemento |         |       |
-| Movimentação no tabuleiro   |         |       |
