@@ -79,16 +79,6 @@ struct Scene{
 
     Scene() {}
 
-    // Scene( float r ):
-    //     shader{"./shaders/vertexShader", "./shaders/fragmentShader"}
-    //     {
-    //         aRatio = r;
-    //         Projection = glm::perspective(glm::radians(45.0f), aRatio, .1f, 100.0f);
-    //         updateView();
-    //         shader.use();
-    //         shader.setMat("projection", Projection);
-    //  n   }
-
     void updateProjection() {
         Projection = glm::perspective(glm::radians(ang), aRatio, near, far);
         shader.use();
@@ -108,6 +98,11 @@ struct Scene{
         cam.updateView();
         shader.use();
         shader.setMat("view", cam.view);
+    }
+
+    void updateMatrixes(){
+        cam.updateView();
+        updateProjection();
     }
 };
 
