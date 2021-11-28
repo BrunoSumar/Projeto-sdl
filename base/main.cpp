@@ -29,17 +29,20 @@ SDL_Event e;
 Scene scene;
 
 void setupScene(){
+    scene.cam = {
+        {.0f, .0f, 3.0f},
+        {.0f, .0f, .0f},
+        {.0f, 1.0f, .0f}
+    };
+    scene.updateView();
 
-  scene.setCamera({
-    {.0f, .0f, 3.0f},
-    {.0f, .0f, .0f},
-    {.0f, 1.0f, .0f}
-  });
+    scene.aRatio = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
+    scene.near = 0.1f;
+    scene.far = 100.0f;
+    scene.ang = 45.0f;
+    scene.updateProjection();
 
-
-    // (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT
-
-  scene.addElement({"./untitled.obj", glm::scale(glm::mat4(1.f) , glm::vec3(.3, .3, .3))});
+    scene.addElement({"./untitled.obj", glm::scale(glm::mat4(1.f) , glm::vec3(.3, .3, .3))});
 }
 
 bool init()
