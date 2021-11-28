@@ -13,7 +13,7 @@ $(output): $(input).cpp $(libs)
 
 emcc: $(input).cpp $(libs)
 	@echo Compilando projeto via emcc
-	@source $(path_emcc)/emsdk/emsdk_env.sh &&	emcc $(input) -s USE_SDL=2 --use-preload-plugins -s USE_SDL_IMAGE=2 -s WASM=1 -lGL -lGLU -O3 -o $(output).js
+	@source $(path_emcc)/emsdk/emsdk_env.sh &&	emcc $(input).main -s USE_SDL=2 --use-preload-plugins -s USE_SDL_IMAGE=2 -s WASM=1 -lGL -lGLU -O3 -o $(output).js
 
 run: $(output)
 	@echo executando: $(output)

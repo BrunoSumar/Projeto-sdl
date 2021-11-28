@@ -101,7 +101,7 @@ struct Scene{
     }
 
     void updateMatrixes(){
-        cam.updateView();
+        updateView();
         updateProjection();
     }
 };
