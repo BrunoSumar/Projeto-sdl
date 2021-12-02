@@ -87,10 +87,13 @@ private:
                         { 0., 0.}
                     });
 
-                    if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+                    if(mesh->mTextureCoords[0])
                     {
                         vertices[i].TexCoords.x = mesh->mTextureCoords[0][i].x;
                         vertices[i].TexCoords.y = mesh->mTextureCoords[0][i].y;
+                    } else {
+                        vertices[i].TexCoords.x = 0.f;
+                        vertices[i].TexCoords.y = 0.f;
                     }
                 }
 
