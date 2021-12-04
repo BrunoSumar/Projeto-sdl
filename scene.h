@@ -25,6 +25,11 @@
 /* glm::mat4 Model = glm::scale(glm::identity(), glm::vec3(0.5f)); */ //tralate, scale, rotate, identity
 /* return glm::perspective(glm::radians(45.0f), Width / Height, 0.1f, 100.f); */
 
+struct Texture {
+    unsigned int id;
+    string path;
+};
+
 struct Elemento{
     Mesh mesh;
     Texture texture;

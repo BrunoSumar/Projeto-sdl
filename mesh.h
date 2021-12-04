@@ -7,6 +7,7 @@
 #include <vector>
 #include <stdexcept>
 #include <iostream>
+#include <cstddef>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -17,11 +18,6 @@ using namespace std;
 struct Vertex {
     glm::vec3 Position;
     glm::vec2 TexCoords;
-};
-
-struct Texture {
-    unsigned int id;
-    string path;
 };
 
 struct Mesh {
@@ -74,13 +70,17 @@ struct Mesh {
 
                     if(mesh->mTextureCoords[0])
                     {
-                        vertices[i].TexCoords.x = mesh->mTextureCoords[0][i].x;
-                        vertices[i].TexCoords.y = mesh->mTextureCoords[0][i].y;
-                    } else {
-                        vertices[i].TexCoords.x = 0.f;
-                        vertices[i].TexCoords.y = 0.f;
+                        // glm::vec2 vec;
+                        // vertices[i].TexCoords.x = mesh->mTextureCoords[0][i].x;
+                        // vertices[i].TexCoords.y = mesh->mTextureCoords[0][i].y;
+
+                        vertices[i].TexCoords = {
+                            mesh->mTextureCoords[0][i].x,
+                            mesh->mTextureCoords[0][i].y
+                        };
                     }
                 }
+
 
                 for(unsigned int i = 0; i < mesh->mNumFaces; i++)
                 {
