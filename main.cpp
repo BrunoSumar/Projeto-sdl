@@ -1,9 +1,5 @@
-#include <GL/glew.h>
-// #include <stdio.h>
 #include <string>
 #include <iostream>
-
-#include <glm/glm.hpp>
 
 #include <SDL2/SDL.h>
 
@@ -14,6 +10,7 @@
 
 #else
 #include <SDL2/SDL_opengl.h>
+#include <GL/glew.h>
 
 #endif
 
