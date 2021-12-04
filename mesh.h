@@ -24,42 +24,27 @@ struct Texture {
     string path;
 };
 
-class Mesh {
-public:
+struct Mesh {
     vector<Vertex>       vertices;
     vector<unsigned int> indices;
-    Texture      texture;
-    bool hasTex;
     unsigned int VAO;
 
-    Mesh(string path_obj, Texture texture) :
-        hasTex{ true }
-        {
-            loadObj(path_obj);
-            this->texture = texture;
-            setupMesh();
-        }
-
-    Mesh(string path_obj) :
-        hasTex{ false }
+    Mesh(string path_obj)
         {
             loadObj(path_obj);
             setupMesh();
         }
 
-    void Draw()
+    void Draw(unsigned int texture)
         {
-            // Usando a textura
-            if(hasTex)
-                glBindTexture(GL_TEXTURE_2D, texture.id);
-
             // Desenhando o mesh
             glBindVertexArray(VAO);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture);
             glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
             glBindVertexArray(0);
         }
 
-private:
     void loadObj(string path)
         {
             Assimp::Importer import;

@@ -44,7 +44,10 @@ void setupScene(){
 
     scene.updateMatrixes();
 
-    scene.addElement({"./untitled.obj", glm::scale(glm::mat4(1.f) , glm::vec3(.3, .3, .3))});
+    //scene.addElement({"./untitled.obj", glm::scale(glm::mat4(1.f) , glm::vec3(.3, .3, .3))});
+    scene.addElementAndTex({"./untitled.obj",
+                            glm::scale(glm::mat4(1.f) , glm::vec3(1, 1, 1))},
+                            "./tex.jpg");
 }
 
 bool init()
@@ -88,9 +91,12 @@ bool init()
   if( glewInit() != GLEW_OK )
     throw std::runtime_error("glewInit failed");
 
+  //Inicializando o DEPTH buffer
+  glEnable(GL_DEPTH_TEST);
+
   //Initialize OpenGL
   glClearColor( 1.f, 0.5f, 0.5f, 1.f );
-  glClear( GL_COLOR_BUFFER_BIT );
+  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
   return true;
 }
@@ -114,7 +120,7 @@ void main_loop(){
   }
 
   // glClearColor( 1.f, 1.f, 1.f, 1.f );
-  glClear( GL_COLOR_BUFFER_BIT );
+  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
   scene.Draw();
   //Update screen
   SDL_GL_SwapWindow( gWindow );

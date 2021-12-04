@@ -19,11 +19,15 @@
 #include "mesh.h"
 #include "shader.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 /* glm::mat4 Model = glm::scale(glm::identity(), glm::vec3(0.5f)); */ //tralate, scale, rotate, identity
 /* return glm::perspective(glm::radians(45.0f), Width / Height, 0.1f, 100.f); */
 
 struct Elemento{
     Mesh mesh;
+    Texture texture;
     glm::mat4 model;
 
     Elemento(const string path_obj):
@@ -32,14 +36,41 @@ struct Elemento{
         {}
 
     Elemento(const string path_obj, glm::mat4 model):
-        mesh{ path_obj },
+        mesh{ path_obj},
         model{ model }
         {}
 
     void Draw(Shader &shader){
         shader.use();
         shader.setMat("model", model);
-        mesh.Draw();
+        mesh.Draw(texture.id);
+    }
+
+    void loadTexture(Shader &shader, string path_tex){
+        int width, height, nrChannels;
+        unsigned char *data = stbi_load(path_tex.c_str(), &width, &height, &nrChannels, 0);
+        if(!data){
+            std::cout << "ERROR loading texture image with stb_image" << std::endl;
+            return;
+        }
+
+        std::cout << "Texture loaded successfully" << std::endl;
+
+        unsigned int t;
+
+        glGenTextures(1, &t);
+
+        shader.use();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, t);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        stbi_image_free(data);
+
+        glUniform1i(glGetUniformLocation(shader.ID, "tex"), 0);
+
+        texture.id = t;
+        texture.path = path_tex;
     }
 };
 
@@ -92,6 +123,10 @@ struct Scene{
     }
 
     void addElement( Elemento e ) { elementos.push_back(e); }
+    void addElementAndTex( Elemento e, string path ){
+        e.loadTexture(shader, path);
+        elementos.push_back(e);
+    }
     void removeElement( int i ) { elementos.erase(elementos.begin() + i); }
 
     void updateView(){
