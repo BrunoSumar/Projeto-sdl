@@ -25,6 +25,7 @@ struct Mesh {
     vector<unsigned int> indices;
     unsigned int VAO;
 
+    Mesh() {}
     Mesh(string path_obj)
         {
             loadObj(path_obj);
@@ -114,6 +115,7 @@ struct Mesh {
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 
+            // cout << sizeof(Vertex) << offsetof(Vertex, TexCoords);
             // Vec2 de coordenada de textura
             glEnableVertexAttribArray(1);
             glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));

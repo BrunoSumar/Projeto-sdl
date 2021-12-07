@@ -14,6 +14,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/trigonometric.hpp>
+/* #include <glm/rotate.hpp> */
 
 #include <vector>
 #include "mesh.h"
@@ -35,6 +36,7 @@ struct Elemento{
     Texture texture;
     glm::mat4 model;
 
+    Elemento() {}
     Elemento(const string path_obj):
         mesh{path_obj},
         model{ glm::mat4(1.f) } // Matriz identidade
@@ -45,13 +47,21 @@ struct Elemento{
         model{ model }
         {}
 
+    Elemento(const string path_obj, glm::mat4 model, const string path_tex):
+        mesh{ path_obj},
+        model{ model }
+    {
+
+        loadTexture(path_tex);
+    }
+
     void Draw(Shader &shader){
         shader.use();
         shader.setMat("model", model);
         mesh.Draw(texture.id);
     }
 
-    void loadTexture(Shader &shader, string path_tex){
+    void loadTexture(string path_tex){
         int width, height, nrChannels;
         unsigned char *data = stbi_load(path_tex.c_str(), &width, &height, &nrChannels, 0);
         if(!data){
@@ -61,18 +71,28 @@ struct Elemento{
 
         std::cout << "Texture loaded successfully" << std::endl;
 
+        /* shader.use(); */
+
         unsigned int t;
 
         glGenTextures(1, &t);
 
-        shader.use();
-        glActiveTexture(GL_TEXTURE0);
+        /* glActiveTexture(GL_TEXTURE0); */
         glBindTexture(GL_TEXTURE_2D, t);
+        /* glGenerateMipmap(GL_TEXTURE_2D); */
+
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        /* glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); */
+        /* glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); */
+        /* glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); */
+        /* glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); */
+
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+
         stbi_image_free(data);
 
-        glUniform1i(glGetUniformLocation(shader.ID, "tex"), 0);
+        /* glUniform1i(glGetUniformLocation(shader.ID, "tex"), 0); */
 
         texture.id = t;
         texture.path = path_tex;
@@ -127,11 +147,11 @@ struct Scene{
         }
     }
 
-    void addElement( Elemento e ) { elementos.push_back(e); }
-    void addElementAndTex( Elemento e, string path ){
-        e.loadTexture(shader, path);
+    /* void addElement( Elemento e ) { elementos.push_back(e); } */
+    void addElement( Elemento e ){
         elementos.push_back(e);
     }
+
     void removeElement( int i ) { elementos.erase(elementos.begin() + i); }
 
     void updateView(){
