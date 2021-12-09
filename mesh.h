@@ -35,10 +35,12 @@ struct Mesh {
     void Draw(unsigned int texture)
         {
             // Desenhando o mesh
-            glBindVertexArray(VAO);
-            glActiveTexture(GL_TEXTURE0);
+
             glBindTexture(GL_TEXTURE_2D, texture);
+
+            glBindVertexArray(VAO);
             glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+
             glBindVertexArray(0);
         }
 
@@ -76,8 +78,8 @@ struct Mesh {
                         // vertices[i].TexCoords.y = mesh->mTextureCoords[0][i].y;
 
                         vertices[i].TexCoords = {
-                            mesh->mTextureCoords[0][i].x,
-                            mesh->mTextureCoords[0][i].y
+                            (float) mesh->mTextureCoords[0][i].x,
+                            (float) mesh->mTextureCoords[0][i].y
                         };
                     }
                 }
@@ -112,13 +114,12 @@ struct Mesh {
 
             // Especificando Stride e offset
             // Vec3 de posição
-            glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+            glEnableVertexAttribArray(0);
 
-            // cout << sizeof(Vertex) << offsetof(Vertex, TexCoords);
             // Vec2 de coordenada de textura
-            glEnableVertexAttribArray(1);
             glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+            glEnableVertexAttribArray(1);
 
             glBindVertexArray(0);
         }

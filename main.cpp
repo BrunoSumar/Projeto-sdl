@@ -43,7 +43,7 @@ void setupScene(){
 
     //scene.addElement({"./untitled.obj", glm::scale(glm::mat4(1.f) , glm::vec3(.3, .3, .3))});
     scene.addElement(
-      {"./untitled.obj", glm::rotate(glm::scale(glm::mat4(1.f), glm::vec3(.8, .8, .8)), (float) glm::radians(45.), glm::vec3(.3, .3, .3)), "./tex.jpg"}
+      {"./untitled.obj", glm::rotate(glm::scale(glm::mat4(1.f), glm::vec3(.8, .8, .8)), (float) glm::radians(45.), glm::vec3(.3, .3, .3)), "tex.jpg"}
     );
 }
 
