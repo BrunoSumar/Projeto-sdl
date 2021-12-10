@@ -1,16 +1,15 @@
-input = main
 output = a
 
-src =  glUtils.cpp
+src =  mains.o glUtils.o
 libs = shader.h mesh.h scene.h
 
 path_emcc = /home/bruno/Documentos/emscripten
 
 SHELL := /bin/bash
 
-$(output): $(input).cpp $(libs)
+$(output): $(src) $(libs)
 	@echo Compilando projeto via gcc
-	@g++ $(input).cpp $(src) -g -lSDL2 -lSDL2_image -lSDL2_ttf -lGL -lGLEW -lassimp -O3 -o $(output)
+	@g++  $(src) -g -lSDL2 -lSDL2_image -lSDL2_ttf -lGL -lGLEW -lassimp -O3 -o $(output)
 
 emcc: $(input).cpp $(libs)
 	@echo Compilando projeto via emcc
