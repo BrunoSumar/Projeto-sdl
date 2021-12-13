@@ -26,8 +26,8 @@ struct MeshTexture{
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest);
 		}
 	}
-	
-	void bind(){	
+
+	void bind(){
 		glBindTexture(texture.target, texture);
 	}
 };

@@ -3,16 +3,17 @@
 
 #include <SDL2/SDL.h>
 
-#include "scene.h"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 
 #else
-#include <SDL2/SDL_opengl.h>
 #include <GL/glew.h>
+#include <SDL2/SDL_opengl.h>
 
 #endif
+
+#include "scene.h"
 
 using namespace std;
 
@@ -26,25 +27,16 @@ SDL_Event e;
 Scene scene;
 
 void setupScene(){
-    scene.shader = {"./shaders/vertexShader", "./shaders/fragmentShader"};
+    scene.setProjection(perspective(45.0f,                                    // fov
+                                    (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, // aspect ratio
+                                    0.1f,                                     // near
+                                    100.f));                                  // far
 
-    scene.cam = {
-        {.0f, .0f, 3.0f},
-        {.0f, .0f, .0f},
-        {.0f, 1.0f, .0f}
-    };
+    scene.setView(lookAt({0.f, 0.f, 0.f},  // eye
+                         {0.f, 0.f, -1.f}, // center
+                         {0.f, 1.f, 0.f}));// up
 
-    scene.aRatio = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
-    scene.near = 0.1f;
-    scene.far = 100.0f;
-    scene.ang = 45.0f;
-
-    scene.updateMatrixes();
-
-    //scene.addElement({"./untitled.obj", glm::scale(glm::mat4(1.f) , glm::vec3(.3, .3, .3))});
-    scene.addElement(
-      {"./untitled.obj", glm::rotate(glm::scale(glm::mat4(1.f), glm::vec3(.8, .8, .8)), (float) glm::radians(45.), glm::vec3(.3, .3, .3)), "tex.jpg"}
-    );
+    scene.addElement("src/shaders/vertex_shader", "src/shaders/fragment_shader", "src/resources/untitled.obj", "src/resources/tex.jpg");
 }
 
 bool init()
@@ -118,7 +110,7 @@ void main_loop(){
 
   // glClearColor( 1.f, 1.f, 1.f, 1.f );
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-  scene.Draw();
+  scene.draw();
   //Update screen
   SDL_GL_SwapWindow( gWindow );
 };
