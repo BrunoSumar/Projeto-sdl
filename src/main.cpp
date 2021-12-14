@@ -27,21 +27,27 @@ SDL_Event e;
 Scene scene;
 
 void setupScene(){
-    scene.setProjection(perspective(45.0f,                                    // fov
-                                    (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, // aspect ratio
-                                    0.1f,                                     // near
-                                    100.f));                                  // far
+  scene.setProjection(
+    scale(1., 1., -1.)*perspective(
+      45.0f,                                    // fov
+      (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, // aspect ratio
+      0.1f,                                     // near
+      100.f
+    ));                                  // far
 
-    scene.setView(lookAt({0.f, 0.f, 0.f},  // eye
-                         {0.f, 0.f, -1.f}, // center
-                         {0.f, 1.f, 0.f}));// up
+  scene.setView(
+    lookAt(
+      {-2.f, 5.f, -3.f},// eye
+      {0.f, 0.f, 0.f},  // center
+      {0.f, 1.f, 0.f}   // up
+    ));
 
-    scene.addElement("src/shaders/vertex_shader", "src/shaders/fragment_shader", "src/resources/untitled.obj", "src/resources/tex.jpg");
+  scene.addElement("src/shaders/vertex_shader", "src/shaders/fragment_shader", "src/resources/untitled.obj", "src/resources/jojo.png");
+
 }
 
 bool init()
 {
-
   //Initialize SDL
   if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
   {
@@ -87,6 +93,8 @@ bool init()
   glClearColor( 1.f, 0.5f, 0.5f, 1.f );
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
+  // glCullFace(GL_FRONT_AND_BACK);
+
   return true;
 }
 
@@ -118,43 +126,43 @@ void main_loop(){
 void close()
 {
   //Destroy window
-	SDL_DestroyWindow( gWindow );
-	gWindow = NULL;
+  SDL_DestroyWindow( gWindow );
+  gWindow = NULL;
 
-	//Quit SDL subsystems
-	SDL_Quit();
+  //Quit SDL subsystems
+  SDL_Quit();
 }
 
 int main(int argc, char *argv[]) {
 
-	if( !init() )
-	{
-		printf( "Failed to initialize!\n" );
-	}
-	else
-	{
-		quit = false;
+  if( !init() )
+  {
+    printf( "Failed to initialize!\n" );
+  }
+  else
+  {
+    quit = false;
 
-		SDL_StartTextInput();
+    SDL_StartTextInput();
 
 
-    #ifdef __EMSCRIPTEN__
+    setupScene();
 
-      emscripten_set_main_loop(main_loop, 0, 1);
+#ifdef __EMSCRIPTEN__
 
-    #else
+    emscripten_set_main_loop(main_loop, 0, 1);
 
-      setupScene();
+#else
 
-      while(!quit) {
-        main_loop();
-        SDL_Delay(16);
-      }
+    while(!quit) {
+      main_loop();
+      SDL_Delay(20);
+    }
 
-    #endif
-	}
+#endif
+  }
 
-	close();
+  close();
 
   return 0;
 }

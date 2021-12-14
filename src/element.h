@@ -42,7 +42,7 @@ struct Element{
 
     void draw(){
         //glUseProgram(program); coloquei na scene.h
-        Uniform{"Model"} = model;
+        Uniform{"model"} = model;
         texture.bind();
         mesh.draw();
     }
