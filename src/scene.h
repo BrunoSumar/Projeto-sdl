@@ -9,14 +9,14 @@ struct Scene {
     mat4 projection;
     mat4 view;
 
-    void draw();
+    void draw(int n);
     void setProjection(mat4 p);
     void setView(mat4 v);
     void addElement(string path_vertex, string path_fragment,
                     string path_obj, string path_texture);
 };
 
-void Scene::draw(){
+void Scene::draw(int n){
      // Cada elemento terá um shader program diferente
      // Será que precisa setar uniform toda vez que setar o shader program?
      // provavel que sim
@@ -24,7 +24,7 @@ void Scene::draw(){
         glUseProgram(i->program);
         Uniform("projection") = projection;
         Uniform("view") = view;
-        i->draw();
+        i->draw(n);
     }
 }
 

@@ -26,6 +26,8 @@ SDL_Event e;
 
 Scene scene;
 
+int sprite = 1;
+
 void setupScene(){
   scene.setProjection(
     scale(1., 1., -1.)*perspective(
@@ -42,8 +44,10 @@ void setupScene(){
       {0.f, 1.f, 0.f}   // up
     ));
 
-  scene.addElement("src/shaders/vertex_shader", "src/shaders/fragment_shader", "src/resources/untitled.obj", "src/resources/jojo.png");
+  scene.addElement("src/shaders/sprite_matriz_vertex_shader", "src/shaders/fragment_shader", "src/resources/faces_tex.obj", "src/resources/megaman2x6.png");
 
+  scene.elements.back().sprite_rows = 2;
+  scene.elements.back().sprite_columns = 5;
 }
 
 bool init()
@@ -111,6 +115,12 @@ void main_loop(){
     //Handle keypress with current mouse position
     else if( e.type == SDL_KEYDOWN )
     {
+        if( e.key.keysym.sym == SDLK_RIGHT){
+            sprite = sprite + 1;
+        } else if ( e.key.keysym.sym == SDLK_LEFT) {
+            sprite = sprite - 1;
+        }
+
       // quit = true;
       glClearColor( 0.f, 0.5f, 0.5f, 1.f );
     }
@@ -118,7 +128,7 @@ void main_loop(){
 
   // glClearColor( 1.f, 1.f, 1.f, 1.f );
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-  scene.draw();
+  scene.draw(sprite);
   //Update screen
   SDL_GL_SwapWindow( gWindow );
 };

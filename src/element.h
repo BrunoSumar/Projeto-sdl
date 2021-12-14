@@ -14,11 +14,15 @@ struct Element{
     MeshBuffers   mesh;
     MeshTexture   texture;
     mat4          model;
+    int           sprite_rows;
+    int           sprite_columns;
 
     Element(string p_vs, string p_fs, string p_obj, string p_tex){
         setObj(p_obj);
         setShaderProgram(p_vs, p_fs);
         setTexture(p_tex);
+        sprite_rows=1; //Caso tenha mais sprites tem que trocar na mão
+        sprite_columns=1;
     }
 
     void setObj(string path_obj){
@@ -40,9 +44,16 @@ struct Element{
         this->model = model;
     }
 
-    void draw(){
+    void setSprite(int spriteNum){
+        Uniform{"sprite_rows"} = sprite_rows;
+        Uniform{"sprite_columns"} = sprite_columns;
+        Uniform{"nSprite"} = spriteNum;
+    }
+
+    void draw (int sprite=1){
         //glUseProgram(program); coloquei na scene.h
         Uniform{"model"} = model;
+        setSprite(sprite);
         texture.bind();
         mesh.draw();
     }

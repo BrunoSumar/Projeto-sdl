@@ -1,0 +1,32 @@
+#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 texCord;
+layout (location = 2) in vec3 normal;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+uniform int sprite_rows;
+uniform int sprite_columns;
+uniform int nSprite;
+
+out vec2 texCoord;
+
+vec2 calculateSpriteOffset(int row, int column){
+    vec2 ret;
+    ret.y = texCord.y/float(sprite_rows) + (float(row)-1)/float(sprite_rows);
+    ret.x = texCord.x/float(sprite_columns) + (float(column)-1)/float(sprite_columns);
+    return ret;
+}
+
+void main()
+{
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+
+    // Lidando com as sprites
+    int row = (nSprite / sprite_columns) + 1;
+    int column = nSprite % sprite_columns;
+
+    texCoord = calculateSpriteOffset(row, column);
+}
