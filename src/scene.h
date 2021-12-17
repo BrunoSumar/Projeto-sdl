@@ -17,9 +17,7 @@ struct Scene {
 };
 
 void Scene::draw(int n){
-     // Cada elemento terá um shader program diferente
-     // Será que precisa setar uniform toda vez que setar o shader program?
-     // provavel que sim
+    // Cada elemento terá um shader program diferente
     for(auto i = elements.begin(); i != elements.end(); i++){
         glUseProgram(i->program);
         Uniform("projection") = projection;
@@ -39,16 +37,16 @@ void Scene::setView(mat4 v){
 void Scene::addElement(string path_vertex, string path_fragment,
                        string path_obj, string path_texture){
     elements.push_back({
-            path_vertex, path_fragment,
-            path_obj, path_texture
-        });
+        path_vertex, path_fragment,
+        path_obj, path_texture
+    });
 
     elements.back().setModel({
-            1.f, 0.f, 0.f, 0.f,
-            0.f, 1.f, 0.f, 0.f,
-            0.f, 0.f, 1.f, 0.f,
-            0.f, 0.f, 0.f, 1.f
-        });
+        1.f, 0.f, 0.f, 0.f,
+        0.f, 1.f, 0.f, 0.f,
+        0.f, 0.f, 1.f, 0.f,
+        0.f, 0.f, 0.f, 1.f
+    });
 }
 
 #endif // SCENE_H_

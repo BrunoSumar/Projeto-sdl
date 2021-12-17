@@ -3,9 +3,9 @@
 
 #include <string>
 
-#include "lib/MeshTexture.h"
-#include "lib/MeshBuffers.h"
-#include "lib/obj_buffers.h"
+#include "MeshBuffers.h"
+#include "MeshTexture.h"
+#include "obj_buffers.h"
 
 using namespace std;
 

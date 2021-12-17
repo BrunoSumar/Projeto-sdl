@@ -37,6 +37,7 @@ void setupScene(){
       100.f
     ));                                  // far
 
+
   scene.setView(
     lookAt(
       {-2.f, 5.f, -3.f},// eye
@@ -44,7 +45,7 @@ void setupScene(){
       {0.f, 1.f, 0.f}   // up
     ));
 
-  scene.addElement("src/shaders/sprite_matriz_vertex_shader", "src/shaders/fragment_shader", "src/resources/faces_tex.obj", "src/resources/megaman2x6.png");
+  scene.addElement("shaders/sprite_matriz_vertex_shader", "shaders/fragment_shader", "resources/faces_tex.obj", "resources/megaman2x6.png");
 
   scene.elements.back().sprite_rows = 2;
   scene.elements.back().sprite_columns = 5;
@@ -111,22 +112,21 @@ void main_loop(){
     if( e.type == SDL_QUIT || state[SDL_SCANCODE_ESCAPE] )
     {
       quit = true;
+      break;
     }
     //Handle keypress with current mouse position
-    else if( e.type == SDL_KEYDOWN )
+    // Ta bem merda isso aqui.
+    // Criar obj pra lidar com isso ou passar pra outro arquivo
+    if( e.type == SDL_KEYDOWN )
     {
         if( e.key.keysym.sym == SDLK_RIGHT){
             sprite = sprite + 1;
         } else if ( e.key.keysym.sym == SDLK_LEFT) {
             sprite = sprite - 1;
         }
-
-      // quit = true;
-      glClearColor( 0.f, 0.5f, 0.5f, 1.f );
     }
   }
 
-  // glClearColor( 1.f, 1.f, 1.f, 1.f );
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
   scene.draw(sprite);
   //Update screen
