@@ -35,7 +35,8 @@ void Scene::setView(mat4 v){
 }
 
 void Scene::addElement(string path_vertex, string path_fragment,
-                       string path_obj, string path_texture){
+                       string path_obj, string path_texture)
+{
     elements.push_back({
         path_vertex, path_fragment,
         path_obj, path_texture

@@ -37,7 +37,6 @@ void setupScene(){
       100.f
     ));                                  // far
 
-
   scene.setView(
     lookAt(
       {-2.f, 5.f, -3.f},// eye
