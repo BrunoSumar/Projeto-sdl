@@ -17,28 +17,24 @@ struct Element{
     int           sprite_rows;
     int           sprite_columns;
 
-    Element(string p_vs, string p_fs, string p_obj, string p_tex){
-        setObj(p_obj);
-        setShaderProgram(p_vs, p_fs);
-        setTexture(p_tex);
-        sprite_rows=1; //Caso tenha mais sprites tem que trocar na mão
-        sprite_columns=1;
+    Element(string p_obj, string p_tex, ShaderProgram sp){
+        mesh = obj_buffers( p_obj.c_str() );
+        texture = { p_tex.c_str() };
+        program = sp;
+        // sprite_rows=1; //Caso tenha mais sprites tem que trocar na mão
+        // sprite_columns=1;
     }
 
-    void setObj(string path_obj){
-        mesh = obj_buffers(path_obj.c_str());
-    }
+    // void setShaderProgram(string path_vertex, string path_fragment) {
+    //     program = ShaderProgram{
+    //         Shader{path_vertex, GL_VERTEX_SHADER},
+    //         Shader{path_fragment, GL_FRAGMENT_SHADER}
+    //     };
+    // }
 
-    void setShaderProgram(string path_vertex, string path_fragment) {
-        program = ShaderProgram{
-            Shader{path_vertex, GL_VERTEX_SHADER},
-            Shader{path_fragment, GL_FRAGMENT_SHADER}
-        };
-    }
-
-    void setTexture(string path_tex){
-        texture = {path_tex.c_str()};
-    }
+    // void setTexture(string path_tex){
+    //     texture = {path_tex.c_str()};
+    // }
 
     void setModel(mat4 model){
         this->model = model;

@@ -148,8 +148,15 @@ struct ShaderProgram : public UintResource{
 		glDetachShader(id, s);
 	}
 
-
 	void check();
+
+	ShaderProgram& operator=(ShaderProgram&& other){
+		if(&other != this){
+			ShaderProgram tmp{std::move(other)};
+			std::swap(id, tmp.id);
+		}
+		return *this;
+	}
 };
 
 ////////////////////////////////////////////////////////////////////

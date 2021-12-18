@@ -25,6 +25,7 @@ SDL_GLContext gContext;
 SDL_Event e;
 
 Scene scene;
+ShaderProgram sp;
 
 int sprite = 1;
 
@@ -35,7 +36,6 @@ void setupScene(){
       (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, // aspect ratio
       0.1f,                                     // near
       100.f
-
     ));                                  // far
 
   scene.setView(
@@ -45,10 +45,16 @@ void setupScene(){
       {0.f, 1.f, 0.f}   // up
     ));
 
-  scene.addElement("shaders/sprite_matriz_vertex_shader", "shaders/fragment_shader", "resources/faces_tex.obj", "resources/megaman2x6.png");
+  // sp = ShaderProgram;
 
+  scene.addElement("resources/faces_tex.obj", "resources/sprite.jpeg", {
+    Shader{"shaders/sprite_matriz_vertex_shader", GL_VERTEX_SHADER},
+    Shader{ "shaders/fragment_shader", GL_FRAGMENT_SHADER}
+  });
+
+  scene.elements.back().program = sp;
   scene.elements.back().sprite_rows = 2;
-  scene.elements.back().sprite_columns = 5;
+  scene.elements.back().sprite_columns = 17;
 }
 
 bool init()
