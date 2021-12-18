@@ -1,0 +1,5 @@
+# Projeto-sdl
+
+* [ ] passar do .h pro .cpp
+* [ ] shader dentro do element.h
+* [ ] sub_class element com sprite
