@@ -8,11 +8,11 @@ path_emcc = /home/bruno/Documentos/emscripten
 SHELL := /bin/bash
 CXXFLAGS += -I./include
 
-main.o: $(libs)
-
 $(output): $(src) $(libs)
 	@echo Compilando projeto via gcc
 	@g++  $(src) -g -lSDL2 -lSDL2_image -lSDL2_ttf -lGL -lGLEW -lassimp -O3 -o $(output) -I./include
+
+main.o: $(libs)
 
 emcc: $(input).cpp $(libs)
 	@echo Compilando projeto via emcc
