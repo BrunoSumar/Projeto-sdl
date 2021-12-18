@@ -45,12 +45,12 @@ void setupScene(){
       {0.f, 1.f, 0.f}   // up
     ));
 
-  // sp = ShaderProgram;
-
-  scene.addElement("resources/faces_tex.obj", "resources/sprite.jpeg", {
+  sp = ShaderProgram{
     Shader{"shaders/sprite_matriz_vertex_shader", GL_VERTEX_SHADER},
     Shader{ "shaders/fragment_shader", GL_FRAGMENT_SHADER}
-  });
+  };
+
+  scene.addElement("resources/faces_tex.obj", "resources/sprite.jpeg", sp);
 
   scene.elements.back().program = sp;
   scene.elements.back().sprite_rows = 2;

@@ -17,7 +17,7 @@ struct Element{
     int           sprite_rows;
     int           sprite_columns;
 
-    Element(string p_obj, string p_tex, ShaderProgram sp){
+    Element(string p_obj, string p_tex, ShaderProgram &sp){
         mesh = obj_buffers( p_obj.c_str() );
         texture = { p_tex.c_str() };
         program = sp;

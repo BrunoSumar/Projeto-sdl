@@ -136,6 +136,11 @@ struct ShaderProgram : public UintResource{
 	int getAttribLocation(std::string attrib){
 		return glGetAttribLocation(id, attrib.c_str());
 	}
+
+	ShaderProgram& operator=(ShaderProgram& other){
+		return other;
+	}
+
 	private:
 	void init(){
 		glLinkProgram(id);
@@ -150,14 +155,9 @@ struct ShaderProgram : public UintResource{
 
 	void check();
 
-	ShaderProgram& operator=(ShaderProgram&& other){
-		if(&other != this){
-			ShaderProgram tmp{std::move(other)};
-			std::swap(id, tmp.id);
-		}
-		return *this;
-	}
+
 };
+
 
 ////////////////////////////////////////////////////////////////////
 struct GLBuffer : public UintResource{
