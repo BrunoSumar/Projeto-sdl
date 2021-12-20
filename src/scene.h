@@ -10,11 +10,8 @@ struct Scene {
     mat4 view;
 
     void draw(int n);
-    void setProjection(mat4 p);
-    void setView(mat4 v);
     void addElement(string path_vertex, string path_fragment,
                     string path_obj, string path_texture);
-    void addElement(string path_obj, string path_texture);
 };
 
 void Scene::draw(int n){
@@ -27,17 +24,19 @@ void Scene::draw(int n){
     }
 }
 
-void Scene::setProjection(mat4 p){
-    projection = p;
-}
+// void Scene::setProjection(mat4 p){
+//     projection = p;
+// }
 
-void Scene::setView(mat4 v){
-    view = v;
-}
+// void Scene::setView(mat4 v){
+//     view = v;
+// }
 
-void Scene::addElement(string path_obj, string path_texture)
+void Scene::addElement(string path_vertex, string path_fragment,
+                       string path_obj, string path_texture)
 {
     elements.push_back({
+        path_vertex, path_fragment,
         path_obj, path_texture
     });
 

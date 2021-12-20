@@ -137,10 +137,6 @@ struct ShaderProgram : public UintResource{
 		return glGetAttribLocation(id, attrib.c_str());
 	}
 
-	ShaderProgram& operator=(ShaderProgram& other){
-		return other;
-	}
-
 	private:
 	void init(){
 		glLinkProgram(id);
@@ -153,11 +149,9 @@ struct ShaderProgram : public UintResource{
 		glDetachShader(id, s);
 	}
 
+
 	void check();
-
-
 };
-
 
 ////////////////////////////////////////////////////////////////////
 struct GLBuffer : public UintResource{
