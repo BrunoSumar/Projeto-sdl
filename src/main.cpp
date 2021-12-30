@@ -29,6 +29,8 @@ Scene scene;
 
 int sprite = 1;
 
+float rot_ang = 0.f;
+
 void setupScene(){
   scene.setProjection(
     scale(1., 1., -1.)*perspective(
@@ -50,7 +52,7 @@ void setupScene(){
   //   Shader{ "shaders/fragment_shader", GL_FRAGMENT_SHADER}
   // };
 
-  scene.addElement("resources/faces_tex.obj", "resources/sprite.jpeg");
+  scene.addElement("resources/cenario.obj", "resources/sprite.jpeg");
 
   scene.elements.back().program = {
     Shader{"shaders/sprite_matriz_vertex_shader", GL_VERTEX_SHADER},
@@ -58,6 +60,8 @@ void setupScene(){
   };
   scene.elements.back().sprite_rows = 2;
   scene.elements.back().sprite_columns = 17;
+
+  scene.elements.back().model = rotate_y(1.8f);
 }
 
 bool init()
@@ -135,6 +139,9 @@ void main_loop(){
         }
     }
   }
+
+  scene.elements.back().model = rotate_y(rot_ang);
+  rot_ang = rot_ang + 0.1f;
 
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
   scene.draw(sprite);
