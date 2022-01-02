@@ -3,7 +3,7 @@
 * [ ] passar do .h pro .cpp
 * [ ] shader dentro do element.h
 * [ ] sub_class element com sprite
-jl
+
 
 * [ ] Trocar nomes
 * [ ] Criar subclasses figura(cartão, cenário)

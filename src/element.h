@@ -9,6 +9,8 @@
 
 using namespace std;
 
+// Por compatibilidade vou deixar Element mas o nome no futuro-
+// a gente usa o Figura mesmo
 struct Element{
   ShaderProgram program;
   MeshBuffers   mesh;
@@ -20,21 +22,7 @@ struct Element{
   Element(string p_obj, string p_tex){
     mesh = obj_buffers( p_obj.c_str() );
     texture = { p_tex.c_str() };
-    // program = sp;
-    // sprite_rows=1; //Caso tenha mais sprites tem que trocar na mão
-    // sprite_columns=1;
   }
-  
-  // void setShaderProgram(string path_vertex, string path_fragment) {
-  //     program = ShaderProgram{
-  //         Shader{path_vertex, GL_VERTEX_SHADER},
-  //         Shader{path_fragment, GL_FRAGMENT_SHADER}
-  //     };
-  // }
-  
-  // void setTexture(string path_tex){
-  //     texture = {path_tex.c_str()};
-  // }
   
   void setModel(mat4 model){
     this->model = model;
@@ -54,5 +42,66 @@ struct Element{
     mesh.draw();
   }
 };
+
+struct Figura{
+  ShaderProgram *program;
+  MeshBuffers   mesh;
+  MeshTexture   texture;
+  mat4          model;
+
+  Figura() {}
+
+  Figura(string p_obj, string p_tex){
+    program = NULL;
+    mesh = obj_buffers( p_obj.c_str() );
+    texture = { p_tex.c_str() };
+    model = {
+      1.f, 0.f, 0.f, 0.f,
+      0.f, 1.f, 0.f, 0.f,
+      0.f, 0.f, 1.f, 0.f,
+      0.f, 0.f, 0.f, 1.f
+    };
+  }
+
+  void draw (){
+    // glUseProgram(*program);
+    Uniform{"model"} = model;
+    texture.bind();
+    mesh.draw();
+  }
+};
+
+struct Cartao : Figura{
+  Cartao() {}
+
+  Cartao(string p_tex){
+    mesh = card_mesh();
+    model = {
+      1.f, 0.f, 0.f, 0.f,
+      0.f, 1.f, 0.f, 0.f,
+      0.f, 0.f, 1.f, 0.f,
+      0.f, 0.f, 0.f, 1.f
+    };
+  }
+
+  MeshBuffers card_mesh(){
+    struct Vertex{
+      vec3 position;
+      vec2 texCoords;
+      vec3 normal;
+    };
+    vector<Vertex> V = {
+      {{1., 0., 0.}, {1.,0.}, {0., 0., 1.}},
+      {{1., 2., 0.}, {1.,1.}, {0., 0., 1.}},
+      {{0., 2., 0.}, {0.,1.}, {0., 0., 1.}},
+      {{0., 0., 0.}, {0.,0.}, {0., 0., 1.}}
+    };
+
+    vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
+
+    return MeshBuffers{V, indices};
+  }
+};
+
 
 #endif // ELEMENT_H_

@@ -31,6 +31,10 @@ int sprite = 1;
 
 float rot_ang = 0.f;
 
+// Testes
+Cartao f;
+ShaderProgram sp;
+
 void setupScene(){
   scene.setProjection(
     scale(1., 1., -1.)*perspective(
@@ -47,10 +51,13 @@ void setupScene(){
       {0.f, 1.f, 0.f}   // up
     ));
 
-  // sp = ShaderProgram{
-  //   Shader{"shaders/sprite_matriz_vertex_shader", GL_VERTEX_SHADER},
-  //   Shader{ "shaders/fragment_shader", GL_FRAGMENT_SHADER}
-  // };
+  sp = ShaderProgram{
+     Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
+     Shader{ "shaders/fragment_shader", GL_FRAGMENT_SHADER}
+  };
+
+  f = {"resources/jojo.png"};
+  f.program = &sp;
 
   scene.addElement("resources/cenario.obj", "resources/sprite.jpeg");
 
@@ -144,7 +151,12 @@ void main_loop(){
   rot_ang = rot_ang + 0.1f;
 
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-  scene.draw(sprite);
+  // scene.draw(sprite);
+
+  glUseProgram(*(f.program));
+  Uniform("projection") = scene.projection;
+  Uniform("view") = scene.view;
+  f.draw();
   //Update screen
   SDL_GL_SwapWindow( gWindow );
 };
