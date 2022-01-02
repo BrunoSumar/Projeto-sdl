@@ -2,39 +2,37 @@
 #include <string>
 #include <sstream>
 
+#include "unidade.h"
+
 using namespace std;
 
 struct Position {
-  int p;
+  vector<Unidade> unidades;
+  int time;
+  int estado;
+
+  void draw(int x, int y);
 };
 
-struct Map {
+void Position::draw(int x, int y){
+  // tile.draw(x, y, estado);
+  for(auto i : unidades){
+    i->draw(x, y);
+  }
+}
+
+struct Mapa {
   // Dimensões da matriz e matriz de posições
   const int dim1, dim2;
   Position **mat;
 
   // Funções
-  Map(const int n, const int m);
+  Mapa(const int n, const int m);
   std::string matToString();
+  void draw();
 };
 
-struct Tile {
-  float vertex[4];
-};
-
-// A ideia aqui é gerar os vertices de Tile
-// a partir das informações em mapa.
-// E talvez associar Position com Tile.
-struct Tabuleiro {
-  Map &mapa;
-  Tile *tiles;
-
-  //mat4 model
-
-  //Tabuleiro(Map &m) : mapa{ m } {}
-};
-
-Map::Map(const int n, const int m)
+Mapa::Mapa(const int n, const int m)
   : mat{new Position*[n]},
     dim1{n},
     dim2{m} {
@@ -44,7 +42,7 @@ Map::Map(const int n, const int m)
 
 };
 
-std::string Map::matToString() {
+std::string Mapa::matToString() {
   std::stringstream r;
 
   for(int i=0; i<dim1; i++) {
@@ -57,14 +55,11 @@ std::string Map::matToString() {
     r << '\n';
   }
 
-  // for( auto i : mat)  // Não entendo o porque isso não funciona
-  //   for( auto j : i )
-  //     r << j;
-
   return r.str();
 };
 
-int main () {
-  Map map{10, 10};
-  std::cout << map.matToString() << std::endl;
-};
+
+// int main () {
+//   Mapa mapa{10, 10};
+//   std::cout << mapa.matToString() << std::endl;
+// };

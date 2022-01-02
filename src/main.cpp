@@ -27,12 +27,8 @@ SDL_Event e;
 Scene scene;
 // ShaderProgram sp;
 
-int sprite = 1;
+// int sprite = 1;
 
-float rot_ang = 0.f;
-
-// Testes
-Cartao f;
 ShaderProgram sp;
 
 void setupScene(){
@@ -56,19 +52,12 @@ void setupScene(){
      Shader{ "shaders/fragment_shader", GL_FRAGMENT_SHADER}
   };
 
-  f = {"resources/jojo.png"};
-  f.program = &sp;
-
   scene.addElement("resources/cenario.obj", "resources/sprite.jpeg");
 
   scene.elements.back().program = {
     Shader{"shaders/sprite_matriz_vertex_shader", GL_VERTEX_SHADER},
     Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
   };
-  scene.elements.back().sprite_rows = 2;
-  scene.elements.back().sprite_columns = 17;
-
-  scene.elements.back().model = rotate_y(1.8f);
 }
 
 bool init()
@@ -139,24 +128,17 @@ void main_loop(){
     // Criar obj pra lidar com isso ou passar pra outro arquivo
     if( e.type == SDL_KEYDOWN )
     {
-        if( e.key.keysym.sym == SDLK_RIGHT){
-            sprite = sprite + 1;
-        } else if ( e.key.keysym.sym == SDLK_LEFT) {
-            sprite = sprite - 1;
-        }
+        // if( e.key.keysym.sym == SDLK_RIGHT){
+            // sprite = sprite + 1;
+        // } else if ( e.key.keysym.sym == SDLK_LEFT) {
+        //     sprite = sprite - 1;
+        // }
     }
   }
 
-  scene.elements.back().model = rotate_y(rot_ang);
-  rot_ang = rot_ang + 0.1f;
-
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-  // scene.draw(sprite);
+  scene.draw();
 
-  glUseProgram(*(f.program));
-  Uniform("projection") = scene.projection;
-  Uniform("view") = scene.view;
-  f.draw();
   //Update screen
   SDL_GL_SwapWindow( gWindow );
 };
