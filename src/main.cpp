@@ -36,8 +36,8 @@ void setupScene(){
       45.0f,                                    // fov
       (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, // aspect ratio
       0.1f,                                     // near
-      100.f
-    ));                                  // far
+      100.f                                     // far
+    ));
 
   scene.setView(
     lookAt(

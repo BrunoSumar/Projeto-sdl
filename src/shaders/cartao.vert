@@ -18,7 +18,8 @@ void main()
   mat4 pvm = projection * view * model;
   vec4 ori = pvm * vec4(vec3(0), 1.0);
   vec4 topo = pvm * vec4(0., 2., 0., 1.0);
-  gl_Position = ori + vec4( distance(ori, topo) * aPos / 20., 1.0);
+  // gl_Position = ori + vec4( distance(ori, topo) * aPos / 20., 1.0);
+  gl_Position = ori + vec4( aPos / 1., 1.0);
 
   texCoord = texCord;
 }
