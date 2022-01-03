@@ -27,6 +27,7 @@ SDL_Event e;
 Scene scene;
 
 float rot = 0.f;
+float dist = 0.f;
 // int sprite = 1;
 
 ShaderProgram *sp;
@@ -42,9 +43,9 @@ void setupScene(){
 
   scene.setView(
     lookAt(
-      {2.5f, 1.f, 0.f},// eye
-      {-1.f, .5f, 0.f},  // center
-      {0.f, 1.f, 0.f}   // up
+      {2.5f, 1.f, 0.f},  // eye
+      {-1.f, .0f, 0.f},  // center
+      {0.f, 1.f, 0.f}    // up
     ));
 
   sp = new ShaderProgram{
@@ -59,9 +60,10 @@ void setupScene(){
     Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
   };
 
-  for(int i = 0; i <10; i++){
-    for(int j = 0; j <10; j++){
-      scene.mapa.mat[i][j].addUnidade( "resources/personagem.png", sp );
+  for(int i = 0; i < 5; i++){
+    for(int j = 0; j < 8; j++){
+      if(i != 0 || j != 0) 
+	scene.mapa.mat[i][j].addUnidade( "resources/personagem.png", sp );
     }
   }
 
@@ -137,11 +139,12 @@ void main_loop(){
     {
         if( e.key.keysym.sym == SDLK_RIGHT)
           rot += .02;
-        // if( e.key.keysym.sym == SDLK_RIGHT){
-            // sprite = sprite + 1;
-        // } else if ( e.key.keysym.sym == SDLK_LEFT) {
-        //     sprite = sprite - 1;
-        // }
+	else if ( e.key.keysym.sym == SDLK_LEFT) 
+          rot -= .02;
+	else if ( e.key.keysym.sym == SDLK_DOWN )
+	  dist += .08;
+	else if ( e.key.keysym.sym == SDLK_UP )
+	  dist -= .08;
     }
 
     if (e.type == SDL_WINDOWEVENT)
@@ -155,11 +158,11 @@ void main_loop(){
   }
 
   scene.setView(
-    lookAt(
-      toVec3(rotate_y(rot)* vec4{2.5f, 1.f, 0.f, 1.f}),// eye
-      {-1.f, .5f, 0.f},  // center
-      {0.f, 1.f, 0.f}   // up
-    )
+		lookAt(
+		       toVec3( rotate_y(rot) * translate(dist, .0, .0) *vec4{2.5f, 1.f, 0.f, 1.f}),// eye
+		       {-1.f, .5f, 0.f},  // center
+		       {0.f, 1.f, 0.f}   // up
+		       )
   );
 
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );

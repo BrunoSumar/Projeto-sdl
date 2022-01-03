@@ -13,7 +13,7 @@ struct Scene {
   mat4 view;
   Mapa mapa;
 
-  Scene() : mapa{10, 10} {};
+  Scene() : mapa{5, 8} {};
 
   void draw();
   void addFigura(string path_texture);
@@ -27,7 +27,7 @@ void Scene::draw(){
   int dim1 = mapa.dim1;
   int dim2 = mapa.dim2;
 
-  //Desenha as figuras da scene
+  // Cenario
   for( int i = 0; i < figuras.size() ; i++ ){
     glUseProgram(figuras[i].program->id);
     Uniform("projection") = projection;
