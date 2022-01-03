@@ -51,12 +51,13 @@ void setupScene(){
   //    Shader{ "shaders/fragment_shader", GL_FRAGMENT_SHADER}
   // };
 
-  scene.addFigura("resources/faces_tex.obj", "resources/jojo.png");
+  scene.addFigura("resources/cenario.obj", "resources/cenario.png");
 
   scene.figuras.back().program = new  ShaderProgram{
-    Shader{"shaders/sprite_matriz_vertex_shader", GL_VERTEX_SHADER},
+    Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
     Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
   };
+
 }
 
 bool init()
