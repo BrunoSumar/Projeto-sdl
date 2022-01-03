@@ -1,7 +1,7 @@
 output = a
 
 src =  main.o GLutils.o
-libs = figura.h scene.h
+libs = figura.h scene.h mapa.h unidade.h
 
 path_emcc = /home/bruno/Documentos/emscripten
 
