@@ -44,26 +44,26 @@ void setupScene(){
   scene.setView(
     lookAt(
       {2.5f, 1.f, 0.f},  // eye
-      {-1.f, .0f, 0.f},  // center
+      {-1.f, -1.0f, 0.f},  // center
       {0.f, 1.f, 0.f}    // up
     ));
 
   sp = new ShaderProgram{
-     Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
-     Shader{ "shaders/cartao.frag", GL_FRAGMENT_SHADER}
-  };
+  Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
+  Shader{ "shaders/cartao.frag", GL_FRAGMENT_SHADER}
+};
 
   scene.addFigura("resources/cenario.obj", "resources/cenario.png");
 
   scene.figuras.back().program = new  ShaderProgram{
-    Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
-    Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
-  };
+  Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
+  Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
+};
 
   for(int i = 0; i < 5; i++){
     for(int j = 0; j < 8; j++){
       if(i != 0 || j != 0) 
-	scene.mapa.mat[i][j].addUnidade( "resources/personagem.png", sp );
+        scene.mapa.mat[i][j].addUnidade( "resources/personagem.png", sp );
     }
   }
 
@@ -137,35 +137,34 @@ void main_loop(){
     // Criar obj pra lidar com isso ou passar pra outro arquivo
     if( e.type == SDL_KEYDOWN )
     {
-        if( e.key.keysym.sym == SDLK_RIGHT)
-          rot += .02;
-	else if ( e.key.keysym.sym == SDLK_LEFT) 
-          rot -= .02;
-	else if ( e.key.keysym.sym == SDLK_DOWN )
-	  dist += .08;
-	else if ( e.key.keysym.sym == SDLK_UP )
-	  dist -= .08;
+      if( e.key.keysym.sym == SDLK_RIGHT)
+        rot += .02;
+      else if ( e.key.keysym.sym == SDLK_LEFT)
+        rot -= .02;
+      else if ( e.key.keysym.sym == SDLK_DOWN )
+        dist += .08;
+      else if ( e.key.keysym.sym == SDLK_UP )
+        dist -= .08;
     }
 
     if (e.type == SDL_WINDOWEVENT)
     {
       if (e.window.event == SDL_WINDOWEVENT_RESIZED)
       {
-	SDL_SetWindowSize(gWindow , e.window.data1, e.window.data2);
-	glViewport(0, 0, e.window.data1, e.window.data2);
+        SDL_SetWindowSize(gWindow , e.window.data1, e.window.data2);
+        glViewport(0, 0, e.window.data1, e.window.data2);
       }
     }
   }
+  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
   scene.setView(
-		lookAt(
-		       toVec3( rotate_y(rot) * translate(dist, .0, .0) *vec4{2.5f, 1.f, 0.f, 1.f}),// eye
-		       {-1.f, .5f, 0.f},  // center
-		       {0.f, 1.f, 0.f}   // up
-		       )
+    lookAt(
+      toVec3( rotate_y(rot) * translate(dist, .0, .0) *vec4{2.5f, 1.f, 0.f, 1.f}),// eye
+      {-1.f, 0.f, 0.f},  // center
+      {0.f, 1.f, 0.f}   // up
+    )
   );
-
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
   scene.draw();
 
   //Update screen

@@ -14,8 +14,8 @@ struct Unidade{
 };
 
 void Unidade::draw(int i, int j){
-  float tranX = (i ) * intervalo; //acho tbm
-  float tranZ = (j - 3.5 ) * intervalo; // qual q tu falou mesmo?
+  float tranX = (i - 2) * intervalo;
+  float tranZ = (j - 3.5 ) * intervalo;
   cartao.model = {
     1.f, 0.f, 0.f, tranX,
     0.f, 1.f, 0.f, 0.f,
