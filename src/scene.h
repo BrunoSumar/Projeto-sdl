@@ -27,14 +27,23 @@ void Scene::draw(){
   int dim1 = mapa.dim1;
   int dim2 = mapa.dim2;
 
+  //Desenha as figuras da scene
+  for( int i = 0; i < figuras.size() ; i++ ){
+    glUseProgram(figuras[i].program->id);
+    Uniform("projection") = projection;
+    Uniform("view") = view;
+    figuras[i].draw();
+  }
+
+  //Desenha as unidades de cada posição do mapa
   for(int i=0; i<dim1; i++) {
     for(int j=0; j<dim2; j++) {
-      for(int i = 0 ; i < mapa.mat[i][j].unidades.size(); i++){
+      for(int k = 0 ; k < mapa.mat[i][j].unidades.size(); k++){
         /* glUseProgram(shaders[i->program]); */
-        glUseProgram(mapa.mat[i][j].unidades[i].cartao.program->id);
+        glUseProgram(mapa.mat[i][j].unidades[k].cartao.program->id);
         Uniform("projection") = projection;
         Uniform("view") = view;
-        mapa.mat[i][j].unidades[i].draw(i, j);
+        mapa.mat[i][j].unidades[k].draw(i, j);
       }
     }
   }
