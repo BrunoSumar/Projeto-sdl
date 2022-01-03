@@ -58,10 +58,11 @@ void setupScene(){
     Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
   };
 
-  scene.mapa.mat[0][0].addUnidade( "resources/personagem.png", sp );
-  // scene.mapa.mat[9][0].addUnidade( "resources/personagem.png" );
-  // scene.mapa.mat[0][9].addUnidade( "resources/personagem.png" );
-  // scene.mapa.mat[9][9].addUnidade( "resources/personagem.png" );
+  for(int i = 0; i <10; i++){
+    for(int j = 0; j <10; j++){
+      scene.mapa.mat[i][j].addUnidade( "resources/personagem.png", sp );
+    }
+  }
 
 }
 

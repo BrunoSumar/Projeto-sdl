@@ -8,18 +8,18 @@ struct Unidade{
 
   Unidade( string path_tex ) : cartao{path_tex} {};
 
-  const float intervalo = 1.f;
+  const float intervalo = .4f;
 
-  void draw(int x, int y);
+  void draw(int i, int j);
 };
 
-void Unidade::draw(int x, int y){
-  float tranX = (x + .5) * intervalo;
-  float tranY = (y + .5) * intervalo;
+void Unidade::draw(int i, int j){
+  float tranX = (i - 4.5) * intervalo;
+  float tranZ = (j - 4.5) * intervalo;
   cartao.model = {
     1.f, 0.f, 0.f, tranX,
-    0.f, 1.f, 0.f, tranY,
-    0.f, 0.f, 1.f, 0.f,
+    0.f, 1.f, 0.f, 0.f,
+    0.f, 0.f, 1.f, tranZ,
     0.f, 0.f, 0.f, 1.f
   };
   cartao.draw();
