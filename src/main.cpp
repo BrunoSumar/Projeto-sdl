@@ -26,6 +26,7 @@ SDL_Event e;
 
 Scene scene;
 
+float rot = 0.f;
 // int sprite = 1;
 
 ShaderProgram *sp;
@@ -113,7 +114,7 @@ bool init()
   glClearColor( 1.f, 0.5f, 0.5f, 1.f );
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-  // glCullFace(GL_FRONT_AND_BACK);
+  glCullFace(GL_FRONT_AND_BACK);
 
   return true;
 }
@@ -134,6 +135,8 @@ void main_loop(){
     // Criar obj pra lidar com isso ou passar pra outro arquivo
     if( e.type == SDL_KEYDOWN )
     {
+        if( e.key.keysym.sym == SDLK_RIGHT)
+          rot += .02;
         // if( e.key.keysym.sym == SDLK_RIGHT){
             // sprite = sprite + 1;
         // } else if ( e.key.keysym.sym == SDLK_LEFT) {
@@ -141,6 +144,14 @@ void main_loop(){
         // }
     }
   }
+
+  scene.setView(
+    lookAt(
+      toVec3(rotate_y(rot)* vec4{2.5f, 1.f, 0.f, 1.f}),// eye
+      {-1.f, .5f, 0.f},  // center
+      {0.f, 1.f, 0.f}   // up
+    )
+  );
 
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
   scene.draw();

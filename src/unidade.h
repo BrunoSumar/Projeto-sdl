@@ -8,7 +8,7 @@ struct Unidade{
 
   Unidade( string path_tex ) : cartao{path_tex} {};
 
-  const float intervalo = .4f;
+  const float intervalo = .1f;
 
   void draw(int i, int j);
 };
