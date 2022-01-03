@@ -46,12 +46,12 @@ void setupScene(){
       {0.f, 1.f, 0.f}   // up
     ));
 
-  sp = ShaderProgram{
-     Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
-     Shader{ "shaders/fragment_shader", GL_FRAGMENT_SHADER}
-  };
+  // sp = ShaderProgram{
+  //    Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
+  //    Shader{ "shaders/fragment_shader", GL_FRAGMENT_SHADER}
+  // };
 
-  scene.addFigura("resources/cenario.obj", "resources/sprite.jpeg");
+  scene.addFigura("resources/faces_tex.obj", "resources/jojo.png");
 
   scene.figuras.back().program = new  ShaderProgram{
     Shader{"shaders/sprite_matriz_vertex_shader", GL_VERTEX_SHADER},
