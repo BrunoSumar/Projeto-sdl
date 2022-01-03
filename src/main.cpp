@@ -143,6 +143,15 @@ void main_loop(){
         //     sprite = sprite - 1;
         // }
     }
+
+    if (e.type == SDL_WINDOWEVENT)
+    {
+      if (e.window.event == SDL_WINDOWEVENT_RESIZED)
+      {
+	SDL_SetWindowSize(gWindow , e.window.data1, e.window.data2);
+	glViewport(0, 0, e.window.data1, e.window.data2);
+      }
+    }
   }
 
   scene.setView(
