@@ -15,7 +15,8 @@ vec3 distort(float dist, vec3 point){
 
 void main()
 {
-    vec4 ori = projection * view * model * vec4(vec3(0), 1.0);
-    gl_Position = ori + vec4(distort(ori.z, aPos), 1.0);
-    texCoord = texCord;
+  vec4 ori = projection * view * model * vec4(vec3(0), 1.0);
+  gl_Position = ori + vec4(distort(ori.z, aPos), 1.0);
+
+  texCoord = texCord;
 }

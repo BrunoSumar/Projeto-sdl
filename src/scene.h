@@ -47,8 +47,6 @@ void Scene::draw(){
       }
     }
   }
-
-  // Cada elemento terá um shader program diferente
 }
 
 void Scene::setProjection(mat4 p){

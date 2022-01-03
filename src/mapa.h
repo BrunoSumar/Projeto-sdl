@@ -12,11 +12,12 @@ struct Position {
   int estado;
 
   void draw(int x, int y);
-  void addUnidade( string path_tex );
+  void addUnidade( string path_tex, ShaderProgram *sp );
 };
 
-void Position::addUnidade( string path_tex ){
-  unidades.push_back(path_tex);
+void Position::addUnidade( string path_tex, ShaderProgram *sp){
+  unidades.push_back({path_tex});
+  unidades.back().cartao.program = sp;
 };
 
 void Position::draw(int x, int y){

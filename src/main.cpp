@@ -28,7 +28,7 @@ Scene scene;
 
 // int sprite = 1;
 
-ShaderProgram sp;
+ShaderProgram *sp;
 
 void setupScene(){
   scene.setProjection(
@@ -46,19 +46,19 @@ void setupScene(){
       {0.f, 1.f, 0.f}   // up
     ));
 
-  // sp = ShaderProgram{
-  //    Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
-  //    Shader{ "shaders/fragment_shader", GL_FRAGMENT_SHADER}
-  // };
+  sp = new ShaderProgram{
+     Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
+     Shader{ "shaders/cartao.frag", GL_FRAGMENT_SHADER}
+  };
 
-  // scene.addFigura("resources/cenario.obj", "resources/cenario.png");
+  scene.addFigura("resources/cenario.obj", "resources/cenario.png");
 
-  // scene.figuras.back().program = new  ShaderProgram{
-  //   Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
-  //   Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
-  // };
+  scene.figuras.back().program = new  ShaderProgram{
+    Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
+    Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
+  };
 
-  scene.mapa.mat[0][0].addUnidade( "resources/personagem.png" );
+  scene.mapa.mat[0][0].addUnidade( "resources/personagem.png", sp );
   // scene.mapa.mat[9][0].addUnidade( "resources/personagem.png" );
   // scene.mapa.mat[0][9].addUnidade( "resources/personagem.png" );
   // scene.mapa.mat[9][9].addUnidade( "resources/personagem.png" );
