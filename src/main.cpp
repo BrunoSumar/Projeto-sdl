@@ -41,8 +41,8 @@ void setupScene(){
 
   scene.setView(
     lookAt(
-      {-2.f, 5.f, -3.f},// eye
-      {0.f, 0.f, 0.f},  // center
+      {2.5f, 1.f, 0.f},// eye
+      {-1.f, .5f, 0.f},  // center
       {0.f, 1.f, 0.f}   // up
     ));
 
@@ -74,7 +74,7 @@ bool init()
   SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
 
   //Create window
-  gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+  gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
   if( gWindow == NULL )
   {
     printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
