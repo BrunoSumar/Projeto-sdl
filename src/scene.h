@@ -13,7 +13,7 @@ struct Scene {
   mat4 view;
   Mapa mapa;
 
-  Scene() :  mapa{10, 10} {};
+  Scene() : mapa{10, 10} {};
 
   void draw();
   void addFigura(string path_texture);

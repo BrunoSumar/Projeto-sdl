@@ -12,6 +12,11 @@ struct Position {
   int estado;
 
   void draw(int x, int y);
+  void addUnidade( string path_tex );
+};
+
+void Position::addUnidade( string path_tex ){
+  unidades.push_back(path_tex);
 };
 
 void Position::draw(int x, int y){
