@@ -52,9 +52,9 @@ void setupScene(){
      Shader{ "shaders/fragment_shader", GL_FRAGMENT_SHADER}
   };
 
-  scene.addElement("resources/cenario.obj", "resources/sprite.jpeg");
+  scene.addFigura("resources/cenario.obj", "resources/sprite.jpeg");
 
-  scene.elements.back().program = {
+  scene.figuras.back().program = new  ShaderProgram{
     Shader{"shaders/sprite_matriz_vertex_shader", GL_VERTEX_SHADER},
     Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
   };
