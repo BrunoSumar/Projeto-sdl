@@ -25,7 +25,6 @@ SDL_GLContext gContext;
 SDL_Event e;
 
 Scene scene;
-// ShaderProgram sp;
 
 // int sprite = 1;
 

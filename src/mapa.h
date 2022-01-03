@@ -16,8 +16,8 @@ struct Position {
 
 void Position::draw(int x, int y){
   // tile.draw(x, y, estado);
-  for(auto i : unidades){
-    i->draw(x, y);
+  for(int i = 0; i < unidades.size(); i++){
+    unidades[i].draw(x, y);
   }
 }
 
@@ -42,21 +42,21 @@ Mapa::Mapa(const int n, const int m)
 
 };
 
-std::string Mapa::matToString() {
-  std::stringstream r;
+// std::string Mapa::matToString() {
+//   std::stringstream r;
 
-  for(int i=0; i<dim1; i++) {
+//   for(int i=0; i<dim1; i++) {
 
-    for(int j=0; j<dim2; j++) {
-      r << mat[i][j].p;
-      r << ' ';
-    }
+//     for(int j=0; j<dim2; j++) {
+//       r << mat[i][j].p;
+//       r << ' ';
+//     }
 
-    r << '\n';
-  }
+//     r << '\n';
+//   }
 
-  return r.str();
-};
+//   return r.str();
+// };
 
 
 // int main () {

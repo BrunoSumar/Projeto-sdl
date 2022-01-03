@@ -6,7 +6,7 @@
 struct Unidade{
   Cartao cartao;
 
-  static float intervalo;
+  const float intervalo = 1.f;
 
   void draw(int x, int y);
 };

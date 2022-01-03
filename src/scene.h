@@ -13,6 +13,8 @@ struct Scene {
   mat4 view;
   Mapa mapa;
 
+  Scene() :  mapa{10, 10} {};
+
   void draw();
   void addFigura(string path_texture);
   void addFigura(string path_obj, string path_texture);
@@ -21,18 +23,18 @@ struct Scene {
   void setProjection(mat4 p);
 };
 
-void Scene::draw(int n){
+void Scene::draw(){
   int dim1 = mapa.dim1;
   int dim2 = mapa.dim2;
 
   for(int i=0; i<dim1; i++) {
     for(int j=0; j<dim2; j++) {
-      for(auto i : mapa.mat[i][j].unidades){
+      for(int i = 0 ; i < mapa.mat[i][j].unidades.size(); i++){
         /* glUseProgram(shaders[i->program]); */
-        glUseProgram(i->cartao.program);
+        glUseProgram(mapa.mat[i][j].unidades[i].cartao.program->id);
         Uniform("projection") = projection;
         Uniform("view") = view;
-        i->draw(i, j);
+        mapa.mat[i][j].unidades[i].draw(i, j);
       }
     }
   }
