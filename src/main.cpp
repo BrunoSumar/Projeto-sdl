@@ -51,17 +51,17 @@ void setupScene(){
   //    Shader{ "shaders/fragment_shader", GL_FRAGMENT_SHADER}
   // };
 
-  scene.addFigura("resources/cenario.obj", "resources/cenario.png");
+  // scene.addFigura("resources/cenario.obj", "resources/cenario.png");
 
-  scene.figuras.back().program = new  ShaderProgram{
-    Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
-    Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
-  };
+  // scene.figuras.back().program = new  ShaderProgram{
+  //   Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
+  //   Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
+  // };
 
   scene.mapa.mat[0][0].addUnidade( "resources/personagem.png" );
-  scene.mapa.mat[9][0].addUnidade( "resources/personagem.png" );
-  scene.mapa.mat[0][9].addUnidade( "resources/personagem.png" );
-  scene.mapa.mat[9][9].addUnidade( "resources/personagem.png" );
+  // scene.mapa.mat[9][0].addUnidade( "resources/personagem.png" );
+  // scene.mapa.mat[0][9].addUnidade( "resources/personagem.png" );
+  // scene.mapa.mat[9][9].addUnidade( "resources/personagem.png" );
 
 }
 
