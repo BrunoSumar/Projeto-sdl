@@ -28,6 +28,7 @@ Scene scene;
 
 float rot = 0.f;
 float dist = 0.f;
+float rot_x = 0.f;
 // int sprite = 1;
 
 ShaderProgram *sp;
@@ -145,6 +146,10 @@ void main_loop(){
 	  dist += .08;
 	else if ( e.key.keysym.sym == SDLK_UP )
 	  dist -= .08;
+	else if ( e.key.keysym.sym == SDLK_w )
+	  rot_x += .02;
+	else if ( e.key.keysym.sym == SDLK_s )
+	  rot_x -= .02;
     }
 
     if (e.type == SDL_WINDOWEVENT)
@@ -159,8 +164,8 @@ void main_loop(){
 
   scene.setView(
 		lookAt(
-		       toVec3( rotate_y(rot) * translate(dist, .0, .0) *vec4{2.5f, 1.f, 0.f, 1.f}),// eye
-		       {-1.f, .5f, 0.f},  // center
+		       toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{3.f, 0.f, 0.f, 1.f}),// eye
+		       {.0f, .0f, 0.f},  // center
 		       {0.f, 1.f, 0.f}   // up
 		       )
   );
