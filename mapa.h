@@ -1,71 +1,35 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-
 #include "unidade.h"
 
 using namespace std;
 
 struct Position {
-  vector<Unidade> unidades;
-  int time;
+  vector <Unidade*> unidades;
+  int team;
   int estado;
+  bool hasPersonagem;
 
   void draw(int x, int y);
-  void addUnidade( string path_tex, ShaderProgram *sp );
+  void addUnidade( Unidade *u );
+  void removePersonagem();
+  void addPersonagem(Personagem *p);
 };
-
-void Position::addUnidade( string path_tex, ShaderProgram *sp){
-  unidades.push_back({path_tex});
-  unidades.back().cartao.program = sp;
-};
-
-void Position::draw(int x, int y){
-  // tile.draw(x, y, estado);
-  for(int i = 0; i < unidades.size(); i++){
-    unidades[i].draw(x, y);
-  }
-}
 
 struct Mapa {
   // Dimensões da matriz e matriz de posições
   const int dim1, dim2;
   Position **mat;
+  vector<Unidade*> unidades;
+  Personagem personagem;
 
   // Funções
-  Mapa(const int n, const int m);
+  Mapa(const int n, const int m, string path_tex="personagem.png");
   std::string matToString();
   void draw();
+  void moverPersonagem(int x, int y);
+  // void addUnidade(string path_tex, ShaderProgram *sp, int posx, int posy);
+  void addPersonagem(ShaderProgram *sp);
 };
 
-Mapa::Mapa(const int n, const int m)
-  : mat{new Position*[n]},
-    dim1{n},
-    dim2{m} {
-
-  for(int i=0; i<n; i++)
-    mat[i] = new Position[m];
-
-};
-
-// std::string Mapa::matToString() {
-//   std::stringstream r;
-
-//   for(int i=0; i<dim1; i++) {
-
-//     for(int j=0; j<dim2; j++) {
-//       r << mat[i][j].p;
-//       r << ' ';
-//     }
-
-//     r << '\n';
-//   }
-
-//   return r.str();
-// };
-
-
-// int main () {
-//   Mapa mapa{10, 10};
-//   std::cout << mapa.matToString() << std::endl;
-// };

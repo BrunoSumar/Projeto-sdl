@@ -40,10 +40,10 @@ void Scene::draw(){
     for(int j=0; j<dim2; j++) {
       for(int k = 0 ; k < mapa.mat[i][j].unidades.size(); k++){
         /* glUseProgram(shaders[i->program]); */
-        glUseProgram(mapa.mat[i][j].unidades[k].cartao.program->id);
+        glUseProgram(mapa.mat[i][j].unidades[k]->cartao.program->id);
         Uniform("projection") = projection;
         Uniform("view") = view;
-        mapa.mat[i][j].unidades[k].draw(i, j);
+        mapa.mat[i][j].unidades[k]->draw();
       }
     }
   }

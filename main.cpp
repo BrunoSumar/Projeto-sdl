@@ -30,27 +30,27 @@ float dist = 0.f;
 float rot_x = 0.f;
 // int sprite = 1;
 
-ShaderProgram *sp;
+ShaderProgram *sp{nullptr};
 
 void setupScene(){
   scene.setProjection(
-    scale(1., 1., -1.)*perspective(
-      45.0f,                                    // fov
-      (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, // aspect ratio
-      0.1f,                                     // near
-      100.f                                     // far
-    ));
+		      scale(1., 1., -1.)*perspective(
+						     45.0f,                                    // fov
+						     (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, // aspect ratio
+						     0.1f,                                     // near
+						     100.f                                     // far
+						     ));
 
   scene.setView(
-    lookAt(
-      {2.5f, 1.f, 0.f},  // eye
-      {-1.f, .0f, 0.f},  // center
-      {0.f, 1.f, 0.f}    // up
-    ));
+		lookAt(
+		       {2.5f, 1.f, 0.f},  // eye
+		       {-1.f, .0f, 0.f},  // center
+		       {0.f, 1.f, 0.f}    // up
+		       ));
 
   sp = new ShaderProgram{
-     Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
-     Shader{ "shaders/cartao.frag", GL_FRAGMENT_SHADER}
+    Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
+    Shader{ "shaders/cartao.frag", GL_FRAGMENT_SHADER}
   };
 
   scene.addFigura("resources/cenario.obj", "resources/cenario.png");
@@ -60,14 +60,8 @@ void setupScene(){
     Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
   };
 
-  for(int i = 0; i < 5; i++){
-    for(int j = 0; j < 8; j++){
-      if(i != 0 || j != 0) 
-	scene.mapa.mat[i][j].addUnidade( "resources/personagem.png", sp );
-    }
-  }
-
-}
+  scene.mapa.addPersonagem(sp);
+} 
 
 bool init()
 {
@@ -118,6 +112,7 @@ bool init()
 
   glCullFace(GL_FRONT_AND_BACK);
 
+
   return true;
 }
 
@@ -132,6 +127,7 @@ void eventHandler( SDL_Event &e ) {
 
   if( e.type == SDL_KEYDOWN )
     {
+      // key down
       if( e.key.keysym.sym == SDLK_RIGHT)
 	rot += .02;
       else if ( e.key.keysym.sym == SDLK_LEFT) 
@@ -140,10 +136,20 @@ void eventHandler( SDL_Event &e ) {
 	dist += .08;
       else if ( e.key.keysym.sym == SDLK_UP )
 	dist -= .08;
-      else if ( e.key.keysym.sym == SDLK_w )
+      else if ( e.key.keysym.sym == SDLK_r )
 	rot_x += .02;
-      else if ( e.key.keysym.sym == SDLK_s )
+      else if ( e.key.keysym.sym == SDLK_f )
 	rot_x -= .02;
+
+      // movimentação
+      else if ( e.key.keysym.sym == SDLK_w )
+	scene.mapa.moverPersonagem(0, 1);
+      else if ( e.key.keysym.sym == SDLK_s )
+	scene.mapa.moverPersonagem(0, -1);	
+      else if ( e.key.keysym.sym == SDLK_a )
+	scene.mapa.moverPersonagem(1, 0);
+      else if ( e.key.keysym.sym == SDLK_d )
+	scene.mapa.moverPersonagem(-1, 0);	
     }
 
   if (e.type == SDL_WINDOWEVENT)
@@ -205,7 +211,6 @@ int main(int argc, char *argv[]) {
     quit = false;
 
     SDL_StartTextInput();
-
 
     setupScene();
 
