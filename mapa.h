@@ -21,7 +21,7 @@ struct Mapa {
   // Dimensões da matriz e matriz de posições
   const int dim1, dim2;
   Position **mat;
-  vector<Unidade*> unidades;
+  vector<Unidade> unidades;
   Personagem personagem;
 
   // Funções
@@ -30,7 +30,7 @@ struct Mapa {
   void draw();
   void moverPersonagem(int x, int y);
   // void addUnidade(string path_tex, ShaderProgram *sp, int posx, int posy);
-  void addPersonagem(ShaderProgram *sp);
+  void initPersonagem(ShaderProgram *sp);
 };
 
 void Position::removePersonagem()
@@ -79,13 +79,10 @@ void Mapa::moverPersonagem(int x, int y)
 //   mat[posx][posy].unidades.push_back(&unidades.back());
 // }
 
-void Mapa::addPersonagem(ShaderProgram *sp)
+void Mapa::initPersonagem(ShaderProgram *sp)
 {  
-  unidades.push_back({});
-
-  unidades.back()->cartao.program = sp;
-
-  mat[0][0].addPersonagem(&personagem);
+  personagem.cartao.program = sp;
+  mat[personagem.posx][personagem.posy].addPersonagem(&personagem);
 }
 
 Mapa::Mapa(const int n, const int m, string path_tex)

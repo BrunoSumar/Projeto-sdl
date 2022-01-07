@@ -60,7 +60,7 @@ void setupScene(){
     Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
   };
 
-  scene.mapa.addPersonagem(sp);
+  scene.mapa.initPersonagem(sp);
 } 
 
 bool init()
