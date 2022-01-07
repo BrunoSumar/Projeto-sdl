@@ -22,10 +22,10 @@ struct Mapa {
   const int dim1, dim2;
   Position **mat;
   vector<Unidade> unidades;
-  Personagem personagem;
+  Personagem *personagem;
 
   // Funções
-  Mapa(const int n, const int m, string path_tex="personagem.png");
+  Mapa(const int n, const int m,string path_tex="personagem.png");
   std::string matToString();
   void draw();
   void moverPersonagem(int x, int y);
@@ -64,12 +64,12 @@ void Position::draw(int x, int y){
 
 void Mapa::moverPersonagem(int x, int y)
 {
-  mat[personagem.posx][personagem.posy].removePersonagem();
+  mat[personagem->posx][personagem->posy].removePersonagem();
   
-  personagem.posx = max(0, min(dim1-1, x + personagem.posx));
-  personagem.posy = max(0, min(dim2-1, y + personagem.posy));
+  personagem->posx = max(0, min(dim1-1, x + personagem->posx));
+  personagem->posy = max(0, min(dim2-1, y + personagem->posy));
 
-  mat[personagem.posx][personagem.posy].addPersonagem(&personagem);
+  mat[personagem->posx][personagem->posy].addPersonagem(personagem);
 };
 
 // void Mapa::addUnidade(string path_tex, ShaderProgram *sp, int posx, int posy){
@@ -80,16 +80,15 @@ void Mapa::moverPersonagem(int x, int y)
 // }
 
 void Mapa::initPersonagem(ShaderProgram *sp)
-{  
-  personagem.cartao.program = sp;
-  mat[personagem.posx][personagem.posy].addPersonagem(&personagem);
+{
+  personagem = new Personagem(sp);
+  mat[personagem->posx][personagem->posy].addPersonagem(personagem);
 }
 
 Mapa::Mapa(const int n, const int m, string path_tex)
   : mat{new Position*[n]},
     dim1{n},
-    dim2{m},
-    personagem{}
+    dim2{m}
 {
   for(int i=0; i<n; i++)
     mat[i] = new Position[m];

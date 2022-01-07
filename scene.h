@@ -21,6 +21,7 @@ struct Scene {
   void addProgram(string name, string path_vertex, string path_fragment);
   void setView(mat4 v);
   void setProjection(mat4 p);
+  void addShaderToMapa(ShaderProgram *sp);
 };
 
 void Scene::draw(){

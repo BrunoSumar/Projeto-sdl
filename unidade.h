@@ -36,9 +36,11 @@ void Unidade::draw(){
 struct Personagem : Unidade {
   int hp;
 
-  Personagem() : Unidade("resources/personagem.png") {};
+  Personagem(ShaderProgram* sp)
+    : Unidade("resources/personagem.png")
+  {
+    cartao.program = sp;
+  };
 };
-
-
 
 #endif // UNIDADE_H_
