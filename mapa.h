@@ -66,8 +66,8 @@ void Mapa::moverPersonagem(int x, int y)
 {
   mat[personagem->posx][personagem->posy].removePersonagem();
   
-  personagem->posx = max(0, min(dim1-1, x + personagem->posx));
-  personagem->posy = max(0, min(dim2-1, y + personagem->posy));
+  personagem->posx = max(0, min(dim1-1, personagem->posx - y));
+  personagem->posy = max(0, min(dim2-1, x + personagem->posy));
 
   mat[personagem->posx][personagem->posy].addPersonagem(personagem);
 };
