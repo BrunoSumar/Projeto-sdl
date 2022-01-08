@@ -24,6 +24,7 @@ struct Scene {
   void setView(mat4 v);
   void setProjection(mat4 p);
   void addShaderToMapa(ShaderProgram *sp);
+  void setMatrices();
 };
 
 void Scene::draw(){
@@ -33,23 +34,28 @@ void Scene::draw(){
   // Cenario (modelos não relacionado ao gameplay)
   for( int i = 0; i < figuras.size() ; i++ ){
     glUseProgram(figuras[i].program->id);
-    Uniform("projection") = projection;
-    Uniform("view") = view;
+    setMatrices();
     figuras[i].draw();
   }
 
   //Desenha as unidades de cada posição do mapa
   for(int i=0; i<dim1; i++) {
     for(int j=0; j<dim2; j++) {
+      glUseProgram(mapa.piso->program->id);
+      setMatrices();
+      mapa.piso->draw();
       for(int k = 0 ; k < mapa.mat[i][j].unidades.size(); k++){
-        /* glUseProgram(shaders[i->program]); */
         glUseProgram(mapa.mat[i][j].unidades[k]->cartao.program->id);
-        Uniform("projection") = projection;
-        Uniform("view") = view;
+        setMatrices();
         mapa.mat[i][j].unidades[k]->draw();
       }
     }
   }
+}
+
+void Scene::setMatrices(){
+  Uniform("projection") = projection;
+  Uniform("view") = view;
 }
 
 void Scene::setProjection(mat4 p){

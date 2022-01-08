@@ -64,7 +64,12 @@ void setupScene(){
   scene.figuras.back().model = scale(2., 2., 2.);
 
   scene.mapa.initPersonagem(sp);
-} 
+  scene.mapa.initPiso( new ShaderProgram{
+    Shader{"shaders/piso.vert", GL_VERTEX_SHADER},
+    Shader{ "shaders/piso.frag", GL_FRAGMENT_SHADER}
+  });
+
+}
 
 // Inicialização do sdl e opengl
 bool init()

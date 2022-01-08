@@ -24,13 +24,13 @@ struct Mapa {
   Position **mat;
   vector<Unidade> unidades;
   Personagem *personagem;
+  Piso *piso;
 
   Mapa(const int n, const int m,string path_tex="sprito.png");
-  std::string matToString();
-  void draw();
   void moverPersonagem(int x, int y);
   void moverUnidade(Unidade *u, int x, int y);
   void initPersonagem(ShaderProgram *sp);
+  void initPiso(ShaderProgram *sp);
 };
 
 void Position::removeUnidade(Unidade *u)
@@ -45,12 +45,6 @@ void Position::removeUnidade(Unidade *u)
 void Position::addUnidade(Unidade *u)
 {
   unidades.push_back(u);
-}
-
-void Position::draw(int x, int y){
-  for(int i = 0; i < unidades.size(); i++){
-    unidades[i]->draw();
-  }
 }
 
 void Mapa::moverUnidade(Unidade *u, int x, int y)
@@ -73,6 +67,11 @@ void Mapa::moverPersonagem(int x, int y)
 {
   moverUnidade(personagem, x, y);
 };
+
+void Mapa::initPiso(ShaderProgram *sp)
+{
+  piso = new Piso(sp);
+}
 
 void Mapa::initPersonagem(ShaderProgram *sp)
 {

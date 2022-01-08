@@ -24,8 +24,8 @@ struct Unidade{
 };
 
 void Unidade::draw(){
-  float tranX = (3.5 - posx) * INTERVALO;
-  float tranZ = (posy - 3.5 ) * INTERVALO;
+  float tranX = (3.5 - posy) * INTERVALO;
+  float tranZ = (posx - 3.5 ) * INTERVALO;
 
   cartao.model = translate(tranX, 0., tranZ) * scale(1.5, 1.5, 1.5);
 

@@ -72,5 +72,44 @@ struct Cartao : Figura{
   }
 };
 
+struct Piso : Figura{
+  Piso() {}
+
+  Piso(ShaderProgram* sp){
+    mesh = piso_mesh();
+    texture = { "resources/tex.jpeg" };
+    model = {
+      1.f, 0.f, 0.f, 0.f,
+      0.f, 1.f, 0.f, 0.f,
+      0.f, 0.f, 1.f, 0.f,
+      0.f, 0.f, 0.f, 1.f
+    };
+    program = sp;
+  }
+
+  MeshBuffers piso_mesh(){
+    struct Vertex{
+      vec3 position;
+      vec2 texCoords;
+      vec3 normal;
+    };
+    vector<Vertex> V = {
+      {{.5, 0., -.5}, {1.,0.}, {0., 0., 1.}},
+      {{.5, 0., .5}, {1.,1.}, {0., 0., 1.}},
+      {{-.5, 0., .5}, {0.,1.}, {0., 0., 1.}},
+      {{-.5, 0., -.5}, {0.,0.}, {0., 0., 1.}}
+    };
+
+    vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
+
+    return MeshBuffers{V, indices};
+  }
+
+  void draw(){
+    Uniform{"color"} = vec3{.8, 0., 1.};
+    Figura::draw();
+  }
+};
+
 
 #endif // ELEMENT_H_
