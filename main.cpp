@@ -32,6 +32,7 @@ float rot_x = 0.f;
 
 ShaderProgram *sp{nullptr};
 
+// Inicialização de informações da cena desenhada
 void setupScene(){
   scene.setProjection(
 		      scale(1., 1., -1.)*perspective(
@@ -43,8 +44,8 @@ void setupScene(){
 
   scene.setView(
 		lookAt(
-		       {2.5f, 1.f, 0.f},  // eye
-		       {-1.f, .0f, 0.f},  // center
+		       {5.5f, 2.f, 0.f},  // eye
+		       {-2.f, .0f, 0.f},  // center
 		       {0.f, 1.f, 0.f}    // up
 		       ));
 
@@ -53,16 +54,19 @@ void setupScene(){
     Shader{ "shaders/cartao.frag", GL_FRAGMENT_SHADER}
   };
 
-  scene.addFigura("resources/cenario.obj", "resources/cenario.png");
+  scene.addFigura("resources/cenario2.obj", "resources/cenario2.png");
 
   scene.figuras.back().program = new  ShaderProgram{
     Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
     Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
   };
 
+  scene.figuras.back().model = scale(2., 2., 2.);
+
   scene.mapa.initPersonagem(sp);
 } 
 
+// Inicialização do sdl e opengl
 bool init()
 {
   //Initialize SDL
@@ -72,11 +76,11 @@ bool init()
     return false;
   }
 
-  //Use OpenGL 2.1
+  // Setando versão do opengl para 3.3
   SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
   SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
 
-  //Create window
+  //Criando janela
   gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
   if( gWindow == NULL )
   {
@@ -84,7 +88,7 @@ bool init()
     return false;
   }
 
-  //Create context
+  //Criando contexto opengl
   gContext = SDL_GL_CreateContext( gWindow );
   if( gContext == NULL )
   {
@@ -92,7 +96,6 @@ bool init()
     return false;
   }
 
-  //Use Vsync
   if( SDL_GL_SetSwapInterval( 1 ) < 0 )
   {
     printf( "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError() );
@@ -107,11 +110,10 @@ bool init()
   glEnable(GL_DEPTH_TEST);
 
   //Initialize OpenGL
-  glClearColor( 1.f, 0.5f, 0.5f, 1.f );
+  glClearColor(.3f, 0.6f, 1.f, 1.f );
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
   glCullFace(GL_FRONT_AND_BACK);
-
 
   return true;
 }
@@ -126,31 +128,31 @@ void eventHandler( SDL_Event &e ) {
     }
 
   if( e.type == SDL_KEYDOWN )
-    {
-      // key down
-      if( e.key.keysym.sym == SDLK_RIGHT)
-	rot += .02;
-      else if ( e.key.keysym.sym == SDLK_LEFT) 
-	rot -= .02;
-      else if ( e.key.keysym.sym == SDLK_DOWN )
-	dist += .08;
-      else if ( e.key.keysym.sym == SDLK_UP )
-	dist -= .08;
-      else if ( e.key.keysym.sym == SDLK_r )
-	rot_x += .02;
-      else if ( e.key.keysym.sym == SDLK_f )
-	rot_x -= .02;
+  {
+    // key down
+    if( e.key.keysym.sym == SDLK_RIGHT)
+      rot += .02;
+    else if ( e.key.keysym.sym == SDLK_LEFT)
+      rot -= .02;
+    else if ( e.key.keysym.sym == SDLK_DOWN )
+      dist += .08;
+    else if ( e.key.keysym.sym == SDLK_UP )
+      dist -= .08;
+    else if ( e.key.keysym.sym == SDLK_r )
+      rot_x += .02;
+    else if ( e.key.keysym.sym == SDLK_f )
+      rot_x -= .02;
 
       // movimentação
-      else if ( e.key.keysym.sym == SDLK_w )
-	scene.mapa.moverPersonagem(0, 1);
-      else if ( e.key.keysym.sym == SDLK_s )
-	scene.mapa.moverPersonagem(0, -1);	
-      else if ( e.key.keysym.sym == SDLK_a )
-	scene.mapa.moverPersonagem(1, 0);
-      else if ( e.key.keysym.sym == SDLK_d )
-	scene.mapa.moverPersonagem(-1, 0);	
-    }
+    else if ( e.key.keysym.sym == SDLK_w )
+      scene.mapa.moverPersonagem(0, 1);
+    else if ( e.key.keysym.sym == SDLK_s )
+      scene.mapa.moverPersonagem(0, -1);
+    else if ( e.key.keysym.sym == SDLK_a )
+      scene.mapa.moverPersonagem(1, 0);
+    else if ( e.key.keysym.sym == SDLK_d )
+      scene.mapa.moverPersonagem(-1, 0);
+  }
 
   if (e.type == SDL_WINDOWEVENT)
     {
@@ -167,6 +169,7 @@ void eventHandler( SDL_Event &e ) {
     }
 }
 
+// Função de renderização
 void main_loop(){
   while( SDL_PollEvent( &e ) != 0 )
   {
@@ -177,26 +180,27 @@ void main_loop(){
 
   scene.setView(
 		lookAt(
-		       toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{1.f, 2.f, 0.f, 1.f} ),// eye
-		       {.0f, 1.0f, 0.f},  // center
-		       {0.f, 1.f, 0.f}   // up
-		       )
+      toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{5.f, 2.f, 0.f, 1.f} ),// eye
+      toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{-1.f, 0.f, 0.f, 1.f} ),// center
+      {0.f, 1.f, 0.f}   // up
+    )
   );
 
+  // limpa tela
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+  // Desenha cena
   scene.draw();
 
-  //Update screen
+  // Atualização da janela
   SDL_GL_SwapWindow( gWindow );
 };
 
+// Libera recursos
 void close()
 {
-  //Destroy window
   SDL_DestroyWindow( gWindow );
   gWindow = NULL;
-
-  //Quit SDL subsystems
   SDL_Quit();
 }
 

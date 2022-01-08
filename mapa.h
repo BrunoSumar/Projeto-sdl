@@ -5,84 +5,61 @@
 
 using namespace std;
 
+// Position representa cada posição do mapa
 struct Position {
   vector <Unidade*> unidades;
-  int team;
+  int equipe;
   int estado;
-  bool hasPersonagem;
 
   void draw(int x, int y);
-  void addUnidade( Unidade *u );
-  void removePersonagem();
-  void addPersonagem(Personagem *p);
+  void removeUnidade();
+  void addUnidade(Unidade *u);
 };
 
+// Mapa o posicionamente estado do jogo
 struct Mapa {
-  // Dimensões da matriz e matriz de posições
-  const int dim1, dim2;
+  const int dim1, dim2;  // Dimensões da matriz e matriz de posições
   Position **mat;
   vector<Unidade> unidades;
   Personagem *personagem;
 
-  // Funções
-  Mapa(const int n, const int m,string path_tex="personagem.png");
+  Mapa(const int n, const int m,string path_tex="sprito.png");
   std::string matToString();
   void draw();
   void moverPersonagem(int x, int y);
-  // void addUnidade(string path_tex, ShaderProgram *sp, int posx, int posy);
   void initPersonagem(ShaderProgram *sp);
 };
 
-void Position::removePersonagem()
+void Position::removeUnidade()
 {
-  // Caso for mudar a maneira de remover o personagem
-  // Essa função deverá ser modificada, para que não
-  // seja necessário modificar anywhere else.
-
-  // Por enquanto está considerando que personagem é o
-  // último item adcionado no vecotr com push_back()
   unidades.pop_back();
 };
 
-void Position::addPersonagem(Personagem *p)
+void Position::addUnidade(Unidade *u)
 {
-  // Mesmo que Position::removePersonagme()
-  unidades.push_back(p);
+  unidades.push_back(u);
 }
 
-void Position::addUnidade( Unidade* u ){
-   unidades.push_back(u);
-};
-
 void Position::draw(int x, int y){
-  // tile.draw(x, y, estado);
   for(int i = 0; i < unidades.size(); i++){
     unidades[i]->draw();
   }
 }
 
-
 void Mapa::moverPersonagem(int x, int y)
 {
-  mat[personagem->posx][personagem->posy].removePersonagem();
+  mat[personagem->posx][personagem->posy].removeUnidade();
   
   personagem->posx = max(0, min(dim1-1, personagem->posx - y));
   personagem->posy = max(0, min(dim2-1, x + personagem->posy));
 
-  mat[personagem->posx][personagem->posy].addPersonagem(personagem);
+  mat[personagem->posx][personagem->posy].addUnidade(personagem);
 };
-
-// void Mapa::addUnidade(string path_tex, ShaderProgram *sp, int posx, int posy){
-//   unidades.push_back({path_tex, posx, posy});
-//   unidades.back().cartao.program = sp;
-
-//   mat[posx][posy].unidades.push_back(&unidades.back());
-// }
 
 void Mapa::initPersonagem(ShaderProgram *sp)
 {
   personagem = new Personagem(sp);
-  mat[personagem->posx][personagem->posy].addPersonagem(personagem);
+  mat[personagem->posx][personagem->posy].addUnidade(personagem);
 }
 
 Mapa::Mapa(const int n, const int m, string path_tex)

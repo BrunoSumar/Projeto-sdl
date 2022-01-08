@@ -24,6 +24,10 @@ run: $(output)
 	@echo executando: $(output)
 	@./$(output)
 
+clean:
+	@echo Removendo arquivos .o
+	@rm *.o
+
 server:
 	@echo Iniciando servidor http
 	@python3 -m http.server

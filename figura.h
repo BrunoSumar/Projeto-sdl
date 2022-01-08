@@ -9,40 +9,7 @@
 
 using namespace std;
 
-// Por compatibilidade vou deixar Element mas o nome no futuro-
-// a gente usa o Figura mesmo
-struct Element{
-  ShaderProgram program;
-  MeshBuffers   mesh;
-  MeshTexture   texture;
-  mat4          model;
-  int           sprite_rows;
-  int           sprite_columns;
-  
-  Element(string p_obj, string p_tex){
-    mesh = obj_buffers( p_obj.c_str() );
-    texture = { p_tex.c_str() };
-  }
-  
-  void setModel(mat4 model){
-    this->model = model;
-  }
-  
-  void setSprite(int spriteNum){
-    Uniform{"sprite_rows"} = sprite_rows;
-    Uniform{"sprite_columns"} = sprite_columns;
-    Uniform{"nSprite"} = spriteNum;
-  }
-  
-  void draw (int sprite=1){
-    //glUseProgram(program); coloquei na scene.h
-    Uniform{"model"} = model;
-    setSprite(sprite);
-    texture.bind();
-    mesh.draw();
-  }
-};
-
+// Figura é a classe genérica para qualquer modelo desenhado
 struct Figura{
   ShaderProgram *program;
   MeshBuffers   mesh;
@@ -64,13 +31,14 @@ struct Figura{
   }
 
   void draw (){
-    // glUseProgram(*program);
     Uniform{"model"} = model;
     texture.bind();
     mesh.draw();
   }
 };
 
+// Cartao é um quad desenhado sempre voltado na direção da camera
+// principal elemento na coposição de cenas
 struct Cartao : Figura{
   Cartao() {}
 
@@ -96,10 +64,6 @@ struct Cartao : Figura{
       {{1., 2., 0.}, {1.,1.}, {0., 0., 1.}},
       {{-1., 2., 0.}, {0.,1.}, {0., 0., 1.}},
       {{-1., 0., 0.}, {0.,0.}, {0., 0., 1.}}
-      // {{1., 0., 0.}, {0.,1.}, {0., 0., 1.}},
-      // {{1., 2., 0.}, {0.,0.}, {0., 0., 1.}},
-      // {{0., 2., 0.}, {1.,0.}, {0., 0., 1.}},
-      // {{0., 0., 0.}, {1.,1.}, {0., 0., 1.}}
     };
 
     vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};

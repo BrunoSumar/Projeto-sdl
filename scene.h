@@ -6,19 +6,21 @@
 #include "figura.h"
 #include "mapa.h"
 
+#define MAPA_WIDTH 5
+#define MAPA_HEIGHT 8
+// Scene é a classe reposável por gerenciar todas as informações necessáras para renderição da cena do jogo
+
 struct Scene {
   vector<Figura> figuras;
-  /* map<string, *ShaderProgram> shaders; */
   mat4 projection;
   mat4 view;
   Mapa mapa;
 
-  Scene() : mapa{5, 8} {};
+  Scene() : mapa{MAPA_WIDTH, MAPA_HEIGHT} {};
 
   void draw();
   void addFigura(string path_texture);
   void addFigura(string path_obj, string path_texture);
-  void addProgram(string name, string path_vertex, string path_fragment);
   void setView(mat4 v);
   void setProjection(mat4 p);
   void addShaderToMapa(ShaderProgram *sp);
@@ -28,7 +30,7 @@ void Scene::draw(){
   int dim1 = mapa.dim1;
   int dim2 = mapa.dim2;
 
-  // Cenario
+  // Cenario (modelos não relacionado ao gameplay)
   for( int i = 0; i < figuras.size() ; i++ ){
     glUseProgram(figuras[i].program->id);
     Uniform("projection") = projection;
@@ -64,10 +66,6 @@ void Scene::addFigura(string path_texture){
 
 void Scene::addFigura(string path_obj, string path_texture){
   figuras.push_back({path_obj, path_texture});
-}
-
-void Scene::addProgram(string name, string path_vertex, string path_fragment){
-  /* shaders[name] = new {path_vertex, path_fragment}; */
 }
 
 #endif // SCENE_H_
