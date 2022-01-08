@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <algorithm>
 #include "unidade.h"
 
 using namespace std;
@@ -10,9 +11,10 @@ struct Position {
   vector <Unidade*> unidades;
   int equipe;
   int estado;
+  bool bloqueado = false;
 
   void draw(int x, int y);
-  void removeUnidade();
+  void removeUnidade(Unidade *u);
   void addUnidade(Unidade *u);
 };
 
@@ -27,12 +29,17 @@ struct Mapa {
   std::string matToString();
   void draw();
   void moverPersonagem(int x, int y);
+  void moverUnidade(Unidade *u, int x, int y);
   void initPersonagem(ShaderProgram *sp);
 };
 
-void Position::removeUnidade()
+void Position::removeUnidade(Unidade *u)
 {
-  unidades.pop_back();
+  std::remove_if(
+    unidades.begin(),
+    unidades.end(),
+    [u](Unidade *x){return (x->id == u->id);}
+ );
 };
 
 void Position::addUnidade(Unidade *u)
@@ -46,14 +53,25 @@ void Position::draw(int x, int y){
   }
 }
 
+void Mapa::moverUnidade(Unidade *u, int x, int y)
+{
+  int posx = max(0, min(dim1-1, x + u->posx));
+  int posy = max(0, min(dim2-1, y + u->posy));
+
+  if( mat[posx][posy].bloqueado )
+    return;
+
+  mat[u->posx][u->posy].removeUnidade(u);
+
+  personagem->posx = posx;
+  personagem->posy = posy;
+
+  mat[posx][posy].addUnidade(u);
+};
+
 void Mapa::moverPersonagem(int x, int y)
 {
-  mat[personagem->posx][personagem->posy].removeUnidade();
-  
-  personagem->posx = max(0, min(dim1-1, personagem->posx - y));
-  personagem->posy = max(0, min(dim2-1, x + personagem->posy));
-
-  mat[personagem->posx][personagem->posy].addUnidade(personagem);
+  moverUnidade(personagem, x, y);
 };
 
 void Mapa::initPersonagem(ShaderProgram *sp)

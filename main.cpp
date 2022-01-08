@@ -35,19 +35,19 @@ ShaderProgram *sp{nullptr};
 // Inicialização de informações da cena desenhada
 void setupScene(){
   scene.setProjection(
-		      scale(1., 1., -1.)*perspective(
-						     45.0f,                                    // fov
-						     (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, // aspect ratio
-						     0.1f,                                     // near
-						     100.f                                     // far
-						     ));
+    scale(1., 1., -1.)*perspective(
+      45.0f,                                    // fov
+      (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, // aspect ratio
+      0.1f,                                     // near
+      100.f                                     // far
+    ));
 
   scene.setView(
-		lookAt(
-		       {5.5f, 2.f, 0.f},  // eye
-		       {-2.f, .0f, 0.f},  // center
-		       {0.f, 1.f, 0.f}    // up
-		       ));
+    lookAt(
+      {5.5f, 2.f, 0.f},  // eye
+      {-2.f, .0f, 0.f},  // center
+      {0.f, 1.f, 0.f}    // up
+    ));
 
   sp = new ShaderProgram{
     Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
@@ -109,11 +109,11 @@ bool init()
   //Inicializando o DEPTH buffer
   glEnable(GL_DEPTH_TEST);
 
-  //Initialize OpenGL
+  //Inicializando OpenGL
   glClearColor(.3f, 0.6f, 1.f, 1.f );
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-  glCullFace(GL_FRONT_AND_BACK);
+  glCullFace(GL_FRONT);
 
   return true;
 }
@@ -123,9 +123,9 @@ void eventHandler( SDL_Event &e ) {
   const Uint8 *state = SDL_GetKeyboardState(NULL);
   
   if( e.type == SDL_QUIT || state[SDL_SCANCODE_ESCAPE] )
-    {
-      quit = true;
-    }
+  {
+    quit = true;
+  }
 
   if( e.type == SDL_KEYDOWN )
   {
@@ -143,7 +143,7 @@ void eventHandler( SDL_Event &e ) {
     else if ( e.key.keysym.sym == SDLK_f )
       rot_x -= .02;
 
-      // movimentação
+    // movimentação
     else if ( e.key.keysym.sym == SDLK_w )
       scene.mapa.moverPersonagem(0, 1);
     else if ( e.key.keysym.sym == SDLK_s )
@@ -155,18 +155,18 @@ void eventHandler( SDL_Event &e ) {
   }
 
   if (e.type == SDL_WINDOWEVENT)
+  {
+    if (e.window.event == SDL_WINDOWEVENT_RESIZED)
     {
-      if (e.window.event == SDL_WINDOWEVENT_RESIZED)
-	{
-	  SDL_SetWindowSize(gWindow , e.window.data1, e.window.data2);
-	  glViewport(0, 0, e.window.data1, e.window.data2);
-	}
+      SDL_SetWindowSize(gWindow , e.window.data1, e.window.data2);
+      glViewport(0, 0, e.window.data1, e.window.data2);
     }
+  }
 
   if( e.type == SDL_QUIT || state[SDL_SCANCODE_ESCAPE] )
-    {
-      quit = true;
-    }
+  {
+    quit = true;
+  }
 }
 
 // Função de renderização
@@ -179,7 +179,7 @@ void main_loop(){
   }
 
   scene.setView(
-		lookAt(
+    lookAt(
       toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{5.f, 2.f, 0.f, 1.f} ),// eye
       toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{-1.f, 0.f, 0.f, 1.f} ),// center
       {0.f, 1.f, 0.f}   // up

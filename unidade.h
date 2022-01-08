@@ -9,18 +9,22 @@
 struct Unidade{
   Cartao cartao;
   int posx, posy;
+  int id;
 
-Unidade( string path_tex, int x=0, int y=0 )
-  : cartao{path_tex},
+  static int count;
+
+  Unidade( string path_tex, int x=0, int y=0 ) :
+    cartao{path_tex},
     posx{x},
-    posy{y}
+    posy{y},
+    id{count++}
   {};
 
   void draw();
 };
 
 void Unidade::draw(){
-  float tranX = (posx - 2.) * INTERVALO;
+  float tranX = (3.5 - posx) * INTERVALO;
   float tranZ = (posy - 3.5 ) * INTERVALO;
 
   cartao.model = translate(tranX, 0., tranZ) * scale(1.5, 1.5, 1.5);
@@ -39,5 +43,8 @@ struct Personagem : Unidade {
     cartao.program = sp;
   };
 };
+
+/* Inicializando contador de unidades */
+int Unidade::count = 0;
 
 #endif // UNIDADE_H_
