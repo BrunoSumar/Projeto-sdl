@@ -34,7 +34,7 @@ struct Personagem : Unidade {
   int hp;
 
   Personagem(ShaderProgram* sp)
-    : Unidade("resources/sprito.png")
+    : Unidade("resources/sprito2.png")
   {
     cartao.program = sp;
   };

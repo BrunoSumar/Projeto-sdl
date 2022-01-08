@@ -54,7 +54,7 @@ void setupScene(){
     Shader{ "shaders/cartao.frag", GL_FRAGMENT_SHADER}
   };
 
-  scene.addFigura("resources/cenario2.obj", "resources/cenario2.png");
+  scene.addFigura("resources/cenario4.obj", "resources/cenario4.png");
 
   scene.figuras.back().program = new  ShaderProgram{
     Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
