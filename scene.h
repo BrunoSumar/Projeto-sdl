@@ -6,10 +6,10 @@
 #include "figura.h"
 #include "mapa.h"
 
-#define MAPA_WIDTH 5
-#define MAPA_HEIGHT 8
-// Scene é a classe reposável por gerenciar todas as informações necessáras para renderição da cena do jogo
+#define MAPA_WIDTH 8
+#define MAPA_HEIGHT 5
 
+// Scene é a classe reposável por gerenciar todas as informações necessáras para renderição da cena do jogo
 struct Scene {
   vector<Figura> figuras;
   mat4 projection;
@@ -35,15 +35,15 @@ void Scene::draw(){
   for( int i = 0; i < figuras.size() ; i++ ){
     glUseProgram(figuras[i].program->id);
     setMatrices();
-    // figuras[i].draw();
+    figuras[i].draw();
   }
 
   //Desenha as unidades de cada posição do mapa
   for(int i=0; i<dim1; i++) {
     for(int j=0; j<dim2; j++) {
-      glUseProgram(mapa.piso->program->id);
+      glUseProgram(mapa.piso->cartao.program->id);
       setMatrices();
-      mapa.piso->draw();
+      mapa.piso->draw(i, j);
       for(int k = 0 ; k < mapa.mat[i][j].unidades.size(); k++){
         glUseProgram(mapa.mat[i][j].unidades[k]->cartao.program->id);
         setMatrices();
