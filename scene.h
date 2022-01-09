@@ -35,7 +35,7 @@ void Scene::draw(){
   for( int i = 0; i < figuras.size() ; i++ ){
     glUseProgram(figuras[i].program->id);
     setMatrices();
-    figuras[i].draw();
+    // figuras[i].draw();
   }
 
   //Desenha as unidades de cada posição do mapa

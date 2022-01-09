@@ -9,12 +9,13 @@ out vec4 FragColor;
 
 float sdBox( vec2 p )
 {
-  vec2 q = abs(p) - vec2(.5, .5);
-  return length(max(q,0.0)) + min(max(q.x,q.y),0.0);
+  p = abs(p - vec2(.5));
+  return 2 * max(p.x, p.y);
 }
 
 void main()
 {
   float dist = sdBox(texCoord);
-  FragColor = mix(vec4(color, 1.), vec4(0.), dist);
+  FragColor = mix(vec4(color, 0.1), vec4(color, 1.), smoothstep(.75, .98, dist));
+  // FragColor = mix(vec4(color, 1.), vec4(0.), dist);
 }
