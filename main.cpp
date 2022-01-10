@@ -187,8 +187,8 @@ void main_loop(){
 
   scene.setView(
     lookAt(
-      toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{5.f, 2.f, 0.f, 1.f} ),// eye
-      toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{-1.f, 0.f, 0.f, 1.f} ),// center
+      toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{5.8f, 3.f, 0.f, 1.f} ),// eye
+      toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{-.5f, 0.f, 0.f, 1.f} ),// center
       {0.f, 1.f, 0.f}   // up
     )
   );
