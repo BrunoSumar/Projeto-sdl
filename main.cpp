@@ -30,7 +30,8 @@ float dist = 0.f;
 float rot_x = 0.f;
 // int sprite = 1;
 
-ShaderProgram *sp{nullptr};
+ShaderProgram *cartaoSP;
+ShaderProgram *fundoSP;
 
 // Inicialização de informações da cena desenhada
 void setupScene(){
@@ -49,21 +50,28 @@ void setupScene(){
       {0.f, 1.f, 0.f}    // up
     ));
 
-  sp = new ShaderProgram{
+  cartaoSP = new ShaderProgram{
     Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
     Shader{ "shaders/cartao.frag", GL_FRAGMENT_SHADER}
   };
 
-  scene.addFigura("resources/cenario4.obj", "resources/cenario4.png");
+  fundoSP = new ShaderProgram{
+    Shader{"shaders/fundo.vert", GL_VERTEX_SHADER},
+    Shader{ "shaders/fundo.frag", GL_FRAGMENT_SHADER}
+  };
 
+  scene.addFigura("resources/cenario4.obj", "resources/cenario4.png");
   scene.figuras.back().program = new  ShaderProgram{
     Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
     Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
   };
 
+  scene.addFundo("resources/tex.jpeg");
+  scene.figuras.back().program = fundoSP;
+
   scene.figuras.back().model = scale(2., 2., 2.);
 
-  scene.mapa.initPersonagem(sp);
+  scene.mapa.initPersonagem(cartaoSP);
   scene.mapa.initPiso( new ShaderProgram{
     Shader{"shaders/piso.vert", GL_VERTEX_SHADER},
     Shader{ "shaders/piso.frag", GL_FRAGMENT_SHADER}

@@ -20,6 +20,7 @@ struct Scene {
 
   void draw();
   void addFigura(string path_texture);
+  void addFundo(string path_texture);
   void addFigura(string path_obj, string path_texture);
   void setView(mat4 v);
   void setProjection(mat4 p);
@@ -30,12 +31,15 @@ struct Scene {
 void Scene::draw(){
   int dim1 = mapa.dim1;
   int dim2 = mapa.dim2;
+  Figura *f = NULL;
 
   // Cenario (modelos não relacionado ao gameplay)
   for( int i = 0; i < figuras.size() ; i++ ){
+    f = &figuras[i];
     glUseProgram(figuras[i].program->id);
     setMatrices();
-    figuras[i].draw();
+    // (&figuras[i])->draw();
+    f->draw();
   }
 
   //Desenha as unidades de cada posição do mapa
@@ -68,6 +72,10 @@ void Scene::setView(mat4 v){
 
 void Scene::addFigura(string path_texture){
   figuras.push_back(Cartao{path_texture});
+}
+
+void Scene::addFundo(string path_texture){
+  figuras.push_back(PlanoDeFundo{path_texture});
 }
 
 void Scene::addFigura(string path_obj, string path_texture){

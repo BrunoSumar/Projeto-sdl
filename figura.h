@@ -30,7 +30,7 @@ struct Figura{
     };
   }
 
-  void draw (){
+  virtual void draw(){
     Uniform{"model"} = model;
     texture.bind();
     mesh.draw();
@@ -71,5 +71,48 @@ struct Cartao : Figura{
     return MeshBuffers{V, indices};
   }
 };
+
+struct PlanoDeFundo : Figura{
+  PlanoDeFundo() {}
+
+  PlanoDeFundo(string p_tex){
+    mesh = fundo_mesh();
+    texture = { p_tex.c_str() };
+    model = {
+      1.f, 0.f, 0.f, 0.f,
+      0.f, 1.f, 0.f, 0.f,
+      0.f, 0.f, 1.f, 0.f,
+      0.f, 0.f, 0.f, 1.f
+    };
+    std::cout << "criou fundo\n";
+  }
+
+  MeshBuffers fundo_mesh(){
+    struct Vertex{
+      vec3 position;
+      vec2 texCoords;
+      vec3 normal;
+    };
+    vector<Vertex> V = {
+      {{1., -1., 0.}, {1.,0.}, {0., 0., 1.}},
+      {{1., 1., 0.}, {1.,1.}, {0., 0., 1.}},
+      {{-1., 1., 0.}, {0.,1.}, {0., 0., 1.}},
+      {{-1., -1., 0.}, {0.,0.}, {0., 0., 1.}}
+    };
+
+    vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
+
+    return MeshBuffers{V, indices};
+  }
+
+  virtual void draw(){
+    std::cout << "desenhou pelo fundo\n";
+    glDisable(GL_DEPTH_TEST);
+    // Figura::draw();
+    glClear( GL_DEPTH_BUFFER_BIT );
+    glEnable(GL_DEPTH_TEST);
+  }
+};
+
 
 #endif // ELEMENT_H_
