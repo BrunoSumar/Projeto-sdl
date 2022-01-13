@@ -46,7 +46,7 @@ struct Personagem : Unidade {
 };
 
 struct Piso : Unidade {
-  vec3 color = {.0, .0, .0};
+  vec3 color = {1.0, .0, .0};
   Piso(ShaderProgram* sp)
     : Unidade("resources/tex.jpeg")
   {

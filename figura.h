@@ -106,10 +106,8 @@ struct PlanoDeFundo : Figura{
   }
 
   virtual void draw(){
-    std::cout << "desenhou pelo fundo\n";
     glDisable(GL_DEPTH_TEST);
-    // Figura::draw();
-    glClear( GL_DEPTH_BUFFER_BIT );
+    Figura::draw();
     glEnable(GL_DEPTH_TEST);
   }
 };

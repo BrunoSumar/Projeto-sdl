@@ -60,16 +60,15 @@ void setupScene(){
     Shader{ "shaders/fundo.frag", GL_FRAGMENT_SHADER}
   };
 
+  scene.addFundo("resources/tex.jpeg");
+  scene.figuras.back()->program = fundoSP;
+
   scene.addFigura("resources/cenario4.obj", "resources/cenario4.png");
-  scene.figuras.back().program = new  ShaderProgram{
+  scene.figuras.back()->program = new  ShaderProgram{
     Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
     Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
   };
-
-  scene.addFundo("resources/tex.jpeg");
-  scene.figuras.back().program = fundoSP;
-
-  scene.figuras.back().model = scale(2., 2., 2.);
+  scene.figuras.back()->model = scale(2., 2., 2.);
 
   scene.mapa.initPersonagem(cartaoSP);
   scene.mapa.initPiso( new ShaderProgram{

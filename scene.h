@@ -11,7 +11,7 @@
 
 // Scene é a classe reposável por gerenciar todas as informações necessáras para renderição da cena do jogo
 struct Scene {
-  vector<Figura> figuras;
+  vector<Figura*> figuras;
   mat4 projection;
   mat4 view;
   Mapa mapa;
@@ -35,11 +35,11 @@ void Scene::draw(){
 
   // Cenario (modelos não relacionado ao gameplay)
   for( int i = 0; i < figuras.size() ; i++ ){
-    f = &figuras[i];
-    glUseProgram(figuras[i].program->id);
+    // f = &figuras[i];
+    glUseProgram(figuras[i]->program->id);
     setMatrices();
-    // (&figuras[i])->draw();
-    f->draw();
+    figuras[i]->draw();
+    // f->draw();
   }
 
   //Desenha as unidades de cada posição do mapa
@@ -71,15 +71,15 @@ void Scene::setView(mat4 v){
 }
 
 void Scene::addFigura(string path_texture){
-  figuras.push_back(Cartao{path_texture});
+  figuras.push_back(new Cartao{path_texture});
 }
 
 void Scene::addFundo(string path_texture){
-  figuras.push_back(PlanoDeFundo{path_texture});
+  figuras.push_back(new PlanoDeFundo{path_texture});
 }
 
 void Scene::addFigura(string path_obj, string path_texture){
-  figuras.push_back({path_obj, path_texture});
+  figuras.push_back(new Figura{path_obj, path_texture});
 }
 
 #endif // SCENE_H_
