@@ -12,7 +12,7 @@ out vec2 texCoord;
 void main()
 {
   vec4 pos = projection * view * model * vec4(aPos, 1.0);
-  pos.z -= .01;
+  // pos.z -= .01;
   gl_Position = pos;
   texCoord = texCord;
 }
