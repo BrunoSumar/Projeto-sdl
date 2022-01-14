@@ -1,3 +1,6 @@
+#ifndef MAPA_H_
+#define MAPA_H_
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -23,7 +26,7 @@ struct Position {
 struct Mapa {
   const int dim1, dim2;  // Dimensões da matriz e matriz de posições
   Position **mat;
-  vector<Unidade> unidades;
+  vector<Unidade*> unidades;
   Personagem *personagem;
   Piso *piso;
 
@@ -32,6 +35,8 @@ struct Mapa {
   void moverUnidade(Unidade *u, int x, int y);
   void initPersonagem(ShaderProgram *sp);
   void initPiso(ShaderProgram *sp);
+  void actions(float time);
+  void addUnidade(Unidade *u);
 };
 
 void Position::removeUnidade(Unidade *u)
@@ -88,3 +93,19 @@ Mapa::Mapa(const int n, const int m, string path_tex)
   for(int i=0; i<n; i++)
     mat[i] = new Position[m];
 };
+
+void Mapa::actions(float time){
+  Unidade *u = NULL;
+  for(int i = 0; i < unidades.size(); i++){
+    u = unidades[i]->action(time);
+    if(u)
+      addUnidade(u);
+  }
+}
+
+void Mapa::addUnidade(Unidade *u){
+  unidades.push_back(u);
+  mat[u->posx][u->posy].addUnidade(u);
+}
+
+#endif // MAPA_H_

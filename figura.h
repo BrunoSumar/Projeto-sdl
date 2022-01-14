@@ -30,7 +30,7 @@ struct Figura{
     };
   }
 
-  virtual void draw(){
+  virtual void draw(float time){
     Uniform{"model"} = model;
     texture.bind();
     mesh.draw();
@@ -84,7 +84,6 @@ struct PlanoDeFundo : Figura{
       0.f, 0.f, 1.f, 0.f,
       0.f, 0.f, 0.f, 1.f
     };
-    std::cout << "criou fundo\n";
   }
 
   MeshBuffers fundo_mesh(){
@@ -105,9 +104,10 @@ struct PlanoDeFundo : Figura{
     return MeshBuffers{V, indices};
   }
 
-  virtual void draw(){
+  virtual void draw(float time){
     glDisable(GL_DEPTH_TEST);
-    Figura::draw();
+    Uniform("Time") = time;
+    Figura::draw(time);
     glEnable(GL_DEPTH_TEST);
   }
 };

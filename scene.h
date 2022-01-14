@@ -18,7 +18,7 @@ struct Scene {
 
   Scene() : mapa{MAPA_WIDTH, MAPA_HEIGHT} {};
 
-  void draw();
+  void draw(float time);
   void addFigura(string path_texture);
   void addFundo(string path_texture);
   void addFigura(string path_obj, string path_texture);
@@ -28,7 +28,7 @@ struct Scene {
   void setMatrices();
 };
 
-void Scene::draw(){
+void Scene::draw(float time){
   int dim1 = mapa.dim1;
   int dim2 = mapa.dim2;
   Figura *f = NULL;
@@ -38,7 +38,7 @@ void Scene::draw(){
     // f = &figuras[i];
     glUseProgram(figuras[i]->program->id);
     setMatrices();
-    figuras[i]->draw();
+    figuras[i]->draw(time);
     // f->draw();
   }
 
@@ -51,7 +51,7 @@ void Scene::draw(){
       for(int k = 0 ; k < mapa.mat[i][j].unidades.size(); k++){
         glUseProgram(mapa.mat[i][j].unidades[k]->cartao.program->id);
         setMatrices();
-        mapa.mat[i][j].unidades[k]->draw();
+        mapa.mat[i][j].unidades[k]->draw(time);
       }
     }
   }

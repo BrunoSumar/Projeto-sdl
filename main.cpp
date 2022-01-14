@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <ctime>
 
 #include <SDL2/SDL.h>
 
@@ -33,6 +34,9 @@ float rot_x = 0.f;
 ShaderProgram *cartaoSP;
 ShaderProgram *fundoSP;
 
+clock_t begin_time;
+float tempo_atual = 0;
+
 // Inicialização de informações da cena desenhada
 void setupScene(){
   scene.setProjection(
@@ -60,7 +64,7 @@ void setupScene(){
     Shader{ "shaders/fundo.frag", GL_FRAGMENT_SHADER}
   };
 
-  scene.addFundo("resources/tex.jpeg");
+  scene.addFundo("resources/folha.png");
   scene.figuras.back()->program = fundoSP;
 
   scene.addFigura("resources/cenario4.obj", "resources/cenario4.png");
@@ -204,7 +208,9 @@ void main_loop(){
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
   // Desenha cena
-  scene.draw();
+  tempo_atual = float( clock() - begin_time ) /  CLOCKS_PER_SEC;
+  scene.mapa.actions(tempo_atual);
+  scene.draw(tempo_atual);
 
   // Atualização da janela
   SDL_GL_SwapWindow( gWindow );
@@ -232,6 +238,7 @@ int main(int argc, char *argv[]) {
 
     setupScene();
 
+    begin_time = clock();
 #ifdef __EMSCRIPTEN__
 
     emscripten_set_main_loop(main_loop, 0, 1);

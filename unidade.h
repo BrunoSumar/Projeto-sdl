@@ -20,29 +20,34 @@ struct Unidade{
     id{count++}
   {};
 
-  void draw();
+  void draw(float time);
+
+  virtual Unidade* action(float time) { return NULL;}
 };
 
-void Unidade::draw(){
+void Unidade::draw(float time){
   float tranX = (3.5 - posy) * INTERVALO;
   /* float tranZ = (posx - MAPA_WIDTH/2. - .5 ) * INTERVALO; */
   float tranZ = (posx - 3.5 ) * INTERVALO;
 
   cartao.model = translate(tranX, 0., tranZ) * scale(1.5, 1.5, 1.5);
 
-  cartao.draw();
+  cartao.draw(time);
 };
 
 /* Personagem representa a unidade referente ao personagem principal  */
 /* controlado pelo usuário */
 struct Personagem : Unidade {
   int hp;
+  float last_shot = 0.;
 
   Personagem(ShaderProgram* sp)
     : Unidade("resources/sprito2.png")
   {
     cartao.program = sp;
   };
+
+  /* void shot(): */
 };
 
 struct Piso : Unidade {
@@ -66,7 +71,7 @@ void Piso::draw(int posx, int posy){
   cartao.model = translate(tranX, 0., tranZ)* scale(sc, sc, sc) * rotate_x(M_PI/2.) ;
 
   Uniform("color") = color;
-  cartao.draw();
+  cartao.draw(0.);
 };
 
 /* Inicializando contador de unidades */

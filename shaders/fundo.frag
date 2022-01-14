@@ -8,14 +8,14 @@ out vec4 FragColor;
 
 void main()
 {
-  // FragColor = texture(tex, texCoord);
+  float time = 6. * Time;
 
   vec2 uv = texCoord - .5;
 
   vec3 col = vec3(0);
   float s =.6;
 
-  float a1 = 2.*3.1415-Time*.02;
+  float a1 = 2.*3.1415-time*.02;
   float a2 = 3.1415/7.;
   vec2 dir = vec2(sin(a1),cos(a1));
 
@@ -40,7 +40,7 @@ void main()
 
   float d = length(uv - vec2(clamp(uv.x, -1.,1.),0));
   d = smoothstep(.01*s, .0, d);
-  col += texture(tex,-Time*.03+uv/s).rgb;
+  col += texture(tex,-time*.03+uv/s).rgb;
   //col += vec3(d);
 
   FragColor = vec4(col,1.0);
