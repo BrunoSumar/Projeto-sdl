@@ -75,7 +75,8 @@ struct Cartao : Figura{
 struct PlanoDeFundo : Figura{
   PlanoDeFundo() {}
 
-  PlanoDeFundo(string p_tex){
+  PlanoDeFundo(string p_tex, ShaderProgram *sp){
+    program = sp;
     mesh = fundo_mesh();
     texture = { p_tex.c_str() };
     model = {

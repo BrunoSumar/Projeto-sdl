@@ -17,6 +17,7 @@
 
 using namespace std;
 
+// Global declarations
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
@@ -33,11 +34,13 @@ float rot_x = 0.f;
 
 ShaderProgram *cartaoSP;
 ShaderProgram *fundoSP;
+ShaderProgram *cenarioSP;
+ShaderProgram *pisoSP;
 
 clock_t begin_time;
 float tempo_atual = 0;
 
-// Inicialização de informações da cena desenhada
+// Inicialização de cena
 void setupScene(){
   scene.setProjection(
     scale(1., 1., -1.)*perspective(
@@ -64,22 +67,24 @@ void setupScene(){
     Shader{ "shaders/fundo.frag", GL_FRAGMENT_SHADER}
   };
 
-  scene.addFundo("resources/folha.png");
-  scene.figuras.back()->program = fundoSP;
-
-  scene.addFigura("resources/cenario4.obj", "resources/cenario4.png");
-  scene.figuras.back()->program = new  ShaderProgram{
+  cenarioSP = new ShaderProgram {
     Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
     Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
   };
+
+  pisoSP = new ShaderProgram{
+    Shader{"shaders/piso.vert", GL_VERTEX_SHADER},
+    Shader{ "shaders/piso.frag", GL_FRAGMENT_SHADER}
+  };
+
+  scene.addFundo("resources/folha.png", fundoSP);
+
+  scene.addFigura("resources/cenario4.obj", "resources/cenario4.png");
+  scene.figuras.back()->program = cenarioSP;
   scene.figuras.back()->model = scale(2., 2., 2.);
 
   scene.mapa.initPersonagem(cartaoSP);
-  scene.mapa.initPiso( new ShaderProgram{
-    Shader{"shaders/piso.vert", GL_VERTEX_SHADER},
-    Shader{ "shaders/piso.frag", GL_FRAGMENT_SHADER}
-  });
-
+  scene.mapa.initPiso(pisoSP);
 }
 
 // Inicialização do sdl e opengl

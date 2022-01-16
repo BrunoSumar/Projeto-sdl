@@ -20,7 +20,7 @@ struct Scene {
 
   void draw(float time);
   void addFigura(string path_texture);
-  void addFundo(string path_texture);
+  void addFundo(string path_texture, ShaderProgram *sp);
   void addFigura(string path_obj, string path_texture);
   void setView(mat4 v);
   void setProjection(mat4 p);
@@ -74,8 +74,8 @@ void Scene::addFigura(string path_texture){
   figuras.push_back(new Cartao{path_texture});
 }
 
-void Scene::addFundo(string path_texture){
-  figuras.push_back(new PlanoDeFundo{path_texture});
+void Scene::addFundo(string path_texture, ShaderProgram* sp){
+  figuras.push_back(new PlanoDeFundo{path_texture, sp});
 }
 
 void Scene::addFigura(string path_obj, string path_texture){
