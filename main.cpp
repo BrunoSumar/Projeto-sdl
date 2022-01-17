@@ -152,15 +152,21 @@ void eventHandler( SDL_Event &e ) {
 
   if( e.type == SDL_KEYDOWN )
   {
-    // key down
+    // Controle da câmera
+    //
+    // <- e -> Giram em torno do centro em direção horizontal
     if( e.key.keysym.sym == SDLK_RIGHT)
       rot += .02;
     else if ( e.key.keysym.sym == SDLK_LEFT)
       rot -= .02;
+
+    // /\ e \/ Aproximam e afastam do centro
     else if ( e.key.keysym.sym == SDLK_DOWN )
       dist += .08;
     else if ( e.key.keysym.sym == SDLK_UP )
       dist -= .08;
+
+    // f-\/ e r-/\ rotaciona torno do centro em direção vertical
     else if ( e.key.keysym.sym == SDLK_r )
       rot_x += .02;
     else if ( e.key.keysym.sym == SDLK_f )
