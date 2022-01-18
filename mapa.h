@@ -83,8 +83,8 @@ void Mapa::moverUnidade(Unidade *u, int x, int y)
 
   mat[u->posx][u->posy].removeUnidade(u);
 
-  personagem->posx = posx;
-  personagem->posy = posy;
+  u->posx = posx;
+  u->posy = posy;
 
   mat[posx][posy].addUnidade(u);
 };

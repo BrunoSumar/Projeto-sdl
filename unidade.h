@@ -75,6 +75,8 @@ Unidade* Personagem::action(float t){
 Unidade* Projetil::action(float t){
   posx += x;
   posy += y;
+
+  return NULL;
 };
  
 
