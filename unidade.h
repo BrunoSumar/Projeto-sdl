@@ -39,6 +39,8 @@ void Unidade::draw(float time){
 /* controlado pelo usuário */
 struct Personagem : Unidade {
   int hp;
+
+  // Para implementar cooldown
   float last_shot = 0.;
 
   Personagem(ShaderProgram* sp)

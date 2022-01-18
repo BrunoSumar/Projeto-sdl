@@ -22,12 +22,32 @@ struct Position {
   void addUnidade(Unidade *u);
 };
 
-// Mapa o posicionamente estado do jogo
+// Contém o estado de uma batalha no que diz
+// respeito às posições
 struct Mapa {
-  const int dim1, dim2;  // Dimensões da matriz e matriz de posições
-  Position **mat;
+  // Dimensões da matriz de posições
+  const int dim1, dim2;  
+
+  // Contém uma matriz de Positions que
+  // correspondem às células do tabuleiro
+  Position **mat;            
+
+  // Ponteiros para as unidades que estão
+  // sendo utilizadas na batalha
+  //
+  //    *  todas executam (ou não) uma ação
+  //       que caso executada retorna uma nova
+  //       unidade que é adcionada ao mapa em
+  //       determinada posição.
   vector<Unidade*> unidades;
+
+  // Ponteiro para personagem do jogador
+  // ,que é uma unidade especial.
+  //           especial pois se move e é
+  //       controlada de forma especial.
   Personagem *personagem;
+
+  // ...
   Piso *piso;
 
   Mapa(const int n, const int m,string path_tex="sprito.png");
