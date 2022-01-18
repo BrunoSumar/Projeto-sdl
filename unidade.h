@@ -49,8 +49,34 @@ struct Personagem : Unidade {
     cartao.program = sp;
   };
 
-  /* void shot(): */
+  virtual Unidade *action(float t);
 };
+
+struct Projetil : Unidade {
+  // Direção
+  int x, y;
+
+  Projetil(string path, int x=0, int y=0)
+    : Unidade(path, x, y) {};
+  virtual Unidade* action(float t);
+};
+
+// Talvez essa função passe a receber parâmetros
+// caso hajam muitos personagens.
+Unidade* Personagem::action(float t){
+  // Cooldown
+  if (t - last_shot < .5)
+    return NULL;
+
+  // Projétil
+  return new Projetil{"resources/bullet.png", 0, 0};
+}
+
+Unidade* Projetil::action(float t){
+  posx += x;
+  posy += y;
+};
+ 
 
 struct Piso : Unidade {
   vec3 color = {1.0, .0, .0};
