@@ -58,13 +58,25 @@ struct Mapa {
   void actions(float time);
   void addUnidade(Unidade *u);
   void tiroPersonagem(float time);
+  void processAction(float time, Unidade *u);
+  void remUnidade( Unidade *u );
+};
+
+void Mapa::remUnidade( Unidade *u ){
+  mat[u->posx][u->posy].removeUnidade(u);
+
+  std::remove_if(
+    unidades.begin(),
+    unidades.end(),
+    [u](Unidade *x){return (x->id == u->id);});
 };
 
 void Mapa::tiroPersonagem(float time){
   if (!personagem) return;
 
   Unidade* u = personagem->fire( time );
-  if (u) addUnidade( u );
+  if (!u) return;
+  addUnidade( u );
 };
 
 void Position::removeUnidade(Unidade *u)
@@ -122,12 +134,39 @@ Mapa::Mapa(const int n, const int m, string path_tex)
     mat[i] = new Position[m];
 };
 
+// Função para lidar com os ponteiros de
+// unidade gerados pela função Unidade::action
+void Mapa::processAction( float time /*action() recebe tempo como parâmetro*/, Unidade *u /*Unidade que possui action()*/)
+//                                     para poder calcular quando realizar ação             
+{
+  if (!u) {
+    //Recebeu NULL como parâmetro??
+    return;
+  }
+
+  int old_x = u->posx;
+  int old_y = u->posy;
+  Unidade *new_u = u->action(time);
+
+  if (!new_u) {}
+  //remUnidade(u); // Função irá remover unidade tanto do vetor em Mapa quanto da posição que ocupa
+  else if (new_u == u) {
+    if (old_x == u->posx && old_y == u->posy) {
+      return;
+    }
+    else {
+      remUnidade( u );
+      addUnidade( u );
+    }
+  }
+  else {
+    addUnidade( new_u );
+  }
+};
+
 void Mapa::actions(float time){
-  Unidade *u = NULL;
   for(int i = 0; i < unidades.size(); i++){
-    u = unidades[i]->action(time);
-    if(u)
-      addUnidade(u);
+    processAction(time, unidades[i]);
   }
 }
 

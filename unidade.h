@@ -28,7 +28,7 @@ struct Unidade{
 void Unidade::draw(float time){
   float tranX = (3.5 - posy) * INTERVALO;
   /* float tranZ = (posx - MAPA_WIDTH/2. - .5 ) * INTERVALO; */
-  float tranZ = (posx - 3.5 ) * INTERVALO;
+  float tranZ = (3.5 - posx) * INTERVALO;
 
   cartao.model = translate(tranX, 0., tranZ) * scale(1.5, 1.5, 1.5);
 
@@ -39,6 +39,7 @@ void Unidade::draw(float time){
 /* controlado pelo usuário */
 struct Personagem : Unidade {
   int hp;
+  float cooldown = 0.2f;
 
   // Para implementar cooldown
   float last_shot = 0.;
@@ -56,20 +57,32 @@ struct Projetil : Unidade {
   // Direção
   int x, y;
 
+  float last_time = 0;
+  float vel = 2.f;
+
   Projetil(string path, int x=0, int y=0)
     : Unidade(path, x, y) {};
+  
   virtual Unidade* action(float t);
 };
 
 Unidade* Personagem::fire(float t){
-  if ((t - last_shot) > .5f) {
-    return new Projetil("resources/1_0.png", posx + 1, posy);
+  if ((t - last_shot) > cooldown) {
+    last_shot = t;
+    return new Projetil{"resources/1_0.png", posx + 1, posy};
   };
   return NULL;
 };
 
 Unidade* Projetil::action(float t){
+  //if ((t - last_time) < (1.f/vel))
+  if ((t - last_time) < .05)
+    return this;
   posx += 1;
+  
+  if (posx > 5)
+    return NULL;
+  last_time = t;
   return this;
 };
  
@@ -86,7 +99,7 @@ struct Piso : Unidade {
 
 void Piso::draw(int posx, int posy){
   float tranX = (3.5 - posy) * INTERVALO;
-  float tranZ = (posx - 4 ) * INTERVALO;
+  float tranZ = (3 - posx) * INTERVALO;
 
   float sc = (INTERVALO / 2.);
 
