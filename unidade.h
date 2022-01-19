@@ -1,7 +1,7 @@
 #ifndef UNIDADE_H_
 #define UNIDADE_H_
 
-/* #include "figura.h" */
+//#include "figura.h" 
 
 #define INTERVALO (.3f)
 
@@ -49,7 +49,7 @@ struct Personagem : Unidade {
     cartao.program = sp;
   };
 
-  virtual Unidade *action(float t);
+  Unidade* fire(float t);
 };
 
 struct Projetil : Unidade {
@@ -61,25 +61,18 @@ struct Projetil : Unidade {
   virtual Unidade* action(float t);
 };
 
-// Talvez essa função passe a receber parâmetros
-// caso hajam muitos personagens.
-Unidade* Personagem::action(float t){
-  // Cooldown
-  if (t - last_shot < .5)
-    return NULL;
-
-  // Projétil
-  return new Projetil{"resources/bullet.png", 0, 0};
-}
-
-Unidade* Projetil::action(float t){
-  posx += x;
-  posy += y;
-
+Unidade* Personagem::fire(float t){
+  if ((t - last_shot) > .5f) {
+    return new Projetil("resources/1_0.png", posx + 1, posy);
+  };
   return NULL;
 };
- 
 
+Unidade* Projetil::action(float t){
+  posx += 1;
+  return this;
+};
+ 
 struct Piso : Unidade {
   vec3 color = {1.0, .0, .0};
   Piso(ShaderProgram* sp)

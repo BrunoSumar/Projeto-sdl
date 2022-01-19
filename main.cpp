@@ -181,6 +181,9 @@ void eventHandler( SDL_Event &e ) {
       scene.mapa.moverPersonagem(1, 0);
     else if ( e.key.keysym.sym == SDLK_d )
       scene.mapa.moverPersonagem(-1, 0);
+
+    else if ( e.key.keysym.sym == SDLK_j )
+      scene.mapa.tiroPersonagem(tempo_atual);
   }
 
   if (e.type == SDL_WINDOWEVENT)

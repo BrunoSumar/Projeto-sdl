@@ -57,6 +57,14 @@ struct Mapa {
   void initPiso(ShaderProgram *sp);
   void actions(float time);
   void addUnidade(Unidade *u);
+  void tiroPersonagem(float time);
+};
+
+void Mapa::tiroPersonagem(float time){
+  if (!personagem) return;
+
+  Unidade* u = personagem->fire( time );
+  if (u) addUnidade( u );
 };
 
 void Position::removeUnidade(Unidade *u)
