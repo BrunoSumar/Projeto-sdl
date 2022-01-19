@@ -58,10 +58,11 @@ struct Projetil : Unidade {
   int x, y;
 
   float last_time = 0;
-  float vel = 2.f;
+  float vel = 10.f;
 
   Projetil(string path, int x=0, int y=0)
-    : Unidade(path, x, y) {};
+    : Unidade(path, x, y)
+  {};
   
   virtual Unidade* action(float t);
 };
@@ -75,14 +76,14 @@ Unidade* Personagem::fire(float t){
 };
 
 Unidade* Projetil::action(float t){
-  //if ((t - last_time) < (1.f/vel))
-  if ((t - last_time) < .05)
+  if ((t - last_time) < (1.f/vel))
     return this;
-  posx += 1;
-  
+  last_time = t;
+  std::cout << "andou " << posx << std::endl;
   if (posx > 5)
     return NULL;
-  last_time = t;
+  posx += 1;
+
   return this;
 };
  
