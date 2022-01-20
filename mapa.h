@@ -59,16 +59,16 @@ struct Mapa {
   void addUnidade(Unidade *u);
   void tiroPersonagem(float time);
   void processAction(float time, Unidade *u);
-  void remUnidade( Unidade *u );
+  void remUnidade( Unidade *u , int x, int y);
 };
 
-void Mapa::remUnidade( Unidade *u ){
-  mat[u->posx][u->posy].removeUnidade(u);
+void Mapa::remUnidade( Unidade *u , int x, int y){
+  mat[x][y].removeUnidade(u);
 
   std::remove_if(
     unidades.begin(),
     unidades.end(),
-    [u](Unidade *x){return (x->id == u->id);});
+    [u](Unidade *w){return (w->id == u->id);});
 };
 
 void Mapa::tiroPersonagem(float time){
@@ -148,14 +148,22 @@ void Mapa::processAction( float time /*action() recebe tempo como parâmetro*/, 
   int old_y = u->posy;
   Unidade *new_u = u->action(time);
 
-  if (!new_u) {}
-  //remUnidade(u); // Função irá remover unidade tanto do vetor em Mapa quanto da posição que ocupa
+  if (!new_u)
+    remUnidade( u, old_x, old_y ); 
   else if (new_u == u) {
     if (old_x == u->posx && old_y == u->posy) {
       return;
     }
     else {
-      remUnidade( u );
+      if (u->posx >= dim1)
+	u->posx = old_x;
+      if (u->posy >= dim2)
+	u->posy = old_y;
+      
+      // Esta linha de remover unidade não está fazendo sentido porque
+      // a função utiliza o próprio atributo da unidade para remove-la
+      // da posição.
+      remUnidade( u, old_x, old_y );
       addUnidade( u );
     }
   }
@@ -172,6 +180,9 @@ void Mapa::actions(float time){
 
 void Mapa::addUnidade(Unidade *u){
   unidades.push_back(u);
+
+  // Deve-se tomar o cuidado de não chamar esta função
+  // em unidade que possui posx e posy maiores que dim1 e dim2 respectivamente
   mat[u->posx][u->posy].addUnidade(u);
 }
 

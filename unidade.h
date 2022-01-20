@@ -39,7 +39,7 @@ void Unidade::draw(float time){
 /* controlado pelo usuário */
 struct Personagem : Unidade {
   int hp;
-  float cooldown = 0.2f;
+  float cooldown = 0.1f;
 
   // Para implementar cooldown
   float last_shot = 0.;
@@ -54,14 +54,13 @@ struct Personagem : Unidade {
 };
 
 struct Projetil : Unidade {
-  // Direção
-  int x, y;
-
   float last_time = 0;
-  float vel = 10.f;
+  float vel = .01f;
+  int last_posx;
 
   Projetil(string path, int x=0, int y=0)
-    : Unidade(path, x, y)
+    : Unidade(path, x, y),
+      last_posx{x-1}
   {};
   
   virtual Unidade* action(float t);
@@ -70,19 +69,28 @@ struct Projetil : Unidade {
 Unidade* Personagem::fire(float t){
   if ((t - last_shot) > cooldown) {
     last_shot = t;
-    return new Projetil{"resources/1_0.png", posx + 1, posy};
+
+    // Personagem e seu projétil estão usando o mesmo shaderProgram
+    Unidade *u = new Projetil{"resources/1_0.png", posx + 1, posy};
+    u->cartao.program = this->cartao.program;
+    return u;
   };
   return NULL;
 };
 
 Unidade* Projetil::action(float t){
-  if ((t - last_time) < (1.f/vel))
-    return this;
-  last_time = t;
-  std::cout << "andou " << posx << std::endl;
-  if (posx > 5)
+  // Se a ultima posição está igual a posição atual
+  // é porque o mapa diminuiu a posição, então chegou a parede
+  if (last_posx == posx)
     return NULL;
-  posx += 1;
+
+  // Caso tenha se passado um tempo maior que vel
+  // pode-se mover novamente.
+  if ((t - last_time) > vel) {
+    last_posx = posx;
+    posx += 1;
+    last_time = t;
+  }
 
   return this;
 };
