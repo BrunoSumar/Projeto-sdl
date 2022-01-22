@@ -79,13 +79,9 @@ Unidade* Personagem::fire(float t){
 };
 
 Unidade* Projetil::action(float t){
-  // Se a ultima posição está igual a posição atual
-  // é porque o mapa diminuiu a posição, então chegou a parede
   if (last_posx == posx)
     return NULL;
 
-  // Caso tenha se passado um tempo maior que vel
-  // pode-se mover novamente.
   if ((t - last_time) > vel) {
     last_posx = posx;
     posx += 1;

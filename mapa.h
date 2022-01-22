@@ -17,7 +17,6 @@ struct Position {
   int estado;
   bool bloqueado = false;
 
-  void draw(int x, int y);
   void removeUnidade(Unidade *u);
   void addUnidade(Unidade *u);
 };
@@ -25,29 +24,10 @@ struct Position {
 // Contém o estado de uma batalha no que diz
 // respeito às posições
 struct Mapa {
-  // Dimensões da matriz de posições
-  const int dim1, dim2;  
-
-  // Contém uma matriz de Positions que
-  // correspondem às células do tabuleiro
-  Position **mat;            
-
-  // Ponteiros para as unidades que estão
-  // sendo utilizadas na batalha
-  //
-  //    *  todas executam (ou não) uma ação
-  //       que caso executada retorna uma nova
-  //       unidade que é adcionada ao mapa em
-  //       determinada posição.
-  vector<Unidade*> unidades;
-
-  // Ponteiro para personagem do jogador
-  // ,que é uma unidade especial.
-  //           especial pois se move e é
-  //       controlada de forma especial.
+  const int dim1, dim2; // Dimensões da matriz de posições
+  Position **mat; // Contém uma matriz de Positions que correspondem às células do tabuleiro
+  vector<Unidade*> unidades;  // Ponteiros para as unidades que estão sendo utilizadas na batalha
   Personagem *personagem;
-
-  // ...
   Piso *piso;
 
   Mapa(const int n, const int m,string path_tex="sprito.png");
@@ -62,13 +42,16 @@ struct Mapa {
   void remUnidade( Unidade *u , int x, int y);
 };
 
-void Mapa::remUnidade( Unidade *u , int x, int y){
-  mat[x][y].removeUnidade(u);
+void Mapa::remUnidade( Unidade *u, int x, int y){
+  // mat[x][y].removeUnidade(u);
+  mat[u->posx][u->posy].removeUnidade(u);
 
-  std::remove_if(
+  auto remove_id = std::remove_if(
     unidades.begin(),
     unidades.end(),
-    [u](Unidade *w){return (w->id == u->id);});
+    [u](Unidade *x){return (x->id == u->id);}
+  );
+  unidades.erase( remove_id, unidades.end());
 };
 
 void Mapa::tiroPersonagem(float time){
@@ -81,11 +64,12 @@ void Mapa::tiroPersonagem(float time){
 
 void Position::removeUnidade(Unidade *u)
 {
-  std::remove_if(
+  auto remove_id = std::remove_if(
     unidades.begin(),
     unidades.end(),
     [u](Unidade *x){return (x->id == u->id);}
- );
+  );
+  unidades.erase( remove_id, unidades.end());
 };
 
 void Position::addUnidade(Unidade *u)
@@ -106,6 +90,7 @@ void Mapa::moverUnidade(Unidade *u, int x, int y)
   u->posx = posx;
   u->posy = posy;
 
+  std::cout << "id: " << u->id << ' ' <<  posx << ' ' << posy << '\n';
   mat[posx][posy].addUnidade(u);
 };
 
@@ -139,35 +124,27 @@ Mapa::Mapa(const int n, const int m, string path_tex)
 void Mapa::processAction( float time /*action() recebe tempo como parâmetro*/, Unidade *u /*Unidade que possui action()*/)
 //                                     para poder calcular quando realizar ação             
 {
-  if (!u) {
-    //Recebeu NULL como parâmetro??
+  if(!u)
     return;
-  }
 
   int old_x = u->posx;
   int old_y = u->posy;
   Unidade *new_u = u->action(time);
 
-  if (!new_u)
-    remUnidade( u, old_x, old_y ); 
-  else if (new_u == u) {
-    if (old_x == u->posx && old_y == u->posy) {
-      return;
-    }
-    else {
-      if (u->posx >= dim1)
-	u->posx = old_x;
-      if (u->posy >= dim2)
-	u->posy = old_y;
-      
-      // Esta linha de remover unidade não está fazendo sentido porque
-      // a função utiliza o próprio atributo da unidade para remove-la
-      // da posição.
-      remUnidade( u, old_x, old_y );
-      addUnidade( u );
+  if(!new_u){
+    u->posx = old_x;
+    u->posy = old_y;
+    remUnidade( u, old_x, old_y );
+  }
+  else if(new_u == u){
+    int diffx = u->posx - old_x, diffy = u->posy - old_y;
+    if ( !diffx || !diffy ) {
+      u->posx = old_x;
+      u->posy = old_y;
+      moverUnidade(u, diffx, diffy);
     }
   }
-  else {
+  else{
     addUnidade( new_u );
   }
 };
@@ -181,9 +158,8 @@ void Mapa::actions(float time){
 void Mapa::addUnidade(Unidade *u){
   unidades.push_back(u);
 
-  // Deve-se tomar o cuidado de não chamar esta função
-  // em unidade que possui posx e posy maiores que dim1 e dim2 respectivamente
-  mat[u->posx][u->posy].addUnidade(u);
+  if(dim1 > u->posx && dim2 > u->posy)
+    mat[u->posx][u->posy].addUnidade(u);
 }
 
 #endif // MAPA_H_
