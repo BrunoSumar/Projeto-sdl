@@ -15,10 +15,13 @@ struct Position {
   vector <Unidade*> unidades;
   int equipe;
   int estado;
+  float impacto = -1.;
   bool bloqueado = false;
+  vec3 color = {.5f, .5f, .5f};
 
   void removeUnidade(Unidade *u);
   void addUnidade(Unidade *u);
+  void setMatrices(float time);
 };
 
 // Contém o estado de uma batalha no que diz
@@ -39,11 +42,10 @@ struct Mapa {
   void addUnidade(Unidade *u);
   void tiroPersonagem(float time);
   void processAction(float time, Unidade *u);
-  void remUnidade( Unidade *u , int x, int y);
+  void remUnidade( Unidade *u );
 };
 
-void Mapa::remUnidade( Unidade *u, int x, int y){
-  // mat[x][y].removeUnidade(u);
+void Mapa::remUnidade( Unidade *u ){
   mat[u->posx][u->posy].removeUnidade(u);
 
   auto remove_id = std::remove_if(
@@ -62,21 +64,6 @@ void Mapa::tiroPersonagem(float time){
   addUnidade( u );
 };
 
-void Position::removeUnidade(Unidade *u)
-{
-  auto remove_id = std::remove_if(
-    unidades.begin(),
-    unidades.end(),
-    [u](Unidade *x){return (x->id == u->id);}
-  );
-  unidades.erase( remove_id, unidades.end());
-};
-
-void Position::addUnidade(Unidade *u)
-{
-  unidades.push_back(u);
-}
-
 void Mapa::moverUnidade(Unidade *u, int x, int y)
 {
   int posx = max(0, min(dim1-1, x + u->posx));
@@ -90,7 +77,6 @@ void Mapa::moverUnidade(Unidade *u, int x, int y)
   u->posx = posx;
   u->posy = posy;
 
-  std::cout << "id: " << u->id << ' ' <<  posx << ' ' << posy << '\n';
   mat[posx][posy].addUnidade(u);
 };
 
@@ -119,10 +105,7 @@ Mapa::Mapa(const int n, const int m, string path_tex)
     mat[i] = new Position[m];
 };
 
-// Função para lidar com os ponteiros de
-// unidade gerados pela função Unidade::action
-void Mapa::processAction( float time /*action() recebe tempo como parâmetro*/, Unidade *u /*Unidade que possui action()*/)
-//                                     para poder calcular quando realizar ação             
+void Mapa::processAction( float time, Unidade *u)
 {
   if(!u)
     return;
@@ -134,7 +117,7 @@ void Mapa::processAction( float time /*action() recebe tempo como parâmetro*/, 
   if(!new_u){
     u->posx = old_x;
     u->posy = old_y;
-    remUnidade( u, old_x, old_y );
+    remUnidade( u);
   }
   else if(new_u == u){
     int diffx = u->posx - old_x, diffy = u->posy - old_y;
@@ -161,6 +144,28 @@ void Mapa::addUnidade(Unidade *u){
 
   unidades.push_back(u);
   mat[u->posx][u->posy].addUnidade(u);
+}
+
+void Position::removeUnidade(Unidade *u)
+{
+  auto remove_id = std::remove_if(
+    unidades.begin(),
+    unidades.end(),
+    [u](Unidade *x){return (x->id == u->id);}
+  );
+  unidades.erase( remove_id, unidades.end());
+};
+
+void Position::addUnidade(Unidade *u)
+{
+  unidades.push_back(u);
+}
+
+void Position::setMatrices(float time){
+  Uniform("Impacto") = impacto;
+  Uniform("Equipe") = equipe;
+  Uniform("Time") = time;
+  Uniform("Color") = color;
 }
 
 #endif // MAPA_H_

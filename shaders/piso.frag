@@ -4,6 +4,9 @@
 in vec2 texCoord;
 
 uniform vec3 color;
+uniform float Impacto;
+uniform float Equipe;
+uniform int Time;
 
 out vec4 FragColor;
 

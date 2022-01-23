@@ -46,6 +46,7 @@ void Scene::draw(float time){
     for(int j=0; j<dim2; j++) {
       glUseProgram(mapa.piso->cartao.program->id);
       setMatrices();
+      mapa.mat[i][j].setMatrices(time);
       mapa.piso->draw(i, j);
       for(int k = 0 ; k < mapa.mat[i][j].unidades.size(); k++){
         glUseProgram(mapa.mat[i][j].unidades[k]->cartao.program->id);

@@ -92,7 +92,7 @@ Unidade* Projetil::action(float t){
 };
  
 struct Piso : Unidade {
-  vec3 color = {1.0, .0, .0};
+  /* vec3 color = {1.0, .0, .0}; */
   Piso(ShaderProgram* sp)
     : Unidade("resources/tex.jpeg")
   {
@@ -108,10 +108,7 @@ void Piso::draw(int posx, int posy){
 
   float sc = (INTERVALO / 2.);
 
-  /* cartao.model = translate(tranX, 0., tranZ) * rotate_x(90) * scale(.5, .5, .5); */
   cartao.model = translate(tranX, 0., tranZ)* scale(sc, sc, sc) * rotate_x(M_PI/2.) ;
-
-  Uniform("color") = color;
   cartao.draw(0.);
 };
 
