@@ -71,7 +71,7 @@ Unidade* Personagem::fire(float t){
     last_shot = t;
 
     // Personagem e seu projétil estão usando o mesmo shaderProgram
-    Unidade *u = new Projetil{"resources/1_0.png", posx + 1, posy};
+    Unidade *u = new Projetil{"resources/1_0.png", posx, posy};
     u->cartao.program = this->cartao.program;
     return u;
   };

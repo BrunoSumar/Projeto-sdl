@@ -156,10 +156,11 @@ void Mapa::actions(float time){
 }
 
 void Mapa::addUnidade(Unidade *u){
-  unidades.push_back(u);
+  if(dim1 <= u->posx || dim2 <= u->posy)
+    return;
 
-  if(dim1 > u->posx && dim2 > u->posy)
-    mat[u->posx][u->posy].addUnidade(u);
+  unidades.push_back(u);
+  mat[u->posx][u->posy].addUnidade(u);
 }
 
 #endif // MAPA_H_
