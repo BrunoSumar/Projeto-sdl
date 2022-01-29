@@ -3,7 +3,7 @@
 
 in vec2 texCoord;
 
-uniform vec3 Color;
+uniform vec3 color;
 uniform float Impacto;
 uniform float Equipe;
 uniform int Time;

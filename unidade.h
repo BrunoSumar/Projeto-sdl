@@ -22,7 +22,7 @@ struct Unidade{
 
   void draw(float time);
 
-  virtual Unidade* action(float time) { return NULL;}
+  virtual Unidade* action(float time) { return this;}
 };
 
 void Unidade::draw(float time){
@@ -110,6 +110,27 @@ void Piso::draw(int posx, int posy){
 
   cartao.model = translate(tranX, 0., tranZ)* scale(sc, sc, sc) * rotate_x(M_PI/2.) ;
   cartao.draw(0.);
+};
+
+
+struct Inimigo : Unidade {
+  int hp;
+
+  //float cooldown = 0.1f;
+
+  // Para implementar cooldown
+  // float last_shot = 0.;
+
+  Inimigo(ShaderProgram* sp, int x=0, int y=0)
+    : Unidade("resources/cubomal.png")
+  {
+    posx = x;
+    posy = y;
+    cartao.program = sp;
+    cartao.model = scale(.3, .3, 1);
+  };
+
+  //Unidade* fire(float t);
 };
 
 /* Inicializando contador de unidades */

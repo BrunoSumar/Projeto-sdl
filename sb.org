@@ -14,30 +14,87 @@ Eu esqueci oque eu estava fazendo da última vez...
 
 
 (find-sdlfile "mapa.h")
+(find-sdlfile "mapa.h" "Mapa::addUnidade")
 (find-sdlfile "mapa.h" "Mapa::tiroPersonagem")
 
 (find-sdlfile "main.cpp")
+(find-sdlfile "main.cpp" "setupScene")
 (find-sdlfile "main.cpp" "void eventHandler")
 
 (find-sdlfile "unidade.h")
 (find-sdlfile "unidade.h" "struct Unidade")
 (find-sdlfile "unidade.h" "struct Personagem : Unidade")
 
+#+name: main.cpp
 #+begin_src c++
-  struct Personagem : Unidade {
+  void setupScene(){
+    scene.setProjection(
+      scale(1., 1., -1.)*perspective(
+	45.0f,                                    // fov
+	(float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, // aspect ratio
+	0.1f,                                     // near
+	100.f                                     // far
+      ));
+
+    scene.setView(
+      lookAt(
+	{5.5f, 2.f, 0.f},  // eye
+	{-2.f, .0f, 0.f},  // center
+	{0.f, 1.f, 0.f}    // up
+      ));
+
+    cartaoSP = new ShaderProgram{
+      Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
+      Shader{ "shaders/cartao.frag", GL_FRAGMENT_SHADER}
+    };
+
+    fundoSP = new ShaderProgram{
+      Shader{"shaders/fundo.vert", GL_VERTEX_SHADER},
+      Shader{ "shaders/fundo.frag", GL_FRAGMENT_SHADER}
+    };
+
+    cenarioSP = new ShaderProgram {
+      Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
+      Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
+    };
+
+    pisoSP = new ShaderProgram{
+      Shader{"shaders/piso.vert", GL_VERTEX_SHADER},
+      Shader{ "shaders/piso.frag", GL_FRAGMENT_SHADER}
+    };
+
+    scene.addFundo("resources/folha.png", fundoSP);
+
+    scene.addFigura("resources/cenario4.obj", "resources/cenario4.png");
+    scene.figuras.back()->program = cenarioSP;
+    scene.figuras.back()->model = scale(2., 2., 2.);
+
+    scene.mapa.initPersonagem(cartaoSP);
+    scene.mapa.initPiso(pisoSP);
+
+    Inimigo *i = new Inimigo(cartaoSP, 1, 1);
+    scene.mapa.addUnidade(i);
+  }
+#+end_src
+
+
+#+name: unidade.h
+#+begin_src c++ 
+  struct Inimigo : Unidade {
     int hp;
-    float cooldown = 0.1f;
+
+    //float cooldown = 0.1f;
 
     // Para implementar cooldown
-    float last_shot = 0.;
+    // float last_shot = 0.;
 
-    Personagem(ShaderProgram* sp)
-      : Unidade("resources/sprito2.png")
+    Inimigo(ShaderProgram* sp, int posx=0, int posy=0)
+      : Unidade("resources/cubomal.png")
     {
       cartao.program = sp;
     };
 
-    Unidade* fire(float t);
+    //Unidade* fire(float t);
   };
 #+end_src
 

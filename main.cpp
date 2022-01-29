@@ -85,6 +85,9 @@ void setupScene(){
 
   scene.mapa.initPersonagem(cartaoSP);
   scene.mapa.initPiso(pisoSP);
+
+  Inimigo *i = new Inimigo(cartaoSP, 1, 1);
+  scene.mapa.addUnidade(i);
 }
 
 // Inicialização do sdl e opengl
