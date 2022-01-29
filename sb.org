@@ -1,0 +1,62 @@
+*  
+
+#+name: e-script begin
+#+begin_src elisp
+  (code-c-d "sdl" "/home/tetro/clones/Projeto-sdl/")
+  (code-c-d "sdl" "/home/bruno/Documentos/uff/9 periodo/jogos digitais/Projeto-sdl/")
+
+  (find-sdlfile "main.cpp")
+  (find-sdlfile "main.cpp" "setupScene")
+#+end_src
+
+*                                        macedo
+Eu esqueci oque eu estava fazendo da última vez... 
+
+
+(find-sdlfile "mapa.h")
+(find-sdlfile "mapa.h" "Mapa::tiroPersonagem")
+
+(find-sdlfile "main.cpp")
+(find-sdlfile "main.cpp" "void eventHandler")
+
+(find-sdlfile "unidade.h")
+(find-sdlfile "unidade.h" "struct Unidade")
+(find-sdlfile "unidade.h" "struct Personagem : Unidade")
+
+#+begin_src c++
+  struct Personagem : Unidade {
+    int hp;
+    float cooldown = 0.1f;
+
+    // Para implementar cooldown
+    float last_shot = 0.;
+
+    Personagem(ShaderProgram* sp)
+      : Unidade("resources/sprito2.png")
+    {
+      cartao.program = sp;
+    };
+
+    Unidade* fire(float t);
+  };
+#+end_src
+
+
+** escript doido lá
+#+name: find-angg-links
+#+begin_src elisp
+(find-angg-es-links)
+
+(find-es "telegram" "tdlib")
+
+;; The `progn' below defines versions of `find-angg' and
+;; `find-es' that use `find-wget' to access the
+;; public copies of my files at angg.twu.net:
+;;
+(progn
+  (defun find-angg (fname &rest rest)
+    (apply 'find-wgeta (format "http://angg.twu.net/%s" fname) rest))
+  (defun find-es (fname &rest rest)
+    (apply 'find-wgeta (format "http://angg.twu.net/e/%s.e" fname) rest))
+)
+#+end_src
