@@ -6,12 +6,13 @@ layout (location = 2) in vec3 normal;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 position;
 
 out vec2 texCoord;
 
 void main()
 {
-  mat4 pvm = projection * view * model;
+  mat4 pvm = projection * view * position * model;
   vec4 ori = pvm * vec4(vec3(0), 1.0);
   vec4 topo = pvm * vec4(0., 1., 0., 1.0);
   gl_Position = ori + vec4( distance(ori, topo) * aPos / 4.5, .0);

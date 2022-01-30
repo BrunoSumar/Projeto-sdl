@@ -12,7 +12,22 @@
 *                                        macedo
 Eu esqueci oque eu estava fazendo da última vez... 
 
+Colisão em unidade
+struct Unidade
 
+Mapa::moverUnidade
+Cada vez que mover deve checar colisão.
+Caso haja colisão chamar Unidade::Colisão em cada uma
+das unidades, passando a que acabou de entrar como parâmetro.
+
+Outra possibilidade é chamar Unidade::Colisão da unidade
+que acabou de chegar na posição, passando como parametro
+cada uma das unidades que já estava lá.
+
+Generalizar o 
+
+
+#+begin_src elisp
 (find-sdlfile "mapa.h")
 (find-sdlfile "mapa.h" "Mapa::addUnidade")
 (find-sdlfile "mapa.h" "Mapa::tiroPersonagem")
@@ -24,6 +39,7 @@ Eu esqueci oque eu estava fazendo da última vez...
 (find-sdlfile "unidade.h")
 (find-sdlfile "unidade.h" "struct Unidade")
 (find-sdlfile "unidade.h" "struct Personagem : Unidade")
+#+end_src
 
 #+name: main.cpp
 #+begin_src c++

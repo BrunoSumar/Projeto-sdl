@@ -40,11 +40,18 @@ struct Figura{
 // Cartao é um quad desenhado sempre voltado na direção da camera
 // principal elemento na coposição de cenas
 struct Cartao : Figura{
+  mat4 position;
   Cartao() {}
 
   Cartao(string p_tex){
     mesh = card_mesh();
     texture = { p_tex.c_str() };
+    position = {
+      1.f, 0.f, 0.f, 0.f,
+      0.f, 1.f, 0.f, 0.f,
+      0.f, 0.f, 1.f, 0.f,
+      0.f, 0.f, 0.f, 1.f
+    };
     model = {
       1.f, 0.f, 0.f, 0.f,
       0.f, 1.f, 0.f, 0.f,
@@ -69,6 +76,11 @@ struct Cartao : Figura{
     vector<unsigned int> indices = {0, 1, 2, 0, 2, 3};
 
     return MeshBuffers{V, indices};
+  }
+
+  virtual void draw(float time){
+    Uniform("position") = position;
+    Figura::draw(time);
   }
 };
 

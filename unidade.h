@@ -26,11 +26,11 @@ struct Unidade{
 };
 
 void Unidade::draw(float time){
-  float tranX = (3.5 - posy) * INTERVALO;
+  float tranX = (3.8 - posy) * INTERVALO;
   /* float tranZ = (posx - MAPA_WIDTH/2. - .5 ) * INTERVALO; */
   float tranZ = (3.5 - posx) * INTERVALO;
 
-  cartao.model = translate(tranX, 0., tranZ) * scale(1.5, 1.5, 1.5);
+  cartao.position = translate(tranX, 0., tranZ) * scale(1.5, 1.5, 1.5);
 
   cartao.draw(time);
 };
@@ -109,6 +109,7 @@ void Piso::draw(int posx, int posy){
   float sc = (INTERVALO / 2.);
 
   cartao.model = translate(tranX, 0., tranZ)* scale(sc, sc, sc) * rotate_x(M_PI/2.) ;
+
   cartao.draw(0.);
 };
 
@@ -116,7 +117,7 @@ void Piso::draw(int posx, int posy){
 struct Inimigo : Unidade {
   int hp;
 
-  //float cooldown = 0.1f;
+  // float cooldown = 0.1f;
 
   // Para implementar cooldown
   // float last_shot = 0.;
@@ -127,10 +128,10 @@ struct Inimigo : Unidade {
     posx = x;
     posy = y;
     cartao.program = sp;
-    cartao.model = scale(.3, .3, 1);
+    cartao.model = translate(0, -.03, 0) * scale(1., .6, 1.);
   };
 
-  //Unidade* fire(float t);
+  // Unidade* fire(float t);
 };
 
 /* Inicializando contador de unidades */

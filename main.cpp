@@ -86,7 +86,7 @@ void setupScene(){
   scene.mapa.initPersonagem(cartaoSP);
   scene.mapa.initPiso(pisoSP);
 
-  Inimigo *i = new Inimigo(cartaoSP, 1, 1);
+  Inimigo *i = new Inimigo(cartaoSP, 7, 2);
   scene.mapa.addUnidade(i);
 }
 
