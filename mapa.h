@@ -34,8 +34,8 @@ struct Mapa {
   Piso *piso;
 
   Mapa(const int n, const int m,string path_tex="sprito.png");
+  int moverUnidade(Unidade *u, int x, int y);
   void moverPersonagem(int x, int y);
-  void moverUnidade(Unidade *u, int x, int y);
   void initPersonagem(ShaderProgram *sp);
   void initPiso(ShaderProgram *sp);
   void actions(float time);
@@ -64,20 +64,30 @@ void Mapa::tiroPersonagem(float time){
   addUnidade( u );
 };
 
-void Mapa::moverUnidade(Unidade *u, int x, int y)
+// retorna 0 caso unidade de tenha sido movida e outro número caso contrário
+int Mapa::moverUnidade(Unidade *u, int x, int y)
 {
-  int posx = max(0, min(dim1-1, x + u->posx));
-  int posy = max(0, min(dim2-1, y + u->posy));
+  int posx = x + u->posx;
+  int posy = y + u->posy;
+
+  if(( posx < 0 || posx >= dim1 ) || ( posy < 0 || posy >= dim2 ))
+    return 1;
 
   if( mat[posx][posy].bloqueado )
-    return;
+    return 2;
 
   mat[u->posx][u->posy].removeUnidade(u);
 
   u->posx = posx;
   u->posy = posy;
 
+  for(int i = 0; i < mat[posx][posy].unidades.size(); i++){
+    mat[posx][posy].unidades[i]->colisao( u );
+    u->colisao( mat[posx][posy].unidades[i] );
+  }
+
   mat[posx][posy].addUnidade(u);
+  return 0;
 };
 
 void Mapa::moverPersonagem(int x, int y)
@@ -113,18 +123,19 @@ void Mapa::processAction( float time, Unidade *u)
   int old_x = u->posx;
   int old_y = u->posy;
   Unidade *new_u = u->action(time);
+  int movimento = 0;
 
   if(!new_u){
     u->posx = old_x;
     u->posy = old_y;
-    remUnidade( u);
+    remUnidade( u );
   }
   else if(new_u == u){
     int diffx = u->posx - old_x, diffy = u->posy - old_y;
-    if ( !diffx || !diffy ) {
+    if ( diffx || diffy ) {
       u->posx = old_x;
       u->posy = old_y;
-      moverUnidade(u, diffx, diffy);
+      movimento = moverUnidade(u, diffx, diffy);
     }
   }
   else{
@@ -133,6 +144,11 @@ void Mapa::processAction( float time, Unidade *u)
 };
 
 void Mapa::actions(float time){
+  for(int i = 0; i < unidades.size(); i++){
+    if( unidades[i]->hp <= 0 )
+      remUnidade( unidades[i] );
+  }
+
   for(int i = 0; i < unidades.size(); i++){
     processAction(time, unidades[i]);
   }

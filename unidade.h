@@ -10,6 +10,8 @@ struct Unidade{
   Cartao cartao;
   int posx, posy;
   int id;
+  float hp = 1.;
+  float dano = 0.;
 
   static int count;
 
@@ -22,7 +24,8 @@ struct Unidade{
 
   void draw(float time);
 
-  virtual Unidade* action(float time) { return this;}
+  virtual Unidade* action(float time) { return this;};
+  virtual void colisao(Unidade *u) {};
 };
 
 void Unidade::draw(float time){
@@ -57,6 +60,7 @@ struct Projetil : Unidade {
   float last_time = 0;
   float vel = .01f;
   int last_posx;
+  float dano = .5;
 
   Projetil(string path, int x=0, int y=0)
     : Unidade(path, x, y),
@@ -64,6 +68,7 @@ struct Projetil : Unidade {
   {};
   
   virtual Unidade* action(float t);
+  virtual void colisao(Unidade *u);
 };
 
 Unidade* Personagem::fire(float t){
@@ -89,6 +94,11 @@ Unidade* Projetil::action(float t){
   }
 
   return this;
+};
+
+void Projetil::colisao(Unidade *u){
+  u->hp -= dano;
+  std::cout << u->hp << std::endl;
 };
  
 struct Piso : Unidade {
