@@ -13,7 +13,7 @@ using namespace std;
 // Position representa cada posição do mapa
 struct Position {
   vector <Unidade*> unidades;
-  int equipe;
+  int equipe = 0;
   int estado;
   float impacto = -1.;
   bool bloqueado = false;
@@ -76,6 +76,10 @@ int Mapa::moverUnidade(Unidade *u, int x, int y)
   if( mat[posx][posy].bloqueado )
     return 2;
 
+  std::cout << u->equipe << ' ' << mat[posx][posy].equipe << '\n';
+  if(( u->equipe != 0 ) && ( mat[posx][posy].equipe != u->equipe ))
+    return 3;
+
   mat[u->posx][u->posy].removeUnidade(u);
 
   u->posx = posx;
@@ -113,6 +117,10 @@ Mapa::Mapa(const int n, const int m, string path_tex)
 {
   for(int i=0; i<n; i++)
     mat[i] = new Position[m];
+
+  for(int i=0; i<n; i++)
+    for(int j=0; j<m; j++)
+      mat[i][j].equipe = i < n/2. ? 1 : 2;
 };
 
 void Mapa::processAction( float time, Unidade *u)

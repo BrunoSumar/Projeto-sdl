@@ -12,6 +12,7 @@ struct Unidade{
   int id;
   float hp = 1.;
   float dano = 0.;
+  int equipe = 0;
 
   static int count;
 
@@ -43,14 +44,13 @@ void Unidade::draw(float time){
 struct Personagem : Unidade {
   int hp;
   float cooldown = 0.1f;
-
-  // Para implementar cooldown
   float last_shot = 0.;
 
   Personagem(ShaderProgram* sp)
     : Unidade("resources/sprito2.png")
   {
     cartao.program = sp;
+    equipe = 1;
   };
 
   Unidade* fire(float t);
@@ -59,7 +59,9 @@ struct Personagem : Unidade {
 struct Projetil : Unidade {
   float last_time = 0;
   float vel = .01f;
-  int last_posx;
+  vec2 delta = { 1, 0};
+  int last_posx = -1;
+  int last_posy = -1;
   float dano = .5;
 
   Projetil(string path, int x=0, int y=0)
@@ -84,12 +86,14 @@ Unidade* Personagem::fire(float t){
 };
 
 Unidade* Projetil::action(float t){
-  if (last_posx == posx)
+  if (( !delta.x || last_posx == posx) && ( !delta.y || last_posy == posy ))
     return NULL;
 
   if ((t - last_time) > vel) {
     last_posx = posx;
+    last_posy = posy;
     posx += 1;
+    posy += 0;
     last_time = t;
   }
 
@@ -98,7 +102,8 @@ Unidade* Projetil::action(float t){
 
 void Projetil::colisao(Unidade *u){
   u->hp -= dano;
-  std::cout << u->hp << std::endl;
+  hp = -1;
+  /* std::cout << u->hp << std::endl; */
 };
  
 struct Piso : Unidade {
@@ -125,6 +130,7 @@ void Piso::draw(int posx, int posy){
 
 
 struct Inimigo : Unidade {
+
   Inimigo(ShaderProgram* sp, int x=0, int y=0)
     : Unidade("resources/cubomal.png")
   {
@@ -132,6 +138,7 @@ struct Inimigo : Unidade {
     posy = y;
     cartao.program = sp;
     cartao.model = translate(0, -.03, 0) * scale(1., .6, 1.);
+    equipe = 2;
   };
 };
 
