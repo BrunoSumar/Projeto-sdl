@@ -125,13 +125,6 @@ void Piso::draw(int posx, int posy){
 
 
 struct Inimigo : Unidade {
-  int hp;
-
-  // float cooldown = 0.1f;
-
-  // Para implementar cooldown
-  // float last_shot = 0.;
-
   Inimigo(ShaderProgram* sp, int x=0, int y=0)
     : Unidade("resources/cubomal.png")
   {
@@ -140,8 +133,28 @@ struct Inimigo : Unidade {
     cartao.program = sp;
     cartao.model = translate(0, -.03, 0) * scale(1., .6, 1.);
   };
+};
 
-  // Unidade* fire(float t);
+struct Cubinho : Inimigo {
+  float last_action = 0.;
+
+  Cubinho(ShaderProgram* sp, int x=0, int y=0)
+    : Inimigo(sp, x, y)
+  {}
+
+  virtual Unidade* action(float time);
+};
+
+Unidade* Cubinho::action(float t){
+  if ((t - last_action) > .05) { //menor = mais rapido
+    float moveX =  rand() % 15;
+    float moveY =  rand() % 15;
+    posx += moveX < 2 ? -1 : ( moveX >= 10 ? 1 : 0);
+    posy += moveY < 5 ? -1 : ( moveY >= 10 ? 1 : 0);
+    last_action = t;
+  }
+
+  return this;
 };
 
 /* Inicializando contador de unidades */
