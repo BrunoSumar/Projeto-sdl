@@ -19,6 +19,9 @@ struct Position {
   bool bloqueado = false;
   vec3 color = {.5f, .5f, .5f};
 
+  static vec3 cor1;
+  static vec3 cor2;
+
   void removeUnidade(Unidade *u);
   void addUnidade(Unidade *u);
   void setMatrices(float time);
@@ -76,8 +79,7 @@ int Mapa::moverUnidade(Unidade *u, int x, int y)
   if( mat[posx][posy].bloqueado )
     return 2;
 
-  std::cout << u->equipe << ' ' << mat[posx][posy].equipe << '\n';
-  if(( u->equipe != 0 ) && ( mat[posx][posy].equipe != u->equipe ))
+  if( u->equipe && ( mat[posx][posy].equipe != u->equipe ))
     return 3;
 
   mat[u->posx][u->posy].removeUnidade(u);
@@ -183,13 +185,16 @@ void Position::removeUnidade(Unidade *u)
 void Position::addUnidade(Unidade *u)
 {
   unidades.push_back(u);
-}
+};
 
 void Position::setMatrices(float time){
   Uniform("Impacto") = impacto;
   Uniform("Equipe") = equipe;
   Uniform("Time") = time;
-  Uniform("Color") = color;
-}
+  Uniform("Color") = equipe == 1 ? Position::cor1 : Position::cor2;
+};
+
+vec3 Position::cor1 = {.0, .3, .2};
+vec3 Position::cor2 = {.9, .0, .1};
 
 #endif // MAPA_H_

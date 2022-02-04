@@ -3,9 +3,9 @@
 
 in vec2 texCoord;
 
-uniform vec3 color;
+uniform vec3 Color;
 uniform float Impacto;
-uniform float Equipe;
+uniform int Equipe;
 uniform int Time;
 
 out vec4 FragColor;
@@ -32,7 +32,11 @@ float sdX(vec2 p, vec2 b){
 void main()
 {
   float dist = sdBox(texCoord);
+  // float estado = max( Impacto - Time, 0.)/2.;
+  float estado = Equipe == 2 ? 1.4 : .0;
   vec2 cross = vec2(.05, .3);
-  float x = min( sdX(texCoord, cross), sdX(texCoord, cross.yx));
-  FragColor = mix(vec4(color, .5), vec4(color, .0), step(.95, dist ) + step(.0, -x));
+  // float x =  min( sdX(texCoord, estado * cross), sdX(texCoord, estado * cross.yx));
+  // float x =  sdBox(texCoord)*2. - 1.6;
+  float x = 10.;
+  FragColor = mix(vec4(Color, .5), vec4(Color, .0), step(.95, dist ) + step(.0, -x));
 }

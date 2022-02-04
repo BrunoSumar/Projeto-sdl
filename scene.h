@@ -26,6 +26,7 @@ struct Scene {
   void setProjection(mat4 p);
   void addShaderToMapa(ShaderProgram *sp);
   void setMatrices();
+  void setColorEquipe(int equipe);
 };
 
 void Scene::draw(float time){
