@@ -7,9 +7,9 @@ link_flags = -ldl -lSDL2 -lSDL2_image -lSDL2_ttf -lGL -lGLEW -lassimp
 path_emcc = /home/bruno/Documentos/emscripten
 
 SHELL := /bin/bash
-CXXFLAGS += -I ./include -I ./imgui -I ./imgui/backends 
+CXXFLAGS += -I./include -I./imgui -I./imgui/backends
 
-$(output): $(src) $(imgui_src) $(libs)
+$(output): $(src) $(libs)
 	@echo Compilando projeto
 	@c++ `sdl2-config --cflags` $(CXXFLAGS) $(src) $(imgui_src) -o a `sdl2-config --libs` $(link_flags)
 

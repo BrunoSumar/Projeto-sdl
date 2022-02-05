@@ -43,6 +43,8 @@ ShaderProgram *pisoSP;
 
 clock_t begin_time;
 float tempo_atual = 0;
+float tempo_total = 0;
+float tempo_pausa = 0;
 
 // Inicializa-se o objeto Scene scene.
 void setupScene(){
@@ -62,24 +64,24 @@ void setupScene(){
     ));
 
   cartaoSP = new ShaderProgram{
-    Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
-    Shader{ "shaders/cartao.frag", GL_FRAGMENT_SHADER}
-  };
+  Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
+  Shader{ "shaders/cartao.frag", GL_FRAGMENT_SHADER}
+};
 
   fundoSP = new ShaderProgram{
-    Shader{"shaders/fundo.vert", GL_VERTEX_SHADER},
-    Shader{ "shaders/fundo.frag", GL_FRAGMENT_SHADER}
-  };
+  Shader{"shaders/fundo.vert", GL_VERTEX_SHADER},
+  Shader{ "shaders/fundo.frag", GL_FRAGMENT_SHADER}
+};
 
   cenarioSP = new ShaderProgram {
-    Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
-    Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
-  };
+  Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
+  Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
+};
 
   pisoSP = new ShaderProgram{
-    Shader{"shaders/piso.vert", GL_VERTEX_SHADER},
-    Shader{ "shaders/piso.frag", GL_FRAGMENT_SHADER}
-  };
+  Shader{"shaders/piso.vert", GL_VERTEX_SHADER},
+  Shader{ "shaders/piso.frag", GL_FRAGMENT_SHADER}
+};
 
   scene.addFundo("resources/folha.png", fundoSP);
 
@@ -99,10 +101,10 @@ bool init()
 {
   //Initialize SDL
   if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-    {
-      printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
-      return false;
-    }
+  {
+    printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+    return false;
+  }
 
   // GL 3.3 + GLSL 130
   const char* glsl_version = "#version 130";
@@ -113,27 +115,27 @@ bool init()
 
   //Criando janela
   gWindow = SDL_CreateWindow( "Jogo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
-			      SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+                              SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
   if( gWindow == NULL )
-    {
-      printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
-      return false;
-    }
+  {
+    printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
+    return false;
+  }
 
   //Criando contexto opengl
   gContext = SDL_GL_CreateContext( gWindow );
   if( gContext == NULL )
-    {
-      printf( "OpenGL context could not be created! SDL Error: %s\n", SDL_GetError() );
-      return false;
-    }
+  {
+    printf( "OpenGL context could not be created! SDL Error: %s\n", SDL_GetError() );
+    return false;
+  }
 
   SDL_GL_MakeCurrent(gWindow, gContext);
 
   if( SDL_GL_SetSwapInterval( 1 ) < 0 )
-    {
-      printf( "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError() );
-    }
+  {
+    printf( "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError() );
+  }
 
   //Inicializando GLEW
   glewExperimental = GL_FALSE;
@@ -160,8 +162,15 @@ bool init()
   ImGui_ImplOpenGL3_Init(glsl_version);
   return true;
 }
-static bool quit = false;
+
 static bool isPaused = true;
+void togglePause(){
+  isPaused = !isPaused;
+  if( isPaused )
+    tempo_total += tempo_atual - tempo_pausa;
+}
+
+static bool quit = false;
 void eventHandler( SDL_Event &e ) {
   const Uint8 *state = SDL_GetKeyboardState(NULL);
 
@@ -169,7 +178,8 @@ void eventHandler( SDL_Event &e ) {
   if( e.type == SDL_KEYDOWN )
   {
     if( e.key.keysym.sym == SDLK_PAUSE)
-      isPaused = true;
+      togglePause();
+      // isPaused = true;
 
     // Controle da câmera
     //
@@ -231,47 +241,48 @@ void main_loop(){
     if(quit == true)
       break;
   }
-scene.setView(
-	      lookAt(
-		     toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{5.8f, 3.f, 0.f, 1.f} ),// eye
-		     toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{-.5f, 0.f, 0.f, 1.f} ),// center
-		     {0.f, 1.f, 0.f}   // up
-		     )
-	      );
-// Start the Dear ImGui frame
-ImGui_ImplOpenGL3_NewFrame();
-ImGui_ImplSDL2_NewFrame();
-ImGui::NewFrame();
+  scene.setView(
+    lookAt(
+      toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{5.8f, 3.f, 0.f, 1.f} ),// eye
+      toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{-.5f, 0.f, 0.f, 1.f} ),// center
+      {0.f, 1.f, 0.f}   // up
+    )
+  );
+  // Start the Dear ImGui frame
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplSDL2_NewFrame();
+  ImGui::NewFrame();
 
-
-if (isPaused) 
-{
-  static float f = 0.0f;
-  static int counter = 0;
-
-  ImGui::Begin("Nome do Jogo");                          
-
-  if (ImGui::Button("Resume game"))                            
-    isPaused = false;
-
-  if (ImGui::Button("Quit"))                            
-    quit = true;
-
-  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-  ImGui::End();
-}
-  ImGui::Render();
-
-  glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+  glClearColor(clear_color.x , clear_color.y, clear_color.z, clear_color.w);
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
   // Desenha cena
   tempo_atual = float( clock() - begin_time ) /  CLOCKS_PER_SEC;
+  tempo_pausa = isPaused ? tempo_atual : tempo_pausa;
+  float tempo_jogo = tempo_total + ( tempo_atual - tempo_pausa );
 
-  if (!isPaused) {
-    scene.mapa.actions(tempo_atual);
-    scene.draw(tempo_atual);
+  if ( !isPaused ) {
+    scene.mapa.actions(tempo_jogo);
   }
+  scene.draw(tempo_jogo);
+
+  if (isPaused)
+  {
+    ImGui::Begin("Nome do Jogo");
+
+    if (ImGui::Button("Resume game"))
+      togglePause();
+      // isPaused = false;
+
+    if (ImGui::Button("Quit"))
+      quit = true;
+
+    // ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::Text("\nTempo em jogo: %.3f, Tempo real: %.3f", tempo_jogo, tempo_atual);
+    ImGui::End();
+  }
+  ImGui::Render();
+
 
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -298,15 +309,15 @@ int main(int argc, char *argv[]) {
   {
     printf( "Failed to initialize!\n" );
   }
-else
-{
-  quit = false;
+  else
+  {
+    quit = false;
 
-  SDL_StartTextInput();
+    SDL_StartTextInput();
 
-  setupScene();
+    setupScene();
 
-  begin_time = clock();
+    begin_time = clock();
 #ifdef __EMSCRIPTEN__
 
     emscripten_set_main_loop(main_loop, 0, 1);
