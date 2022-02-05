@@ -45,11 +45,14 @@ void Scene::draw(float time){
   //Desenha as unidades de cada posição do mapa
   for(int i=0; i<dim1; i++) {
     for(int j=0; j<dim2; j++) {
-      glUseProgram(mapa.piso->cartao.program->id);
-      setMatrices();
-      mapa.mat[i][j].setMatrices(time);
-      mapa.piso->draw(i, j);
-      for(int k = 0 ; k < mapa.mat[i][j].unidades.size(); k++){
+      int tam = mapa.mat[i][j].unidades.size();
+      if( !mapa.mat[i][j].bloqueado ){
+        glUseProgram(mapa.piso->cartao.program->id);
+        setMatrices();
+        mapa.mat[i][j].setMatrices(time, tam);
+        mapa.piso->draw(i, j);
+      }
+      for(int k = 0 ; k < tam; k++){
         glUseProgram(mapa.mat[i][j].unidades[k]->cartao.program->id);
         setMatrices();
         mapa.mat[i][j].unidades[k]->draw(time);

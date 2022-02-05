@@ -40,6 +40,7 @@ struct Personagem : Unidade {
     : Unidade("resources/sprito2.png")
   {
     cartao.program = sp;
+    cartao.model = translate(0, -.03, 0) * scale(1, 1.6, 1.2);
     equipe = 1;
   };
 
@@ -49,11 +50,12 @@ struct Personagem : Unidade {
 /* Projetil é a classe generica para ataques */
 struct Projetil : Unidade {
   float last_time = 0;
-  float vel = .01f;
-  vec2 dir = { 1, 0};
+  float vel = 56.f;
+  vec2 dir = {1, 0};
   int last_posx = -1;
   int last_posy = -1;
   float dano = .5;
+  int origem = -1;
 
   Projetil(string path, int x=0, int y=0)
     : Unidade(path, x, y),
@@ -65,13 +67,14 @@ struct Projetil : Unidade {
 };
 
 struct ShockWave : Projetil {
-  int nivel = 3;
+  int rastro = 2;
 
   ShockWave(string path, int x=0, int y=0)
     : Projetil(path, x, y)
   {
     dir = { -1, 0};
     dano = 5;
+    vel = 20;
   };
 
   virtual Unidade* action(float t);
@@ -95,7 +98,7 @@ struct Inimigo : Unidade {
     posx = x;
     posy = y;
     cartao.program = sp;
-    cartao.model = translate(0, -.03, 0) * scale(1., .6, 1.);
+    cartao.model = translate(0, -.03, 0) * scale(1, .95, .75);
     equipe = 2;
   };
 };
@@ -130,8 +133,9 @@ Unidade* Personagem::fire(float t){
     last_shot = t;
 
     // Personagem e seu projétil estão usando o mesmo shaderProgram
-    Unidade *u = new Projetil{"resources/1_0.png", posx, posy};
+    Projetil *u = new Projetil{"resources/1_0.png", posx, posy};
     u->cartao.program = this->cartao.program;
+    u->origem = id;
     return u;
   };
   return NULL;
@@ -141,7 +145,7 @@ Unidade* Projetil::action(float t){
   if (( !dir.x || last_posx == posx) && ( !dir.y || last_posy == posy ))
     return NULL;
 
-  if ((t - last_time) > vel) {
+  if ((t - last_time) > 1/vel) {
     last_posx = posx;
     last_posy = posy;
     posx += dir.x;
@@ -153,10 +157,36 @@ Unidade* Projetil::action(float t){
 };
 
 void Projetil::colisao(Unidade *u){
-  if( equipe != u->equipe ){
+  if( equipe != u->equipe && origem != u->id ){
     u->hp -= dano;
+    std::cout << u->id << ' ' << u->hp << std::endl;
     hp = -1;
   }
+};
+
+Unidade* ShockWave::action(float t){
+  if (( !dir.x || last_posx == posx) && ( !dir.y || last_posy == posy ))
+    return NULL;
+
+  if ((t - last_time) > 1/vel) {
+    last_posx = posx;
+    last_posy = posy;
+    posx += dir.x;
+    posy += dir.y;
+    last_time = t;
+    if(rastro > 0){
+      ShockWave *u = new ShockWave{"resources/sw.png", last_posx, last_posy};
+      u->cartao.program = this->cartao.program;
+      u->cartao.model = cartao.model * scale(1, .7, 1);
+      u->origem = origem;
+      u->last_time = last_time;
+      u->rastro = --rastro;
+      return u;
+    }
+  }
+
+  return this;
+
 };
 
 void Piso::draw(int posx, int posy){
@@ -172,11 +202,21 @@ void Piso::draw(int posx, int posy){
 
 Unidade* Cubinho::action(float t){
   if ((t - last_action) > .05) { //menor = mais rapido
+    last_action = t;
+
+    float attack = rand() % 11;
+    if( !attack ){
+      ShockWave *u = new ShockWave{"resources/sw.png", posx - 1, posy};
+      u->cartao.program = this->cartao.program;
+      u->cartao.model = translate(-0.05,0,0) * scale(1, 1.2, .42);
+      u->origem = id;
+      return u;
+    }
+
     float moveX =  rand() % 15;
     float moveY =  rand() % 15;
     posx += moveX < 2 ? -1 : ( moveX >= 10 ? 1 : 0);
     posy += moveY < 5 ? -1 : ( moveY >= 10 ? 1 : 0);
-    last_action = t;
   }
 
   return this;

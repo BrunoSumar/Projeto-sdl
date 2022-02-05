@@ -24,7 +24,7 @@ struct Position {
 
   void removeUnidade(Unidade *u);
   void addUnidade(Unidade *u);
-  void setMatrices(float time);
+  void setMatrices(float time, int ocupado);
 };
 
 // Contém o estado de uma batalha no que diz
@@ -140,16 +140,16 @@ void Mapa::processAction( float time, Unidade *u)
     u->posy = old_y;
     remUnidade( u );
   }
-  else if(new_u == u){
+  else{
     int diffx = u->posx - old_x, diffy = u->posy - old_y;
+    u->posx = old_x;
+    u->posy = old_y;
     if ( diffx || diffy ) {
-      u->posx = old_x;
-      u->posy = old_y;
       movimento = moverUnidade(u, diffx, diffy);
     }
-  }
-  else{
-    addUnidade( new_u );
+    if(new_u != u){
+      addUnidade( new_u );
+    }
   }
 };
 
@@ -187,11 +187,12 @@ void Position::addUnidade(Unidade *u)
   unidades.push_back(u);
 };
 
-void Position::setMatrices(float time){
+void Position::setMatrices(float time, int ocupado){
   Uniform("Impacto") = impacto;
   Uniform("Equipe") = equipe;
   Uniform("Time") = time;
   Uniform("Color") = equipe == 1 ? Position::cor1 : Position::cor2;
+  Uniform("Ocupado") = ocupado;
 };
 
 vec3 Position::cor1 = {.0, .3, .2};

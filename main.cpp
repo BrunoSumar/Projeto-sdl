@@ -152,6 +152,7 @@ bool init()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   glCullFace(GL_FRONT);
+
   // Inicialização do Imgui
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
@@ -160,6 +161,9 @@ bool init()
 
   ImGui_ImplSDL2_InitForOpenGL(gWindow, gContext);
   ImGui_ImplOpenGL3_Init(glsl_version);
+
+  srand (time(NULL));
+
   return true;
 }
 
