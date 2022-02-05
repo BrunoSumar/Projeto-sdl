@@ -13,6 +13,8 @@ $(output): $(src) $(libs)
 	@echo Compilando projeto
 	@c++ `sdl2-config --cflags` $(CXXFLAGS) $(src) $(imgui_src) -o a `sdl2-config --libs` $(link_flags)
 
+main.o: $(libs)
+
 run: $(output)
 	@echo executando: $(output)
 	@./$(output)

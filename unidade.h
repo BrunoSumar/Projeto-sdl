@@ -32,7 +32,7 @@ struct Unidade{
 /* Personagem representa a unidade referente ao personagem principal  */
 /* controlado pelo usuário */
 struct Personagem : Unidade {
-  int hp;
+  int hp = 1;
   float cooldown = 0.1f;
   float last_shot = 0.;
 
@@ -62,6 +62,19 @@ struct Projetil : Unidade {
 
   virtual Unidade* action(float t);
   virtual void colisao(Unidade *u);
+};
+
+struct ShockWave : Projetil {
+  int nivel = 3;
+
+  ShockWave(string path, int x=0, int y=0)
+    : Projetil(path, x, y)
+  {
+    dir = { -1, 0};
+    dano = 5;
+  };
+
+  virtual Unidade* action(float t);
 };
 
 struct Piso : Unidade {
@@ -140,9 +153,10 @@ Unidade* Projetil::action(float t){
 };
 
 void Projetil::colisao(Unidade *u){
-  if( equipe != u->equipe )
+  if( equipe != u->equipe ){
     u->hp -= dano;
-  hp = -1;
+    hp = -1;
+  }
 };
 
 void Piso::draw(int posx, int posy){
