@@ -152,6 +152,8 @@ bool init()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   glCullFace(GL_FRONT);
+
+
   // Inicialização do Imgui
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
@@ -163,19 +165,12 @@ bool init()
   return true;
 }
 
-static bool isPaused = true;
-static bool no_titlebar = true;
-static bool no_scrollbar = true;
-static bool no_menu = true;
-static bool no_move = false;
-static bool no_resize = false;
-static bool no_collapse = false;
-static bool no_close = false;
-static bool no_nav = false;
-static bool no_background = true;
-static bool no_bring_to_front = false;
-static bool unsaved_document = false;
+// Estado geral do programa inteiro
 ImGuiWindowFlags window_flags = 0;
+ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+bool quit = false;
+bool isPaused = true;
+bool onBattle = false;
 
 void togglePause(){
   isPaused = !isPaused;
@@ -183,7 +178,6 @@ void togglePause(){
     tempo_total += tempo_atual - tempo_pausa;
 }
 
-static bool quit = false;
 void eventHandler( SDL_Event &e ) {
   const Uint8 *state = SDL_GetKeyboardState(NULL);
 
@@ -245,28 +239,23 @@ void eventHandler( SDL_Event &e ) {
   }
 }
 
-// the state
-ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+// Para testes principalmente
+ImGuiWindowFlags setupJanelaCustomizavel() {
 
-// Função de renderização
-void main_loop(){
-  while( SDL_PollEvent( &e ) != 0 )
-    {
-      eventHandler(e);
-      if(quit == true)
-	break;
-    }
-  scene.setView(
-		lookAt(
-		       toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{5.8f, 3.f, 0.f, 1.f} ),// eye
-		       toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{-.5f, 0.f, 0.f, 1.f} ),// center
-		       {0.f, 1.f, 0.f}   // up
-		       )
-		);
-  // Start the Dear ImGui frame
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplSDL2_NewFrame();
-  ImGui::NewFrame();
+  static ImGuiWindowFlags window_flags;
+
+  // Estado da janela
+  static bool no_titlebar = true;
+  static bool no_scrollbar = true;
+  static bool no_menu = true;
+  static bool no_move = false;
+  static bool no_resize = false;
+  static bool no_collapse = false;
+  static bool no_close = false;
+  static bool no_nav = false;
+  static bool no_background = true;
+  static bool no_bring_to_front = false;
+  static bool unsaved_document = false;
 
   window_flags = 0;
   if (no_titlebar)        window_flags |= ImGuiWindowFlags_NoTitleBar;
@@ -280,52 +269,129 @@ void main_loop(){
   if (no_bring_to_front)  window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
   if (unsaved_document)   window_flags |= ImGuiWindowFlags_UnsavedDocument;
 
+  if (ImGui::BeginTable("split", 3))
+    {
+      ImGui::TableNextColumn(); ImGui::Checkbox("No titlebar", &no_titlebar);
+      ImGui::TableNextColumn(); ImGui::Checkbox("No scrollbar", &no_scrollbar);
+      ImGui::TableNextColumn(); ImGui::Checkbox("No menu", &no_menu);
+
+      ImGui::TableNextColumn(); ImGui::Checkbox("No move", &no_move);
+      ImGui::TableNextColumn(); ImGui::Checkbox("No resize", &no_resize);
+      ImGui::TableNextColumn(); ImGui::Checkbox("No collapse", &no_collapse);
+
+      ImGui::TableNextColumn(); ImGui::Checkbox("No close", &no_close);
+      ImGui::TableNextColumn(); ImGui::Checkbox("No nav", &no_nav);
+      ImGui::TableNextColumn(); ImGui::Checkbox("No background", &no_background);
+
+      ImGui::TableNextColumn(); ImGui::Checkbox("No bring to front", &no_bring_to_front);
+      ImGui::TableNextColumn(); ImGui::Checkbox("Unsaved document", &unsaved_document);
+      ImGui::EndTable();
+    }
+
+  return window_flags;
+
+}
+
+void menuPrincipal(){
+  
+  static bool use_work_area = true;
+  static ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBackground;
+
+  // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
+  // Based on your use case you may want one of the other.
+  const ImGuiViewport* viewport = ImGui::GetMainViewport();
+  ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
+  ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
+
+  ImGui::Begin("Nome do Jogo", NULL, flags);                          
+
+  auto windowWidth = ImGui::GetWindowSize().x;
+  auto windowHeight = ImGui::GetWindowSize().y;
+
+  ImGui::SetCursorPosX(windowWidth / 3);
+  ImGui::SetCursorPosY(windowWidth / 3);
+
+  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+  if (ImGui::Button("Iniciar jogo"))                            
+    onBattle = true;
+
+  if (ImGui::Button("Quit"))                            
+    quit = true;
+
+  ImGui::End();
+
+  ImGui::ShowDemoWindow();
+}
+
+void janelaDePause(){
+
+  static ImGuiWindowFlags window_flags;
+
+  // Configurando a janela
+  window_flags = 0;
+  window_flags |= ImGuiWindowFlags_NoTitleBar;
+  window_flags |= ImGuiWindowFlags_NoScrollbar;
+  window_flags |= ImGuiWindowFlags_NoCollapse;
+  window_flags |= ImGuiWindowFlags_NoBackground;
+
+
+  ImGui::Begin("Nome do Jogo", NULL, window_flags);                          
+
+  if (ImGui::Button("Resume game"))                            
+    isPaused = false;
+
+  if (ImGui::Button("Quit"))                            
+    quit = true;
+      
+  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+  ImGui::End();
+
+}
+
+// Função de renderização
+void main_loop(){
+
+  while( SDL_PollEvent( &e ) != 0 )
+    {
+      eventHandler(e);
+      if(quit == true)
+	break;
+    }
+
+
+  scene.setView(
+		lookAt(
+		       toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{5.8f, 3.f, 0.f, 1.f} ),// eye
+		       toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{-.5f, 0.f, 0.f, 1.f} ),// center
+		       {0.f, 1.f, 0.f}   // up
+		       )
+		);
+
+
+  // Start the Dear ImGui frame
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplSDL2_NewFrame();
+  ImGui::NewFrame();
 
   glClearColor(clear_color.x , clear_color.y, clear_color.z, clear_color.w);
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
 
   // Desenha cena
   tempo_atual = float( clock() - begin_time ) /  CLOCKS_PER_SEC;
   tempo_pausa = isPaused ? tempo_atual : tempo_pausa;
   float tempo_jogo = tempo_total + ( tempo_atual - tempo_pausa );
 
-  if ( !isPaused ) {
-    scene.mapa.actions(tempo_jogo);
-  }
-  scene.draw(tempo_jogo);
+  if ( onBattle ) {
+    if ( !isPaused ) scene.mapa.actions(tempo_jogo);
 
-  if (isPaused) 
-    {
-      static float f = 0.0f;
-      static int counter = 0;
+    scene.draw(tempo_jogo);
 
-      ImGui::Begin("Nome do Jogo", NULL, window_flags);                          
+    if (isPaused) janelaDePause();
 
-      if (ImGui::Button("Resume game"))                            
-	isPaused = false;
+  } else menuPrincipal();
 
-      if (ImGui::Button("Quit"))                            
-	quit = true;
-
-      if (ImGui::BeginTable("split", 3))
-	{
-	  ImGui::TableNextColumn(); ImGui::Checkbox("No titlebar", &no_titlebar);
-	  ImGui::TableNextColumn(); ImGui::Checkbox("No scrollbar", &no_scrollbar);
-	  ImGui::TableNextColumn(); ImGui::Checkbox("No menu", &no_menu);
-	  ImGui::TableNextColumn(); ImGui::Checkbox("No move", &no_move);
-	  ImGui::TableNextColumn(); ImGui::Checkbox("No resize", &no_resize);
-	  ImGui::TableNextColumn(); ImGui::Checkbox("No collapse", &no_collapse);
-	  ImGui::TableNextColumn(); ImGui::Checkbox("No close", &no_close);
-	  ImGui::TableNextColumn(); ImGui::Checkbox("No nav", &no_nav);
-	  ImGui::TableNextColumn(); ImGui::Checkbox("No background", &no_background);
-	  ImGui::TableNextColumn(); ImGui::Checkbox("No bring to front", &no_bring_to_front);
-	  ImGui::TableNextColumn(); ImGui::Checkbox("Unsaved document", &unsaved_document);
-	  ImGui::EndTable();
-	}
-
-      ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-      ImGui::End();
-    }
   ImGui::Render();
 
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
