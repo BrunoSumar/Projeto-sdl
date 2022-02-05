@@ -162,6 +162,19 @@ bool init()
 }
 static bool quit = false;
 static bool isPaused = true;
+static bool no_titlebar = false;
+static bool no_scrollbar = false;
+static bool no_menu = false;
+static bool no_move = false;
+static bool no_resize = false;
+static bool no_collapse = false;
+static bool no_close = false;
+static bool no_nav = false;
+static bool no_background = false;
+static bool no_bring_to_front = false;
+static bool unsaved_document = false;
+ImGuiWindowFlags window_flags = 0;
+
 void eventHandler( SDL_Event &e ) {
   const Uint8 *state = SDL_GetKeyboardState(NULL);
 
@@ -243,23 +256,50 @@ ImGui_ImplOpenGL3_NewFrame();
 ImGui_ImplSDL2_NewFrame();
 ImGui::NewFrame();
 
+window_flags = 0;
+if (no_titlebar)        window_flags |= ImGuiWindowFlags_NoTitleBar;
+if (no_scrollbar)       window_flags |= ImGuiWindowFlags_NoScrollbar;
+if (!no_menu)           window_flags |= ImGuiWindowFlags_MenuBar;
+if (no_move)            window_flags |= ImGuiWindowFlags_NoMove;
+if (no_resize)          window_flags |= ImGuiWindowFlags_NoResize;
+if (no_collapse)        window_flags |= ImGuiWindowFlags_NoCollapse;
+if (no_nav)             window_flags |= ImGuiWindowFlags_NoNav;
+if (no_background)      window_flags |= ImGuiWindowFlags_NoBackground;
+if (no_bring_to_front)  window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+if (unsaved_document)   window_flags |= ImGuiWindowFlags_UnsavedDocument;
 
 if (isPaused) 
-{
-  static float f = 0.0f;
-  static int counter = 0;
+  {
+    static float f = 0.0f;
+    static int counter = 0;
 
-  ImGui::Begin("Nome do Jogo");                          
+    ImGui::Begin("Nome do Jogo", NULL, window_flags);                          
 
-  if (ImGui::Button("Resume game"))                            
-    isPaused = false;
+    if (ImGui::Button("Resume game"))                            
+      isPaused = false;
 
-  if (ImGui::Button("Quit"))                            
-    quit = true;
+    if (ImGui::Button("Quit"))                            
+      quit = true;
 
-  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-  ImGui::End();
-}
+    if (ImGui::BeginTable("split", 3))
+      {
+	ImGui::TableNextColumn(); ImGui::Checkbox("No titlebar", &no_titlebar);
+	ImGui::TableNextColumn(); ImGui::Checkbox("No scrollbar", &no_scrollbar);
+	ImGui::TableNextColumn(); ImGui::Checkbox("No menu", &no_menu);
+	ImGui::TableNextColumn(); ImGui::Checkbox("No move", &no_move);
+	ImGui::TableNextColumn(); ImGui::Checkbox("No resize", &no_resize);
+	ImGui::TableNextColumn(); ImGui::Checkbox("No collapse", &no_collapse);
+	ImGui::TableNextColumn(); ImGui::Checkbox("No close", &no_close);
+	ImGui::TableNextColumn(); ImGui::Checkbox("No nav", &no_nav);
+	ImGui::TableNextColumn(); ImGui::Checkbox("No background", &no_background);
+	ImGui::TableNextColumn(); ImGui::Checkbox("No bring to front", &no_bring_to_front);
+	ImGui::TableNextColumn(); ImGui::Checkbox("Unsaved document", &unsaved_document);
+	ImGui::EndTable();
+      }
+
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::End();
+  }
   ImGui::Render();
 
   glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
@@ -268,10 +308,8 @@ if (isPaused)
   // Desenha cena
   tempo_atual = float( clock() - begin_time ) /  CLOCKS_PER_SEC;
 
-  if (!isPaused) {
-    scene.mapa.actions(tempo_atual);
-    scene.draw(tempo_atual);
-  }
+  scene.mapa.actions(tempo_atual);
+  scene.draw(tempo_atual);
 
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
