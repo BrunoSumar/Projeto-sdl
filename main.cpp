@@ -2,6 +2,10 @@
 #include <iostream>
 #include <ctime>
 
+#include "imgui.h"
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_opengl3.h"
+
 #include <SDL2/SDL.h>
 
 #ifdef __EMSCRIPTEN__
@@ -40,7 +44,7 @@ ShaderProgram *pisoSP;
 clock_t begin_time;
 float tempo_atual = 0;
 
-// Inicialização de cena
+// Inicializa-se o objeto Scene scene.
 void setupScene(){
   scene.setProjection(
     scale(1., 1., -1.)*perspective(
@@ -95,35 +99,41 @@ bool init()
 {
   //Initialize SDL
   if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-  {
-    printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
-    return false;
-  }
+    {
+      printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+      return false;
+    }
 
-  // Setando versão do opengl para 3.3
+  // GL 3.3 + GLSL 130
+  const char* glsl_version = "#version 130";
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
   SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
   SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
 
   //Criando janela
-  gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+  gWindow = SDL_CreateWindow( "Jogo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
+			      SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
   if( gWindow == NULL )
-  {
-    printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
-    return false;
-  }
+    {
+      printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
+      return false;
+    }
 
   //Criando contexto opengl
   gContext = SDL_GL_CreateContext( gWindow );
   if( gContext == NULL )
-  {
-    printf( "OpenGL context could not be created! SDL Error: %s\n", SDL_GetError() );
-    return false;
-  }
+    {
+      printf( "OpenGL context could not be created! SDL Error: %s\n", SDL_GetError() );
+      return false;
+    }
+
+  SDL_GL_MakeCurrent(gWindow, gContext);
 
   if( SDL_GL_SetSwapInterval( 1 ) < 0 )
-  {
-    printf( "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError() );
-  }
+    {
+      printf( "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError() );
+    }
 
   //Inicializando GLEW
   glewExperimental = GL_FALSE;
@@ -140,25 +150,31 @@ bool init()
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   glCullFace(GL_FRONT);
+  // Inicialização do Imgui
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGuiIO& io = ImGui::GetIO(); (void)io;
+  ImGui::StyleColorsDark();
 
+  ImGui_ImplSDL2_InitForOpenGL(gWindow, gContext);
+  ImGui_ImplOpenGL3_Init(glsl_version);
   return true;
 }
-
 static bool quit = false;
+static bool isPaused = true;
 void eventHandler( SDL_Event &e ) {
   const Uint8 *state = SDL_GetKeyboardState(NULL);
-  
-  if( e.type == SDL_QUIT || state[SDL_SCANCODE_ESCAPE] )
-  {
-    quit = true;
-  }
 
+  ImGui_ImplSDL2_ProcessEvent(&e);
   if( e.type == SDL_KEYDOWN )
   {
+    if( e.key.keysym.sym == SDLK_PAUSE)
+      isPaused = true;
+
     // Controle da câmera
     //
     // <- e -> Giram em torno do centro em direção horizontal
-    if( e.key.keysym.sym == SDLK_RIGHT)
+    else if( e.key.keysym.sym == SDLK_RIGHT)
       rot += .02;
     else if ( e.key.keysym.sym == SDLK_LEFT)
       rot -= .02;
@@ -204,6 +220,9 @@ void eventHandler( SDL_Event &e ) {
   }
 }
 
+// the state
+ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
 // Função de renderização
 void main_loop(){
   while( SDL_PollEvent( &e ) != 0 )
@@ -212,32 +231,64 @@ void main_loop(){
     if(quit == true)
       break;
   }
+scene.setView(
+	      lookAt(
+		     toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{5.8f, 3.f, 0.f, 1.f} ),// eye
+		     toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{-.5f, 0.f, 0.f, 1.f} ),// center
+		     {0.f, 1.f, 0.f}   // up
+		     )
+	      );
+// Start the Dear ImGui frame
+ImGui_ImplOpenGL3_NewFrame();
+ImGui_ImplSDL2_NewFrame();
+ImGui::NewFrame();
 
-  scene.setView(
-    lookAt(
-      toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{5.8f, 3.f, 0.f, 1.f} ),// eye
-      toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{-.5f, 0.f, 0.f, 1.f} ),// center
-      {0.f, 1.f, 0.f}   // up
-    )
-  );
 
-  // limpa tela
+if (isPaused) 
+{
+  static float f = 0.0f;
+  static int counter = 0;
+
+  ImGui::Begin("Nome do Jogo");                          
+
+  if (ImGui::Button("Resume game"))                            
+    isPaused = false;
+
+  if (ImGui::Button("Quit"))                            
+    quit = true;
+
+  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+  ImGui::End();
+}
+  ImGui::Render();
+
+  glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
   // Desenha cena
   tempo_atual = float( clock() - begin_time ) /  CLOCKS_PER_SEC;
-  scene.mapa.actions(tempo_atual);
-  scene.draw(tempo_atual);
+
+  if (!isPaused) {
+    scene.mapa.actions(tempo_atual);
+    scene.draw(tempo_atual);
+  }
+
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
   // Atualização da janela
   SDL_GL_SwapWindow( gWindow );
 };
-
 // Libera recursos
 void close()
 {
+  // Cleanup
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplSDL2_Shutdown();
+  ImGui::DestroyContext();
+
   SDL_DestroyWindow( gWindow );
   gWindow = NULL;
+  SDL_GL_DeleteContext(gContext);
   SDL_Quit();
 }
 
@@ -247,15 +298,15 @@ int main(int argc, char *argv[]) {
   {
     printf( "Failed to initialize!\n" );
   }
-  else
-  {
-    quit = false;
+else
+{
+  quit = false;
 
-    SDL_StartTextInput();
+  SDL_StartTextInput();
 
-    setupScene();
+  setupScene();
 
-    begin_time = clock();
+  begin_time = clock();
 #ifdef __EMSCRIPTEN__
 
     emscripten_set_main_loop(main_loop, 0, 1);
@@ -269,7 +320,6 @@ int main(int argc, char *argv[]) {
 
 #endif
   }
-
   close();
 
   return 0;
