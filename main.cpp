@@ -215,17 +215,19 @@ void eventHandler( SDL_Event &e ) {
       rot_x -= .02;
 
     // movimentação
-    else if ( e.key.keysym.sym == SDLK_w )
-      scene.mapa.moverPersonagem(0, 1);
-    else if ( e.key.keysym.sym == SDLK_s )
-      scene.mapa.moverPersonagem(0, -1);
-    else if ( e.key.keysym.sym == SDLK_a )
-      scene.mapa.moverPersonagem(-1, 0);
-    else if ( e.key.keysym.sym == SDLK_d )
-      scene.mapa.moverPersonagem(1, 0);
+    else if ( !isPaused ){
+      if ( e.key.keysym.sym == SDLK_w )
+        scene.mapa.moverPersonagem(0, 1);
+      else if ( e.key.keysym.sym == SDLK_s )
+        scene.mapa.moverPersonagem(0, -1);
+      else if ( e.key.keysym.sym == SDLK_a )
+        scene.mapa.moverPersonagem(-1, 0);
+      else if ( e.key.keysym.sym == SDLK_d )
+        scene.mapa.moverPersonagem(1, 0);
 
-    else if ( e.key.keysym.sym == SDLK_j )
-      scene.mapa.tiroPersonagem(tempo_atual);
+      else if ( e.key.keysym.sym == SDLK_j )
+        scene.mapa.tiroPersonagem(tempo_atual);
+    }
   }
 
   if (e.type == SDL_WINDOWEVENT)
