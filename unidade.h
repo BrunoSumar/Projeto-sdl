@@ -29,16 +29,6 @@ struct Unidade{
   virtual void colisao(Unidade *u) {};
 };
 
-void Unidade::draw(float time){
-  float tranX = (3.8 - posy) * INTERVALO;
-  /* float tranZ = (posx - MAPA_WIDTH/2. - .5 ) * INTERVALO; */
-  float tranZ = (3.5 - posx) * INTERVALO;
-
-  cartao.position = translate(tranX, 0., tranZ) * scale(1.5, 1.5, 1.5);
-
-  cartao.draw(time);
-};
-
 /* Personagem representa a unidade referente ao personagem principal  */
 /* controlado pelo usuário */
 struct Personagem : Unidade {
@@ -56,10 +46,11 @@ struct Personagem : Unidade {
   Unidade* fire(float t);
 };
 
+/* Projetil é a classe generica para ataques */
 struct Projetil : Unidade {
   float last_time = 0;
   float vel = .01f;
-  vec2 delta = { 1, 0};
+  vec2 dir = { 1, 0};
   int last_posx = -1;
   int last_posy = -1;
   float dano = .5;
@@ -68,44 +59,11 @@ struct Projetil : Unidade {
     : Unidade(path, x, y),
       last_posx{x-1}
   {};
-  
+
   virtual Unidade* action(float t);
   virtual void colisao(Unidade *u);
 };
 
-Unidade* Personagem::fire(float t){
-  if ((t - last_shot) > cooldown) {
-    last_shot = t;
-
-    // Personagem e seu projétil estão usando o mesmo shaderProgram
-    Unidade *u = new Projetil{"resources/1_0.png", posx, posy};
-    u->cartao.program = this->cartao.program;
-    return u;
-  };
-  return NULL;
-};
-
-Unidade* Projetil::action(float t){
-  if (( !delta.x || last_posx == posx) && ( !delta.y || last_posy == posy ))
-    return NULL;
-
-  if ((t - last_time) > vel) {
-    last_posx = posx;
-    last_posy = posy;
-    posx += 1;
-    posy += 0;
-    last_time = t;
-  }
-
-  return this;
-};
-
-void Projetil::colisao(Unidade *u){
-  u->hp -= dano;
-  hp = -1;
-  /* std::cout << u->hp << std::endl; */
-};
- 
 struct Piso : Unidade {
   /* vec3 color = {1.0, .0, .0}; */
   Piso(ShaderProgram* sp)
@@ -117,20 +75,7 @@ struct Piso : Unidade {
   void draw(int posx, int posy);
 };
 
-void Piso::draw(int posx, int posy){
-  float tranX = (3.5 - posy) * INTERVALO;
-  float tranZ = (3 - posx) * INTERVALO;
-
-  float sc = (INTERVALO / 2.);
-
-  cartao.model = translate(tranX, 0., tranZ)* scale(sc, sc, sc) * rotate_x(M_PI/2.) ;
-
-  cartao.draw(0.);
-};
-
-
 struct Inimigo : Unidade {
-
   Inimigo(ShaderProgram* sp, int x=0, int y=0)
     : Unidade("resources/cubomal.png")
   {
@@ -152,6 +97,65 @@ struct Cubinho : Inimigo {
   virtual Unidade* action(float time);
 };
 
+/* Métodos */
+
+void Unidade::draw(float time){
+  float tranX = (3.8 - posy) * INTERVALO;
+  /* float tranZ = (posx - MAPA_WIDTH/2. - .5 ) * INTERVALO; */
+  float tranZ = (3.5 - posx) * INTERVALO;
+
+  cartao.position = translate(tranX, 0., tranZ) * scale(1.5, 1.5, 1.5);
+
+  cartao.draw(time);
+};
+
+int Unidade::count = 1; /* Inicializando contador de unidades */
+
+
+Unidade* Personagem::fire(float t){
+  if ((t - last_shot) > cooldown) {
+    last_shot = t;
+
+    // Personagem e seu projétil estão usando o mesmo shaderProgram
+    Unidade *u = new Projetil{"resources/1_0.png", posx, posy};
+    u->cartao.program = this->cartao.program;
+    return u;
+  };
+  return NULL;
+};
+
+Unidade* Projetil::action(float t){
+  if (( !dir.x || last_posx == posx) && ( !dir.y || last_posy == posy ))
+    return NULL;
+
+  if ((t - last_time) > vel) {
+    last_posx = posx;
+    last_posy = posy;
+    posx += dir.x;
+    posy += dir.y;
+    last_time = t;
+  }
+
+  return this;
+};
+
+void Projetil::colisao(Unidade *u){
+  if( equipe != u->equipe )
+    u->hp -= dano;
+  hp = -1;
+};
+
+void Piso::draw(int posx, int posy){
+  float tranX = (3.5 - posy) * INTERVALO;
+  float tranZ = (3 - posx) * INTERVALO;
+
+  float sc = (INTERVALO / 2.);
+
+  cartao.model = translate(tranX, 0., tranZ)* scale(sc, sc, sc) * rotate_x(M_PI/2.) ;
+
+  cartao.draw(0.);
+};
+
 Unidade* Cubinho::action(float t){
   if ((t - last_action) > .05) { //menor = mais rapido
     float moveX =  rand() % 15;
@@ -163,8 +167,5 @@ Unidade* Cubinho::action(float t){
 
   return this;
 };
-
-/* Inicializando contador de unidades */
-int Unidade::count = 0;
 
 #endif // UNIDADE_H_
