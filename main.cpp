@@ -620,7 +620,7 @@ void main_loop() {
       ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
 
       ImGui::SetWindowFontScale(3.5);
-      ImGui::Text("hp: %.3f\nEstágio: %d\nInimigos: %d",
+      ImGui::Text("hp: %.f\nEstágio: %d\nInimigos: %d",
                   scene.mapa.personagem->hp, nivel,
                   scene.mapa.numInimigos());
 
