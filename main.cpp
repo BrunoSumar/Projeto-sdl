@@ -229,7 +229,7 @@ void eventHandler(SDL_Event &e) {
 
   ImGui_ImplSDL2_ProcessEvent(&e);
   if (e.type == SDL_KEYDOWN) {
-    if (e.key.keysym.sym == SDLK_PAUSE)
+    if (e.key.keysym.sym == SDLK_RETURN)
       togglePause();
 
     // Controle da câmera
@@ -383,6 +383,7 @@ void menuPrincipal() {
   ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.65, 0.1, 0.1, 1.));
   ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (windowheight / 8));
   ImGui::PushFont(font1_grande);
+  ImGui::SetWindowFontScale(4);
   string txt = "Nature's Ghost";
   auto textWidth   = ImGui::CalcTextSize(txt.c_str()).x;
   ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
@@ -392,19 +393,6 @@ void menuPrincipal() {
   ImGui::PopStyleColor();
 
   ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
-
-  // if (ImGui::BeginTable("table1", 3)) {
-  //   ImGui::SetWindowFontScale(3);
-
-  //   ImGui::TableNextRow();
-  //   ImGui::TableNextColumn();
-  //   ImGui::TableNextColumn();
-  //   ImGui::Text("Nature's Ghost");
-  //   ImGui::TableNextColumn();
-
-  //   ImGui::EndTable();
-
-  // }
 
   ImGui::SetWindowFontScale(3);
 
@@ -420,41 +408,21 @@ void menuPrincipal() {
   if (ImGui::Button("Quit"))
     quit = true;
 
-  // // Usando a tabela para centralizar.
-  // if (ImGui::BeginTable("table", 3)) {
-
-  //   ImGui::TableNextRow();
-  //   ImGui::TableNextColumn();
-  //   ImGui::TableNextColumn();
-  //   if (ImGui::Button("Iniciar jogo")){
-  //     onBattle = true;
-  //     togglePause();
-  //   }
-  //   ImGui::TableNextColumn();
-
-  //   ImGui::TableNextRow();
-  //   ImGui::TableNextColumn();
-    
-  //   ImGui::TableNextColumn();
-  //   if (ImGui::Button("Quit"))
-  //     quit = true;
-  //   ImGui::TableNextColumn();
-    
-  //   // Alterar tamanho do menu
-  //   ImGui::SetWindowFontScale(2);
-
-  //   ImGui::EndTable();
-  // }
-
-  // ImGui::ShowStyleEditor();
   ImGui::PopStyleVar(4);
   ImGui::PopStyleColor(4);
 
+  ImGui::SetCursorPosY(windowheight * 11/12);
+
+  ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
+  ImGui::SetWindowFontScale(2);
+  ImGui::Text("\t\tFeito por Bruno Macedo e Bruno Sumar.");
+  ImGui::PopStyleColor();
+
   ImGui::End();
 
-  ImGui::PushFont(font3);
-  ImGui::ShowDemoWindow();
-  ImGui::PopFont();
+  // ImGui::PushFont(font3);
+  // ImGui::ShowDemoWindow();
+  // ImGui::PopFont();
 }
 
 void janelaDePause() {
@@ -468,6 +436,7 @@ void janelaDePause() {
   window_flags |= ImGuiWindowFlags_NoScrollbar;
   window_flags |= ImGuiWindowFlags_NoCollapse;
   window_flags |= ImGuiWindowFlags_NoBackground;
+  window_flags |= ImGuiWindowFlags_NoMove;
 
   ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1., 1., 1., 1.));
   ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0., 0., 0., 0.8));
@@ -485,6 +454,12 @@ void janelaDePause() {
 
   ImGui::PushFont(font2);
 
+  ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
+  ImGui::SetWindowFontScale(5);
+  ImGui::Text("Jogo pausado.\n\n");
+  ImGui::PopStyleColor();
+  ImGui::SetWindowFontScale(3);
+
   if (ImGui::Button("Resume game"))
     isPaused = false;
 
@@ -495,15 +470,11 @@ void janelaDePause() {
   auto windowWidth = ImGui::GetWindowSize().x;
   ImGui::SetCursorPosY(windowheight * 11/12);
 
-  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-              1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
+  ImGui::Text("(%.1f FPS)", ImGui::GetIO().Framerate);
 
   ImGui::PopStyleColor(4);
   ImGui::PopStyleVar(5);
   ImGui::PopFont();
-
-
 
   ImGui::End();
 }
@@ -560,20 +531,22 @@ void main_loop() {
     if (isPaused)
       janelaDePause();
     else {
-
       // Configurando a janela
       window_flags = 0;
       window_flags |= ImGuiWindowFlags_NoTitleBar;
       window_flags |= ImGuiWindowFlags_NoScrollbar;
       window_flags |= ImGuiWindowFlags_NoCollapse;
       window_flags |= ImGuiWindowFlags_NoBackground;
+      window_flags |= ImGuiWindowFlags_NoMove;
+      window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 
       ImGui::Begin("Batalha", NULL, window_flags);
 
       ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
 
-      ImGui::Text("Estado: %d, hp: %.3f, Nivel: %d, Inimigos: %d",
-                  estadoCombate(), scene.mapa.personagem->hp, nivel,
+      ImGui::SetWindowFontScale(3.5);
+      ImGui::Text("hp: %.3f\nEstágio: %d\nInimigos: %d",
+                  scene.mapa.personagem->hp, nivel,
                   scene.mapa.numInimigos());
 
       ImGui::PopStyleColor();
