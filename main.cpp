@@ -355,7 +355,9 @@ void menuPrincipal() {
 
   ImGui::Begin("Nome do Jogo", NULL, flags);
   ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
-  ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0., 0., 0., 1.));
+  ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1., 1., 1., 1.));
+  ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0., 0., 0., 0.8));
+  ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.4, 0.1, 1.));
 
   ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 12.0f);
   ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(20.0f, 20.0f));
@@ -393,7 +395,7 @@ void menuPrincipal() {
 
   // ImGui::ShowStyleEditor();
   ImGui::PopStyleVar(4);
-  ImGui::PopStyleColor(2);
+  ImGui::PopStyleColor(4);
 
   ImGui::End();
 
