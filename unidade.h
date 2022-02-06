@@ -39,7 +39,8 @@ struct Personagem : Unidade {
     : Unidade("resources/sprito2.png", 2, 2)
   {
     cartao.program = sp;
-    cartao.model = translate(0, -.03, 0) * scale(1, 1.6, 1.2);
+    cartao.model = translate(0, 0, 0) * scale(1, 1.2, 1);
+    /* cartao.model = translate(-.15, 0, 0) * scale(1, 1.2, 1); */
     equipe = 1;
   };
 
@@ -97,7 +98,7 @@ struct Inimigo : Unidade {
     posx = x;
     posy = y;
     cartao.program = sp;
-    cartao.model = translate(0, -.03, 0) * scale(1, .95, .75);
+    cartao.model = translate(0, 0, 0) * scale(.5, .5, 1);
     hp = 15;
     equipe = 2;
   };
@@ -116,11 +117,12 @@ struct Cubinho : Inimigo {
 /* Métodos */
 
 void Unidade::draw(float time){
-  float tranX = (3.8 - posy) * INTERVALO;
-  /* float tranZ = (posx - MAPA_WIDTH/2. - .5 ) * INTERVALO; */
+  float tranX = (2.7 - posy) * INTERVALO;
   float tranZ = (3.5 - posx) * INTERVALO;
 
-  cartao.position = translate(tranX, 0., tranZ) * scale(1.5, 1.5, 1.5);
+  float sc = 30 * (INTERVALO / 2.);
+  float tam = 1.3;
+  cartao.position = scale(tam, tam, tam) * translate(tranX, 0., tranZ) ;
 
   cartao.draw(time);
 };
@@ -176,25 +178,27 @@ Unidade* ShockWave::action(float t){
     if(rastro > 0){
       ShockWave *u = new ShockWave{"resources/sw.png", last_posx, last_posy};
       u->cartao.program = this->cartao.program;
-      u->cartao.model = cartao.model * scale(1, .7, 1);
+      u->cartao.model = cartao.model * scale(1, 1./rastro, 1);
       u->origem = origem;
       u->last_time = last_time;
-      u->rastro = --rastro;
+      u->rastro = rastro - 1;
+      rastro = 0;
       return u;
     }
   }
 
   return this;
-
 };
 
-void Piso::draw(int posx, int posy){
-  float tranX = (3.5 - posy) * INTERVALO;
-  float tranZ = (3 - posx) * INTERVALO;
+void Piso::draw(int x, int y){
+  float tranX = (2.5 - y) * INTERVALO;
+  float tranZ = (3.5 - x) * INTERVALO;
 
   float sc = (INTERVALO / 2.);
+  float tam = 1.15;
 
-  cartao.model = translate(tranX, 0., tranZ)* scale(sc, sc, sc) * rotate_x(M_PI/2.) ;
+  cartao.model = scale(tam, tam, tam) * translate(tranX, 0., tranZ) *
+    rotate_x(M_PI/2.) * scale(sc, sc, sc) * translate(0, -1, 0);
 
   cartao.draw(0.);
 };
@@ -207,7 +211,7 @@ Unidade* Cubinho::action(float t){
     if( !attack ){
       ShockWave *u = new ShockWave{"resources/sw.png", posx - 1, posy};
       u->cartao.program = this->cartao.program;
-      u->cartao.model = translate(-0.05,0,0) * scale(1, 1.2, .42);
+      u->cartao.model = scale(.35, .9, 1);
       u->origem = equipe;
       return u;
     }

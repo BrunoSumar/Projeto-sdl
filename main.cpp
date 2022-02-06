@@ -51,36 +51,45 @@ float tempo_jogo = 0;
 void setupScene() {
   scene.setProjection(
       scale(1., 1., -1.) *
-      perspective(45.0f,                                      // fov
-                  (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, // aspect ratio
-                  0.1f,                                       // near
-                  100.f                                       // far
-                  ));
+      perspective(
+        45.0f,                                      // fov
+        (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, // aspect ratio
+        0.1f,                                       // near
+        100.f                                       // far
+      )
+  );
 
-  scene.setView(lookAt({5.5f, 2.f, 0.f}, // eye
-                       {-2.f, .0f, 0.f}, // center
-                       {0.f, 1.f, 0.f}   // up
-                       ));
+  scene.setView(lookAt(
+    {5.5f, 2.f, 0.f}, // eye
+    {-2.f, .0f, 0.f}, // center
+    { 0.f, 1.f, 0.f}   // up
+  ));
 
-  cartaoSP =
-      new ShaderProgram{Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
-                        Shader{"shaders/cartao.frag", GL_FRAGMENT_SHADER}};
+  cartaoSP = new ShaderProgram{
+    Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
+    Shader{"shaders/cartao.frag", GL_FRAGMENT_SHADER}
+  };
 
-  fundoSP = new ShaderProgram{Shader{"shaders/fundo.vert", GL_VERTEX_SHADER},
-                              Shader{"shaders/fundo.frag", GL_FRAGMENT_SHADER}};
+  fundoSP = new ShaderProgram{
+    Shader{"shaders/fundo.vert", GL_VERTEX_SHADER},
+    Shader{"shaders/fundo.frag", GL_FRAGMENT_SHADER}
+  };
 
-  cenarioSP =
-      new ShaderProgram{Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
-                        Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}};
+  cenarioSP = new ShaderProgram{
+    Shader{"shaders/vertex_shader", GL_VERTEX_SHADER},
+    Shader{"shaders/fragment_shader", GL_FRAGMENT_SHADER}
+  };
 
-  pisoSP = new ShaderProgram{Shader{"shaders/piso.vert", GL_VERTEX_SHADER},
-                             Shader{"shaders/piso.frag", GL_FRAGMENT_SHADER}};
+  pisoSP = new ShaderProgram{
+    Shader{"shaders/piso.vert", GL_VERTEX_SHADER},
+    Shader{"shaders/piso.frag", GL_FRAGMENT_SHADER}
+  };
 
   scene.addFundo("resources/folha.png", fundoSP);
 
-  scene.addFigura("resources/cenario4.obj", "resources/cenario4.png");
+  scene.addFigura("resources/cenario5.obj", "resources/cenario4.png");
   scene.figuras.back()->program = cenarioSP;
-  scene.figuras.back()->model = scale(2., 2., 2.);
+  scene.figuras.back()->model = scale(1.7, 1.7, 1.7);
 
   scene.mapa.initPersonagem(cartaoSP);
   scene.mapa.initPiso(pisoSP);
@@ -109,9 +118,10 @@ bool init() {
 
   // Criando janela
   gWindow = SDL_CreateWindow(
-      "Jogo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
-      SCREEN_HEIGHT,
-      SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    "Nature's Ghost", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+    SCREEN_WIDTH, SCREEN_HEIGHT,
+    SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+  );
   if (gWindow == NULL) {
     printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
     return false;
@@ -197,12 +207,11 @@ void avancarNivel(int estado){
   else{
     togglePause();
 
-    // volta personagem ao estado inicial
     scene.mapa.resetPersonagem();
+    scene.mapa.cleanUnidades();
 
     nivel = (estado > 0 && nivel < 5) ? nivel + 1 : 0;
 
-    scene.mapa.cleanUnidades();
     for( int i=0; i<nivel; i++){
       int dim1 = scene.mapa.dim1, dim2 = scene.mapa.dim2;
       int posx = dim1/2 + rand() % ((dim1 - 1) /2);

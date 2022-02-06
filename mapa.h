@@ -64,7 +64,7 @@ void Mapa::remUnidade( Unidade *u ){
 };
 
 void Mapa::cleanUnidades(){
-  for(int i = 0; i < unidades.size(); i++)
+  for(int i = unidades.size()-1; i >=0 ; i--)
     remUnidade(unidades[i]);
 };
 
