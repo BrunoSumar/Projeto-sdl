@@ -218,9 +218,11 @@ void avancarNivel(int estado){
     scene.mapa.resetPersonagem();
     scene.mapa.cleanUnidades();
 
-    nivel = (estado > 0 && nivel < 5) ? nivel + 1 : 0;
+    nivel = (estado_combate > 0 ) ? nivel + 1 : 0;
+    if(nivel > 5)
+      nivel = 1;
 
-    for( int i=0; i<nivel; i++){
+    for( int i=0; i<1; i++){
       int dim1 = scene.mapa.dim1, dim2 = scene.mapa.dim2;
       int posx = dim1/2 + rand() % ((dim1 - 1) /2);
       int posy = dim2/2 + rand() % ((dim2 - 1) /2);
@@ -235,8 +237,10 @@ void eventHandler(SDL_Event &e) {
 
   ImGui_ImplSDL2_ProcessEvent(&e);
   if (e.type == SDL_KEYDOWN) {
-    if (e.key.keysym.sym == SDLK_RETURN)
+    if (e.key.keysym.sym == SDLK_RETURN){
+      afterBattle = false;
       togglePause();
+    }
 
     // Controle da câmera
     //
@@ -403,11 +407,10 @@ void menuPrincipal() {
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (windowWidth  / 3));
   if (ImGui::Button("Iniciar jogo")){
     onBattle = true;
-    // togglePause();
   }
 
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (windowWidth  / 3));
-  if (ImGui::Button("Quit"))
+  if (ImGui::Button("Sair"))
     quit = true;
 
   ImGui::PopStyleVar(4);
@@ -456,6 +459,8 @@ void janelaAfter() {
   ImGui::PushFont(font2);
 
   ImGui::SetWindowFontScale(5);
+  if(nivel > 1)
+    ImGui::Text("Estágio %d :", nivel - 1);
   if( estado_combate > 0 )
     ImGui::Text("Parabéns você venceu a batalha!!!");
   else
@@ -470,12 +475,17 @@ void janelaAfter() {
   ImGui::PopTextWrapPos();
   ImGui::Text("\n\n\n\n");
 
-  if (ImGui::Button("Resume game")){
+  char botao[50];
+  if( nivel == 1)
+    sprintf(botao,"Reiniciar jogo", nivel);
+  else
+    sprintf(botao,"Continuar para estágio %d", nivel);
+  if (ImGui::Button(botao)){
     afterBattle = false;
     togglePause();
   }
 
-  if (ImGui::Button("Quit"))
+  if (ImGui::Button("Sair"))
    quit = true;
 
   ImGui::PopStyleColor(4);
@@ -519,13 +529,14 @@ void janelaDePause() {
   ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
   ImGui::SetWindowFontScale(5);
   ImGui::Text("Jogo pausado.\n\n");
-  ImGui::PopStyleColor();
   ImGui::SetWindowFontScale(3);
+  ImGui::Text("Estágio %d :", nivel - 1);
+  ImGui::PopStyleColor();
 
-  if (ImGui::Button("Resume game"))
+  if (ImGui::Button("Continuar"))
     togglePause();
 
-  if (ImGui::Button("Quit"))
+  if (ImGui::Button("Sair"))
     quit = true;
 
   auto windowheight = ImGui::GetWindowSize().y;
