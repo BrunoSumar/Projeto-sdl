@@ -10,7 +10,7 @@ struct Unidade{
   Cartao cartao;
   int posx, posy;
   int id;
-  float hp = 10;
+  float hp = 30;
   float dano = 0.;
   int equipe = 0;
 
@@ -98,6 +98,7 @@ struct Inimigo : Unidade {
     posy = y;
     cartao.program = sp;
     cartao.model = translate(0, -.03, 0) * scale(1, .95, .75);
+    hp = 15;
     equipe = 2;
   };
 };
@@ -134,7 +135,7 @@ Unidade* Personagem::fire(float t){
     // Personagem e seu projétil estão usando o mesmo shaderProgram
     Projetil *u = new Projetil{"resources/1_0.png", posx, posy};
     u->cartao.program = this->cartao.program;
-    u->origem = id;
+    u->origem = equipe;
     return u;
   };
   return NULL;
@@ -156,7 +157,7 @@ Unidade* Projetil::action(float t){
 };
 
 void Projetil::colisao(Unidade *u){
-  if( equipe != u->equipe && origem != u->id ){
+  if( equipe != u->equipe && origem != u->equipe ){
     u->hp -= dano;
     hp = -1;
   }
@@ -207,7 +208,7 @@ Unidade* Cubinho::action(float t){
       ShockWave *u = new ShockWave{"resources/sw.png", posx - 1, posy};
       u->cartao.program = this->cartao.program;
       u->cartao.model = translate(-0.05,0,0) * scale(1, 1.2, .42);
-      u->origem = id;
+      u->origem = equipe;
       return u;
     }
 
