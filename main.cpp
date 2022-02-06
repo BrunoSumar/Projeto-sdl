@@ -84,8 +84,6 @@ void setupScene() {
   scene.mapa.initPersonagem(cartaoSP);
   scene.mapa.initPiso(pisoSP);
 
-  Inimigo *cubo = new Cubinho(cartaoSP, 7, 2);
-  scene.mapa.addUnidade(cubo);
 }
 
 // Inicialização do sdl e opengl
@@ -178,6 +176,30 @@ int estadoCombate() {
     return 1;
 
   return 0;
+}
+
+int nivel = 0;
+void avancarNivel(int estado){
+  if( !estado ){
+    return;
+  }
+  else{
+    togglePause();
+
+    // volta personagem ao estado inicial
+    scene.mapa.resetPersonagem();
+
+    nivel = (estado > 0 && nivel < 5) ? nivel + 1 : 0;
+
+    scene.mapa.cleanUnidades();
+    for( int i=0; i<nivel; i++){
+      int dim1 = scene.mapa.dim1, dim2 = scene.mapa.dim2;
+      int posx = dim1/2 + rand() % ((dim1 - 1) /2);
+      int posy = dim2/2 + rand() % ((dim2 - 1) /2);
+      Inimigo *cubo = new Cubinho(cartaoSP, posx, posy);
+      scene.mapa.addUnidade(cubo);
+    }
+  }
 }
 
 void eventHandler(SDL_Event &e) {
@@ -341,8 +363,10 @@ void menuPrincipal() {
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
     ImGui::TableNextColumn();
-    if (ImGui::Button("Iniciar jogo"))
+    if (ImGui::Button("Iniciar jogo")){
       onBattle = true;
+      togglePause();
+    }
     ImGui::TableNextColumn();
 
     ImGui::TableNextRow();
@@ -380,8 +404,6 @@ void janelaDePause() {
 
   ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
               1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-  ImGui::Text("Estado: %d hp: %.3f", estadoCombate(),
-              scene.mapa.personagem->hp);
   ImGui::End();
 }
 
@@ -395,12 +417,13 @@ void main_loop() {
   }
 
   scene.setView(
-      lookAt(toVec3(rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) *
-                    vec4{5.8f, 3.f, 0.f, 1.f}), // eye
-             toVec3(rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) *
-                    vec4{-.5f, 0.f, 0.f, 1.f}), // center
-             {0.f, 1.f, 0.f}                    // up
-             ));
+    lookAt(
+      toVec3(rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) *
+             vec4{5.8f, 3.f, 0.f, 1.f}), // eye
+      toVec3(rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) *
+             vec4{-.5f, 0.f, 0.f, 1.f}), // center
+      {0.f, 1.f, 0.f}                    // up
+    ));
 
   // Start the Dear ImGui frame
   ImGui_ImplOpenGL3_NewFrame();
@@ -420,12 +443,20 @@ void main_loop() {
     if (!isPaused) {
       scene.mapa.actions(tempo_jogo);
       estado = estadoCombate();
+
+      if( estado )
+        avancarNivel(estado);
     }
 
     scene.draw(tempo_jogo);
 
     if (isPaused)
       janelaDePause();
+    else {
+      ImGui::Text("Estado: %d, hp: %.3f, Nivel: %d, Inimigos: %d",
+                  estadoCombate(), scene.mapa.personagem->hp,
+                  nivel, scene.mapa.numInimigos());
+    }
 
   } else
     menuPrincipal();

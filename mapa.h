@@ -25,6 +25,7 @@ struct Position {
   void removeUnidade(Unidade *u);
   void addUnidade(Unidade *u);
   void setMatrices(float time, int ocupado);
+  int temMembroEquipe(int equipe);
 };
 
 // Contém o estado de uma batalha no que diz
@@ -47,6 +48,8 @@ struct Mapa {
   void processAction(float time, Unidade *u);
   void remUnidade( Unidade *u );
   int numInimigos();
+  void resetPersonagem();
+  void cleanUnidades();
 };
 
 void Mapa::remUnidade( Unidade *u ){
@@ -58,6 +61,11 @@ void Mapa::remUnidade( Unidade *u ){
     [u](Unidade *x){return (x->id == u->id);}
   );
   unidades.erase( remove_id, unidades.end());
+};
+
+void Mapa::cleanUnidades(){
+  for(int i = 0; i < unidades.size(); i++)
+    remUnidade(unidades[i]);
 };
 
 void Mapa::tiroPersonagem(float time){
@@ -82,6 +90,9 @@ int Mapa::moverUnidade(Unidade *u, int x, int y)
 
   if( u->equipe && ( mat[posx][posy].equipe != u->equipe ))
     return 3;
+
+  if( u->equipe && mat[posx][posy].temMembroEquipe(u->equipe) )
+    return 4;
 
   mat[u->posx][u->posy].removeUnidade(u);
 
@@ -111,6 +122,11 @@ void Mapa::initPersonagem(ShaderProgram *sp)
 {
   personagem = new Personagem(sp);
   mat[personagem->posx][personagem->posy].addUnidade(personagem);
+}
+
+void Mapa::resetPersonagem(){
+  personagem->hp = 30;
+  moverPersonagem(2 - personagem->posx, 2 - personagem->posy);
 }
 
 Mapa::Mapa(const int n, const int m, string path_tex)
@@ -210,6 +226,14 @@ void Position::setMatrices(float time, int ocupado){
   Uniform("Time") = time;
   Uniform("Color") = equipe == 1 ? Position::cor1 : Position::cor2;
   Uniform("Ocupado") = ocupado;
+};
+
+int Position::temMembroEquipe(int equipe){
+  for(int i = 0; i < unidades.size(); i++){
+    if(unidades[i]->equipe == equipe)
+      return 1;
+  }
+  return 0;
 };
 
 vec3 Position::cor1 = {.0, .3, .2};
