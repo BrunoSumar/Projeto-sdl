@@ -457,6 +457,8 @@ void menuPrincipal() {
 
 void janelaDePause() {
   static ImGuiWindowFlags window_flags;
+  static bool hasWindowPadding = false;
+  bool had_just_now = false;
 
   // Configurando a janela
   window_flags = 0;
@@ -465,10 +467,21 @@ void janelaDePause() {
   window_flags |= ImGuiWindowFlags_NoCollapse;
   window_flags |= ImGuiWindowFlags_NoBackground;
 
+  ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1., 1., 1., 1.));
+  ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0., 0., 0., 0.8));
+  ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.4, 0.1, 1.));
+  ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
+
+  ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 12.0f);
+  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(20.0f, 20.0f));
+  ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(4.0f, 10.0f));
+  ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(100.0f, 100.f));
+
   ImGui::Begin("Nome do Jogo", NULL, window_flags);
 
   ImGui::PushFont(font2);
-  ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
 
   if (ImGui::Button("Resume game"))
     isPaused = false;
@@ -476,11 +489,19 @@ void janelaDePause() {
   if (ImGui::Button("Quit"))
     quit = true;
 
+  auto windowheight = ImGui::GetWindowSize().y;
+  auto windowWidth = ImGui::GetWindowSize().x;
+  ImGui::SetCursorPosY(windowheight * 11/12);
+
   ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
               1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-  ImGui::PopStyleColor();
+
+  ImGui::PopStyleColor(4);
+  ImGui::PopStyleVar(5);
   ImGui::PopFont();
+
+
 
   ImGui::End();
 }
