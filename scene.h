@@ -12,6 +12,7 @@
 // Scene é a classe reposável por gerenciar todas as informações necessáras para renderição da cena do jogo
 struct Scene {
   vector<Figura*> figuras;
+  Figura* fundo;
   mat4 projection;
   mat4 view;
   Mapa mapa;
@@ -19,6 +20,7 @@ struct Scene {
   Scene() : mapa{MAPA_WIDTH, MAPA_HEIGHT} {};
 
   void draw(float time);
+  void drawFundo(float time);
   void addFigura(string path_texture);
   void addFundo(string path_texture, ShaderProgram *sp);
   void addFigura(string path_obj, string path_texture);
@@ -61,6 +63,12 @@ void Scene::draw(float time){
   }
 }
 
+void Scene::drawFundo(float time){
+  glUseProgram(fundo->program->id);
+  setMatrices();
+  fundo->draw(time);
+}
+
 void Scene::setMatrices(){
   Uniform("projection") = projection;
   Uniform("view") = view;
@@ -79,7 +87,7 @@ void Scene::addFigura(string path_texture){
 }
 
 void Scene::addFundo(string path_texture, ShaderProgram* sp){
-  figuras.push_back(new PlanoDeFundo{path_texture, sp});
+  fundo = new PlanoDeFundo{path_texture, sp};
 }
 
 void Scene::addFigura(string path_obj, string path_texture){

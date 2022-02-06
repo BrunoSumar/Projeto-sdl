@@ -8,12 +8,12 @@ out vec4 FragColor;
 
 void main()
 {
-  float time = 6. * Time;
+  float time = 6. * Time + 7.5;
 
   vec2 uv = texCoord - .5;
 
   vec3 col = vec3(0);
-  float s =.6;
+  float s =.7;
 
   float a1 = 2.*3.1415-time*.02;
   float a2 = 3.1415/7.;
@@ -27,7 +27,7 @@ void main()
 
   uv.x +=.5;
 
-  for(int i=0;i<3;i++){
+  for(int i=0;i<2;i++){
     s *= 3.;
 
     uv *= 3.;

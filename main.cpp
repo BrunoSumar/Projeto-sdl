@@ -45,6 +45,7 @@ clock_t begin_time;
 float tempo_atual = 0;
 float tempo_total = 0;
 float tempo_pausa = 0;
+float tempo_jogo = 0;
 
 // Inicializa-se o objeto Scene scene.
 void setupScene() {
@@ -436,7 +437,7 @@ void main_loop() {
   // Desenha cena
   tempo_atual = float(clock() - begin_time) / CLOCKS_PER_SEC;
   tempo_pausa = isPaused ? tempo_atual : tempo_pausa;
-  float tempo_jogo = tempo_total + (tempo_atual - tempo_pausa);
+  tempo_jogo = tempo_total + (tempo_atual - tempo_pausa);
   int estado = 0;
 
   if (onBattle) {
@@ -448,6 +449,7 @@ void main_loop() {
         avancarNivel(estado);
     }
 
+    scene.drawFundo(tempo_jogo);
     scene.draw(tempo_jogo);
 
     if (isPaused)
@@ -458,8 +460,11 @@ void main_loop() {
                   nivel, scene.mapa.numInimigos());
     }
 
-  } else
+  }
+  else{
+    scene.drawFundo(tempo_atual);
     menuPrincipal();
+  }
 
   ImGui::Render();
 
