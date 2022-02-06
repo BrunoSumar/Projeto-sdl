@@ -87,6 +87,9 @@ void setupScene() {
 
 }
 
+ImFont* font1;
+ImFont* font2;
+ImFont* font3;
 // Inicialização do sdl e opengl
 bool init() {
   // Initialize SDL
@@ -146,8 +149,12 @@ bool init() {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
-  (void)io;
-  ImGui::StyleColorsDark();
+  font1 = io.Fonts->AddFontFromFileTTF("resources/ghouls.ghosts.and.goblins-[fontvir.us].ttf", 15);
+  font2 = io.Fonts->AddFontFromFileTTF("resources/alphbeta.ttf", 10);
+  font3 = io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Roboto-Medium.ttf", 15);
+  io.Fonts->Build();
+
+  ImGui::StyleColorsLight();
 
   ImGui_ImplSDL2_InitForOpenGL(gWindow, gContext);
   ImGui_ImplOpenGL3_Init(glsl_version);
@@ -347,6 +354,8 @@ void menuPrincipal() {
   ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
 
   ImGui::Begin("Nome do Jogo", NULL, flags);
+  ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
+  ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0., 0., 0., 1.));
 
   ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 12.0f);
   ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(20.0f, 20.0f));
@@ -383,14 +392,14 @@ void menuPrincipal() {
   }
 
   // ImGui::ShowStyleEditor();
-  ImGui::PopStyleVar();
-  ImGui::PopStyleVar();
-  ImGui::PopStyleVar();
-  ImGui::PopStyleVar();
+  ImGui::PopStyleVar(4);
+  ImGui::PopStyleColor(2);
 
   ImGui::End();
 
-  // ImGui::ShowDemoWindow();
+  ImGui::PushFont(font3);
+  ImGui::ShowDemoWindow();
+  ImGui::PopFont();
 }
 
 void janelaDePause() {
@@ -405,6 +414,9 @@ void janelaDePause() {
 
   ImGui::Begin("Nome do Jogo", NULL, window_flags);
 
+  ImGui::PushFont(font2);
+  ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
+
   if (ImGui::Button("Resume game"))
     isPaused = false;
 
@@ -413,6 +425,10 @@ void janelaDePause() {
 
   ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
               1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+  ImGui::PopStyleColor();
+  ImGui::PopFont();
+
   ImGui::End();
 }
 
