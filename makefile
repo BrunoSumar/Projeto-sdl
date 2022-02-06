@@ -7,7 +7,7 @@ link_flags = -ldl -lSDL2 -lSDL2_image -lSDL2_ttf -lGL -lGLEW -lassimp
 path_emcc = /home/bruno/Documentos/emscripten
 
 SHELL := /bin/bash
-CXXFLAGS += -I./include -I./imgui -I./imgui/backends
+CXXFLAGS += -I./include/ -I./imgui/ -I./imgui/backends/
 
 $(output): $(src) $(libs)
 	@echo Compilando projeto
