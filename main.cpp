@@ -32,6 +32,7 @@ SDL_Event e;
 Scene scene;
 
 float rot = 0.f;
+float rot_idle = 0.f;
 float dist = 0.f;
 float rot_x = 0.f;
 // int sprite = 1;
@@ -188,6 +189,7 @@ void togglePause() {
   isPaused = !isPaused;
   if (isPaused)
     tempo_total += tempo_atual - tempo_pausa;
+  tempo_pausa = tempo_atual;
 }
 
 int estadoCombate() {
@@ -487,21 +489,28 @@ void janelaDePause() {
 
 // Função de renderização
 void main_loop() {
-
   while (SDL_PollEvent(&e) != 0) {
     eventHandler(e);
     if (quit == true)
       break;
   }
 
+  tempo_atual = float(clock() - begin_time) / CLOCKS_PER_SEC;
+  // tempo_pausa =  tempo_atual : tempo_pausa;
+  tempo_jogo = tempo_total + ( isPaused ? 0 : tempo_atual - tempo_pausa);
+
+  // rot_idle = isPaused ?  sin((tempo_atual - tempo_pausa) * 4.)/2.5 : 0;
+  rot_idle = isPaused ? ((int)tempo_pausa*100 % 2 ? 1 : -1) * sin((tempo_atual - tempo_pausa) * 4.)/2.5 : rot_idle*.8;
+  // if( isPaused ) std::cout << rot_idle << std::endl;
   scene.setView(
     lookAt(
-      toVec3(rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) *
-             vec4{5.8f, 3.f, 0.f, 1.f}), // eye
-      toVec3(rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) *
+      toVec3(rotate_y(rot + rot_idle ) * rotate_z(rot_x) * translate(dist, .0, .0) *
+             vec4{4.8f, 2.5f, 0.f, 1.f}), // eye
+      toVec3(rotate_y(rot + rot_idle ) * rotate_z(rot_x) * translate(dist, .0, .0) *
              vec4{-.5f, 0.f, 0.f, 1.f}), // center
       {0.f, 1.f, 0.f}                    // up
-    ));
+    )
+  );
 
   // Start the Dear ImGui frame
   ImGui_ImplOpenGL3_NewFrame();
@@ -512,9 +521,6 @@ void main_loop() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // Desenha cena
-  tempo_atual = float(clock() - begin_time) / CLOCKS_PER_SEC;
-  tempo_pausa = isPaused ? tempo_atual : tempo_pausa;
-  tempo_jogo = tempo_total + (tempo_atual - tempo_pausa);
   int estado = 0;
 
   if (onBattle) {
