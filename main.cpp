@@ -222,7 +222,7 @@ void avancarNivel(int estado){
     if(nivel > 5)
       nivel = 1;
 
-    for( int i=0; i<1; i++){
+    for( int i=0; i<nivel; i++){
       int dim1 = scene.mapa.dim1, dim2 = scene.mapa.dim2;
       int posx = dim1/2 + rand() % ((dim1 - 1) /2);
       int posy = dim2/2 + rand() % ((dim2 - 1) /2);
