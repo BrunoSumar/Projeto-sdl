@@ -46,6 +46,7 @@ struct Mapa {
   void tiroPersonagem(float time);
   void processAction(float time, Unidade *u);
   void remUnidade( Unidade *u );
+  int numInimigos();
 };
 
 void Mapa::remUnidade( Unidade *u ){
@@ -123,6 +124,11 @@ Mapa::Mapa(const int n, const int m, string path_tex)
   for(int i=0; i<n; i++)
     for(int j=0; j<m; j++)
       mat[i][j].equipe = i < n/2. ? 1 : 2;
+
+  mat[0][0].bloqueado = true;
+  mat[n-1][0].bloqueado = true;
+  mat[0][m-1].bloqueado = true;
+  mat[n-1][m-1].bloqueado = true;
 };
 
 void Mapa::processAction( float time, Unidade *u)
@@ -171,6 +177,17 @@ void Mapa::addUnidade(Unidade *u){
   unidades.push_back(u);
   mat[u->posx][u->posy].addUnidade(u);
 }
+
+int Mapa::numInimigos(){
+  int count = 0;
+
+  for(int i = 0; i < unidades.size(); i++){
+    if( unidades[i]->equipe == 2 )
+      count++;
+  }
+
+  return count;
+};
 
 void Position::removeUnidade(Unidade *u)
 {

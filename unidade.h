@@ -10,7 +10,7 @@ struct Unidade{
   Cartao cartao;
   int posx, posy;
   int id;
-  float hp = 1.;
+  float hp = 10;
   float dano = 0.;
   int equipe = 0;
 
@@ -32,12 +32,11 @@ struct Unidade{
 /* Personagem representa a unidade referente ao personagem principal  */
 /* controlado pelo usuário */
 struct Personagem : Unidade {
-  int hp = 1;
   float cooldown = 0.1f;
   float last_shot = 0.;
 
   Personagem(ShaderProgram* sp)
-    : Unidade("resources/sprito2.png")
+    : Unidade("resources/sprito2.png", 2, 2)
   {
     cartao.program = sp;
     cartao.model = translate(0, -.03, 0) * scale(1, 1.6, 1.2);
@@ -54,7 +53,7 @@ struct Projetil : Unidade {
   vec2 dir = {1, 0};
   int last_posx = -1;
   int last_posy = -1;
-  float dano = .5;
+  float dano = 5;
   int origem = -1;
 
   Projetil(string path, int x=0, int y=0)
@@ -159,7 +158,6 @@ Unidade* Projetil::action(float t){
 void Projetil::colisao(Unidade *u){
   if( equipe != u->equipe && origem != u->id ){
     u->hp -= dano;
-    std::cout << u->id << ' ' << u->hp << std::endl;
     hp = -1;
   }
 };

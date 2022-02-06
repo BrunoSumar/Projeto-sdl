@@ -180,6 +180,15 @@ void togglePause(){
     tempo_total += tempo_atual - tempo_pausa;
 }
 
+int estadoCombate(){
+  if( scene.mapa.personagem->hp <= 0 )
+    return -1;
+  if( scene.mapa.numInimigos() <= 0 )
+    return 1;
+
+  return 0;
+}
+
 void eventHandler( SDL_Event &e ) {
   const Uint8 *state = SDL_GetKeyboardState(NULL);
 
@@ -188,7 +197,6 @@ void eventHandler( SDL_Event &e ) {
   {
     if( e.key.keysym.sym == SDLK_PAUSE)
       togglePause();
-      // isPaused = true;
 
     // Controle da câmera
     //
@@ -291,11 +299,9 @@ ImGuiWindowFlags setupJanelaCustomizavel() {
     }
 
   return window_flags;
-
 }
 
 void menuPrincipal(){
-  
   static bool use_work_area = true;
   static ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBackground;
 
@@ -327,7 +333,6 @@ void menuPrincipal(){
 }
 
 void janelaDePause(){
-
   static ImGuiWindowFlags window_flags;
 
   // Configurando a janela
@@ -336,7 +341,6 @@ void janelaDePause(){
   window_flags |= ImGuiWindowFlags_NoScrollbar;
   window_flags |= ImGuiWindowFlags_NoCollapse;
   window_flags |= ImGuiWindowFlags_NoBackground;
-
 
   ImGui::Begin("Nome do Jogo", NULL, window_flags);                          
 
@@ -347,8 +351,8 @@ void janelaDePause(){
     quit = true;
       
   ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+  ImGui::Text("Estado: %d hp: %.3f", estadoCombate(), scene.mapa.personagem->hp);
   ImGui::End();
-
 }
 
 // Função de renderização
@@ -361,7 +365,6 @@ void main_loop(){
 	break;
     }
 
-
   scene.setView(
 		lookAt(
 		       toVec3( rotate_y(rot) * rotate_z(rot_x) * translate(dist, .0, .0) * vec4{5.8f, 3.f, 0.f, 1.f} ),// eye
@@ -369,7 +372,6 @@ void main_loop(){
 		       {0.f, 1.f, 0.f}   // up
 		       )
 		);
-
 
   // Start the Dear ImGui frame
   ImGui_ImplOpenGL3_NewFrame();
@@ -379,14 +381,17 @@ void main_loop(){
   glClearColor(clear_color.x , clear_color.y, clear_color.z, clear_color.w);
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-
   // Desenha cena
   tempo_atual = float( clock() - begin_time ) /  CLOCKS_PER_SEC;
   tempo_pausa = isPaused ? tempo_atual : tempo_pausa;
   float tempo_jogo = tempo_total + ( tempo_atual - tempo_pausa );
+  int estado = 0;
 
   if ( onBattle ) {
-    if ( !isPaused ) scene.mapa.actions(tempo_jogo);
+    if ( !isPaused ){
+      scene.mapa.actions(tempo_jogo);
+      estado = estadoCombate();
+    }
 
     scene.draw(tempo_jogo);
 
