@@ -537,6 +537,7 @@ void main_loop() {
   tempo_pausa = isPaused ? tempo_atual : tempo_pausa;
   tempo_jogo = tempo_total + (tempo_atual - tempo_pausa);
   int estado = 0;
+  static ImGuiWindowFlags window_flags;
 
   if (onBattle) {
     if (!isPaused) {
@@ -553,9 +554,25 @@ void main_loop() {
     if (isPaused)
       janelaDePause();
     else {
+
+      // Configurando a janela
+      window_flags = 0;
+      window_flags |= ImGuiWindowFlags_NoTitleBar;
+      window_flags |= ImGuiWindowFlags_NoScrollbar;
+      window_flags |= ImGuiWindowFlags_NoCollapse;
+      window_flags |= ImGuiWindowFlags_NoBackground;
+
+      ImGui::Begin("Batalha", NULL, window_flags);
+
+      ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
+
       ImGui::Text("Estado: %d, hp: %.3f, Nivel: %d, Inimigos: %d",
-                  estadoCombate(), scene.mapa.personagem->hp,
-                  nivel, scene.mapa.numInimigos());
+                  estadoCombate(), scene.mapa.personagem->hp, nivel,
+                  scene.mapa.numInimigos());
+
+      ImGui::PopStyleColor();
+
+      ImGui::End();
     }
 
   }
