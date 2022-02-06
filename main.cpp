@@ -312,8 +312,9 @@ void menuPrincipal() {
   static bool use_work_area = true;
   static ImGuiWindowFlags flags =
       ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
-      ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings |
-      ImGuiWindowFlags_NoBackground;
+    ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
+  flags |= ImGuiWindowFlags_NoBackground ;
+  // flags |= ImGuiWindowFlags_AlwaysAutoResize;
 
   // We demonstrate using the full viewport area or the work area (without
   // menu-bars, task-bars etc.) Based on your use case you may want one of the
@@ -324,19 +325,16 @@ void menuPrincipal() {
 
   ImGui::Begin("Nome do Jogo", NULL, flags);
 
-  auto windowHeight = ImGui::GetWindowSize().y;
-  ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (windowHeight / 3));
+  ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 12.0f);
+  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(20.0f, 20.0f));
+  ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(4.0f, 10.0f));
+  ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+
+  auto windowheight = ImGui::GetWindowSize().y;
+  ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (windowheight / 3));
 
   // Usando a tabela para centralizar.
   if (ImGui::BeginTable("table", 3)) {
-
-
-    ImGui::TableNextRow();
-    ImGui::TableNextColumn();
-    ImGui::TableNextColumn();
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-		1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::TableNextColumn();
 
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
@@ -347,13 +345,23 @@ void menuPrincipal() {
 
     ImGui::TableNextRow();
     ImGui::TableNextColumn();
+    
     ImGui::TableNextColumn();
     if (ImGui::Button("Quit"))
       quit = true;
     ImGui::TableNextColumn();
+    
+    // Alterar tamanho do menu
+    ImGui::SetWindowFontScale(2);
 
     ImGui::EndTable();
   }
+
+  // ImGui::ShowStyleEditor();
+  ImGui::PopStyleVar();
+  ImGui::PopStyleVar();
+  ImGui::PopStyleVar();
+  ImGui::PopStyleVar();
 
   ImGui::End();
 
