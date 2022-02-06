@@ -88,6 +88,8 @@ void setupScene() {
 }
 
 ImFont* font1;
+ImFont* font1_grande;
+
 ImFont* font2;
 ImFont* font3;
 // Inicialização do sdl e opengl
@@ -150,6 +152,7 @@ bool init() {
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
   font1 = io.Fonts->AddFontFromFileTTF("resources/ghouls.ghosts.and.goblins-[fontvir.us].ttf", 15);
+  font1_grande = io.Fonts->AddFontFromFileTTF("resources/ghouls.ghosts.and.goblins-[fontvir.us].ttf", 40);
   font2 = io.Fonts->AddFontFromFileTTF("resources/alphbeta.ttf", 10);
   font3 = io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Roboto-Medium.ttf", 15);
   io.Fonts->Build();
@@ -354,7 +357,6 @@ void menuPrincipal() {
   ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
 
   ImGui::Begin("Nome do Jogo", NULL, flags);
-  ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
   ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1., 1., 1., 1.));
   ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0., 0., 0., 0.8));
   ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.4, 0.1, 1.));
@@ -365,33 +367,73 @@ void menuPrincipal() {
   ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
 
   auto windowheight = ImGui::GetWindowSize().y;
-  ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (windowheight / 3));
+  auto windowWidth = ImGui::GetWindowSize().x;
 
-  // Usando a tabela para centralizar.
-  if (ImGui::BeginTable("table", 3)) {
+  ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.65, 0.1, 0.1, 1.));
+  ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (windowheight / 8));
+  ImGui::PushFont(font1_grande);
+  string txt = "Nature's Ghost";
+  auto textWidth   = ImGui::CalcTextSize(txt.c_str()).x;
+  ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
+  
+  ImGui::Text(txt.c_str());
+  ImGui::PopFont();
+  ImGui::PopStyleColor();
 
-    ImGui::TableNextRow();
-    ImGui::TableNextColumn();
-    ImGui::TableNextColumn();
-    if (ImGui::Button("Iniciar jogo")){
-      onBattle = true;
-      togglePause();
-    }
-    ImGui::TableNextColumn();
+  ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
 
-    ImGui::TableNextRow();
-    ImGui::TableNextColumn();
-    
-    ImGui::TableNextColumn();
-    if (ImGui::Button("Quit"))
-      quit = true;
-    ImGui::TableNextColumn();
-    
-    // Alterar tamanho do menu
-    ImGui::SetWindowFontScale(2);
+  // if (ImGui::BeginTable("table1", 3)) {
+  //   ImGui::SetWindowFontScale(3);
 
-    ImGui::EndTable();
+  //   ImGui::TableNextRow();
+  //   ImGui::TableNextColumn();
+  //   ImGui::TableNextColumn();
+  //   ImGui::Text("Nature's Ghost");
+  //   ImGui::TableNextColumn();
+
+  //   ImGui::EndTable();
+
+  // }
+
+  ImGui::SetWindowFontScale(3);
+
+  ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (windowheight / 4));
+
+  ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (windowWidth  / 3));
+  if (ImGui::Button("Iniciar jogo")){
+    onBattle = true;
+    togglePause();
   }
+
+  ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (windowWidth  / 3));
+  if (ImGui::Button("Quit"))
+    quit = true;
+
+  // // Usando a tabela para centralizar.
+  // if (ImGui::BeginTable("table", 3)) {
+
+  //   ImGui::TableNextRow();
+  //   ImGui::TableNextColumn();
+  //   ImGui::TableNextColumn();
+  //   if (ImGui::Button("Iniciar jogo")){
+  //     onBattle = true;
+  //     togglePause();
+  //   }
+  //   ImGui::TableNextColumn();
+
+  //   ImGui::TableNextRow();
+  //   ImGui::TableNextColumn();
+    
+  //   ImGui::TableNextColumn();
+  //   if (ImGui::Button("Quit"))
+  //     quit = true;
+  //   ImGui::TableNextColumn();
+    
+  //   // Alterar tamanho do menu
+  //   ImGui::SetWindowFontScale(2);
+
+  //   ImGui::EndTable();
+  // }
 
   // ImGui::ShowStyleEditor();
   ImGui::PopStyleVar(4);
