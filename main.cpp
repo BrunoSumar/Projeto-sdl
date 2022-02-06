@@ -6,6 +6,8 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
 
+#include "frases.h"
+
 #include <SDL2/SDL.h>
 
 #ifdef __EMSCRIPTEN__
@@ -35,7 +37,6 @@ float rot = 0.f;
 float rot_idle = 0.f;
 float dist = 0.f;
 float rot_x = 0.f;
-// int sprite = 1;
 
 ShaderProgram *cartaoSP;
 ShaderProgram *fundoSP;
@@ -47,6 +48,8 @@ float tempo_atual = 0;
 float tempo_total = 0;
 float tempo_pausa = 0;
 float tempo_jogo = 0;
+
+int estado_combate = 0;
 
 // Inicializa-se o objeto Scene scene.
 void setupScene() {
@@ -184,6 +187,7 @@ ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 bool quit = false;
 bool isPaused = true;
 bool onBattle = false;
+bool afterBattle = false;
 
 void togglePause() {
   isPaused = !isPaused;
@@ -203,11 +207,13 @@ int estadoCombate() {
 
 int nivel = 0;
 void avancarNivel(int estado){
+  togglePause();
   if( !estado ){
     return;
   }
   else{
-    togglePause();
+    afterBattle = nivel == 0 ? false : true;
+    estado_combate = estado;
 
     scene.mapa.resetPersonagem();
     scene.mapa.cleanUnidades();
@@ -358,11 +364,7 @@ void menuPrincipal() {
       ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
   flags |= ImGuiWindowFlags_NoBackground ;
-  // flags |= ImGuiWindowFlags_AlwaysAutoResize;
 
-  // We demonstrate using the full viewport area or the work area (without
-  // menu-bars, task-bars etc.) Based on your use case you may want one of the
-  // other.
   const ImGuiViewport *viewport = ImGui::GetMainViewport();
   ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
   ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
@@ -401,7 +403,7 @@ void menuPrincipal() {
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (windowWidth  / 3));
   if (ImGui::Button("Iniciar jogo")){
     onBattle = true;
-    togglePause();
+    // togglePause();
   }
 
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (windowWidth  / 3));
@@ -423,6 +425,66 @@ void menuPrincipal() {
   // ImGui::PushFont(font3);
   // ImGui::ShowDemoWindow();
   // ImGui::PopFont();
+}
+
+void janelaAfter() {
+  static ImGuiWindowFlags window_flags;
+  static bool hasWindowPadding = false;
+  bool had_just_now = false;
+
+  // Configurando a janela
+  window_flags = 0;
+  window_flags |= ImGuiWindowFlags_NoTitleBar;
+  window_flags |= ImGuiWindowFlags_NoScrollbar;
+  window_flags |= ImGuiWindowFlags_NoCollapse;
+  window_flags |= ImGuiWindowFlags_NoBackground;
+  window_flags |= ImGuiWindowFlags_NoMove;
+
+  ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1., 1., 1., 1.));
+  ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0., 0., 0., 0.8));
+  ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.1, 0.4, 0.1, 1.));
+  ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1., 1., 1., 1.));
+
+  ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 12.0f);
+  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(20.0f, 20.0f));
+  ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(4.0f, 10.0f));
+  ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(100.0f, 100.f));
+
+  ImGui::Begin("Nome do Jogo", NULL, window_flags);
+
+  ImGui::PushFont(font2);
+
+  ImGui::SetWindowFontScale(5);
+  if( estado_combate > 0 )
+    ImGui::Text("Parabéns você venceu a batalha!!!");
+  else
+    ImGui::Text("Tente novamente. :(");
+
+  ImGui::SetWindowFontScale(3);
+
+  ImGui::Text("\n\n\n\n");
+  ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + 700);
+  int index = (int)tempo_pausa % 8;
+  ImGui::Text(frases[index].c_str());
+  ImGui::PopTextWrapPos();
+  ImGui::Text("\n\n\n\n");
+
+  if (ImGui::Button("Resume game")){
+    afterBattle = false;
+    togglePause();
+  }
+
+  if (ImGui::Button("Quit"))
+   quit = true;
+
+  ImGui::PopStyleColor(4);
+  ImGui::PopStyleVar(5);
+
+  ImGui::PopFont();
+
+
+  ImGui::End();
 }
 
 void janelaDePause() {
@@ -461,7 +523,7 @@ void janelaDePause() {
   ImGui::SetWindowFontScale(3);
 
   if (ImGui::Button("Resume game"))
-    isPaused = false;
+    togglePause();
 
   if (ImGui::Button("Quit"))
     quit = true;
@@ -488,12 +550,9 @@ void main_loop() {
   }
 
   tempo_atual = float(clock() - begin_time) / CLOCKS_PER_SEC;
-  // tempo_pausa =  tempo_atual : tempo_pausa;
   tempo_jogo = tempo_total + ( isPaused ? 0 : tempo_atual - tempo_pausa);
 
-  // rot_idle = isPaused ?  sin((tempo_atual - tempo_pausa) * 4.)/2.5 : 0;
   rot_idle = isPaused ? ((int)tempo_pausa*100 % 2 ? 1 : -1) * sin((tempo_atual - tempo_pausa) * 4.)/2.5 : rot_idle*.8;
-  // if( isPaused ) std::cout << rot_idle << std::endl;
   scene.setView(
     lookAt(
       toVec3(rotate_y(rot + rot_idle ) * rotate_z(rot_x) * translate(dist, .0, .0) *
@@ -504,7 +563,7 @@ void main_loop() {
     )
   );
 
-  // Start the Dear ImGui frame
+  // Inicia Dear ImGui frame
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplSDL2_NewFrame();
   ImGui::NewFrame();
@@ -516,20 +575,25 @@ void main_loop() {
   int estado = 0;
   static ImGuiWindowFlags window_flags;
 
+  scene.drawFundo(tempo_jogo);
   if (onBattle) {
+
+    estado = estadoCombate();
     if (!isPaused) {
       scene.mapa.actions(tempo_jogo);
-      estado = estadoCombate();
-
-      if( estado )
-        avancarNivel(estado);
     }
 
-    scene.drawFundo(tempo_jogo);
-    scene.draw(tempo_jogo);
+    if( estado )
+      avancarNivel(estado);
+    if( !afterBattle )
+      scene.draw(tempo_jogo);
 
-    if (isPaused)
-      janelaDePause();
+    if (isPaused){
+      if( afterBattle )
+        janelaAfter();
+      else
+        janelaDePause();
+    }
     else {
       // Configurando a janela
       window_flags = 0;
@@ -553,10 +617,8 @@ void main_loop() {
 
       ImGui::End();
     }
-
   }
   else{
-    scene.drawFundo(tempo_atual);
     menuPrincipal();
   }
 
