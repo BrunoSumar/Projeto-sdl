@@ -2,17 +2,14 @@
 #include <iostream>
 #include <string>
 
+
 #ifdef __EMSCRIPTEN__
-
 #include <emscripten.h>
-
-#else
+#endif
 
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
-
-#endif
 
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
@@ -146,14 +143,10 @@ bool init() {
     printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
   }
 
-#ifdef __EMSCRIPTEN__
-
   // Inicializando GLEW
   glewExperimental = GL_FALSE;
   if (glewInit() != GLEW_OK)
     throw std::runtime_error("glewInit failed");
-
-#endif
 
   // Inicializando o DEPTH buffer
   glEnable(GL_DEPTH_TEST);
