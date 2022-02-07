@@ -586,9 +586,9 @@ void main_loop() {
   int estado = 0;
   static ImGuiWindowFlags window_flags;
 
-  scene.drawFundo(tempo_jogo);
   if (onBattle) {
 
+    scene.drawFundo(tempo_jogo);
     estado = estadoCombate();
     if (!isPaused) {
       scene.mapa.actions(tempo_jogo);
@@ -630,6 +630,7 @@ void main_loop() {
     }
   }
   else{
+    scene.drawFundo(tempo_atual);
     menuPrincipal();
   }
 
