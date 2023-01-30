@@ -71,6 +71,7 @@ void setupScene() {
     Shader{"shaders/cartao.vert", GL_VERTEX_SHADER},
     Shader{"shaders/cartao.frag", GL_FRAGMENT_SHADER}
   };
+  return;
 
   fundoSP = new ShaderProgram{
     Shader{"shaders/fundo.vert", GL_VERTEX_SHADER},
@@ -169,10 +170,11 @@ bool init() {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
-  font1 = io.Fonts->AddFontFromFileTTF("resources/ghouls.ghosts.and.goblins-[fontvir.us].ttf", 15);
-  font1_grande = io.Fonts->AddFontFromFileTTF("resources/ghouls.ghosts.and.goblins-[fontvir.us].ttf", 40);
-  font2 = io.Fonts->AddFontFromFileTTF("resources/alphbeta.ttf", 10);
-  font3 = io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Roboto-Medium.ttf", 15);
+  font1 = io.Fonts->AddFontFromFileTTF("./resources/ghouls.ghosts.and.goblins-[fontvir.us].ttf", 15);
+  font1_grande = io.Fonts->AddFontFromFileTTF("./resources/ghouls.ghosts.and.goblins-[fontvir.us].ttf", 40);
+  font2 = io.Fonts->AddFontFromFileTTF("./resources/alphbeta.ttf", 10);
+  font3 = io.Fonts->AddFontFromFileTTF("./resources/alphbeta.ttf", 15);
+  // font3 = io.Fonts->AddFontFromFileTTF("imgui/misc/fonts/Roboto-Medium.ttf", 15);
   io.Fonts->Build();
 
   ImGui::StyleColorsLight();
